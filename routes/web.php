@@ -25,6 +25,7 @@ Route::get('/dashboard', function () {
 
 // Route::get('/', function () {
 //     return Inertia::render('Dashboard', ['program'=>Programs::all()]);
+//         for git
 // });
 
 Route::get('/', function () {
