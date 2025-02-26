@@ -594,6 +594,7 @@ export default function Application({ program = [], school_year = [] }) {
                                 <input
                                     id="birth_date"
                                     name="birth_date"
+                                    type="date"
                                     value={data.birth_date}
                                     onChange={(e) =>
                                         setData("birth_date", e.target.value)

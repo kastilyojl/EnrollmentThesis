@@ -25,7 +25,14 @@ import InputError from "@/components/InputError";
 import { useForm } from "@inertiajs/react";
 
 export default function Program({ program = [] }) {
-    const tableHeader = ["Code", "Name", "Department", ""];
+    const tableHeader = [
+        "Code",
+        "Name",
+        "Department",
+        "Duration",
+        "Status",
+        "Branch",
+    ];
 
     const {
         data,
