@@ -15,8 +15,9 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-export default function Application({ program = [], school_year = [] }) {
+export default function ApplicationForm({ program = [], school_year = [] }) {
     const [isOpen, setIsOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
     const { data, setData, post, errors } = useForm({
         department: "",
         school_year: "",
@@ -50,7 +51,12 @@ export default function Application({ program = [], school_year = [] }) {
 
     function handleSubmit(e) {
         e.preventDefault();
-        post(route("public.application.submit"));
+        setLoading(true);
+        post(route("public.application.submit"), {
+            onError: () => {
+                setLoading(false);
+            },
+        });
 
         setIsOpen(false);
     }
@@ -75,8 +81,8 @@ export default function Application({ program = [], school_year = [] }) {
     });
 
     return (
-        <form className="max-w-7xl px-40">
-            <div className="space-y-12">
+        <form className="max-w-6xl p-6 mx-auto">
+            <div className="space-y-12 ">
                 <div className="border-b border-gray-900/10 pb-12">
                     <h2 className="text-base/7 font-semibold text-gray-900">
                         Student Information
@@ -92,6 +98,7 @@ export default function Application({ program = [], school_year = [] }) {
                                 className="block text-sm/6 font-medium text-gray-900"
                             >
                                 Department
+                                <span className="pl-1 text-red-500">*</span>
                             </Label>
                             <div className="mt-2">
                                 <select
@@ -128,6 +135,7 @@ export default function Application({ program = [], school_year = [] }) {
                                 className="block text-sm/6 font-medium text-gray-900"
                             >
                                 School Year
+                                <span className="pl-1 text-red-500">*</span>
                             </Label>
                             <div className="mt-2">
                                 {/* <select
@@ -179,6 +187,7 @@ export default function Application({ program = [], school_year = [] }) {
                                 className="block text-sm/6 font-medium text-gray-900"
                             >
                                 Semester
+                                <span className="pl-1 text-red-500">*</span>
                             </Label>
                             <div className="mt-2">
                                 <select
@@ -216,6 +225,7 @@ export default function Application({ program = [], school_year = [] }) {
                                 className="block text-sm/6 font-medium text-gray-900"
                             >
                                 Branch
+                                <span className="pl-1 text-red-500">*</span>
                             </Label>
                             <div className="mt-2">
                                 <select
@@ -241,8 +251,8 @@ export default function Application({ program = [], school_year = [] }) {
                                         }
                                     )}
                                 </select>
-                                {errors.semester && !data.semester && (
-                                    <InputError message={errors.semester} />
+                                {errors.branch && !data.branch && (
+                                    <InputError message={errors.branch} />
                                 )}
                             </div>
                         </div>
@@ -253,6 +263,7 @@ export default function Application({ program = [], school_year = [] }) {
                                 className="block text-sm/6 font-medium text-gray-900"
                             >
                                 Year Level
+                                <span className="pl-1 text-red-500">*</span>
                             </Label>
                             <div className="mt-2">
                                 <select
@@ -310,6 +321,7 @@ export default function Application({ program = [], school_year = [] }) {
                                 className="block text-sm/6 font-medium text-gray-900"
                             >
                                 Program
+                                <span className="pl-1 text-red-500">*</span>
                             </Label>
                             <div className="mt-2">
                                 <select
@@ -359,6 +371,7 @@ export default function Application({ program = [], school_year = [] }) {
                                 className="block text-sm/6 font-medium text-gray-900"
                             >
                                 Classified As
+                                <span className="pl-1 text-red-500">*</span>
                             </Label>
                             <div className="mt-2">
                                 <select
@@ -384,9 +397,12 @@ export default function Application({ program = [], school_year = [] }) {
                                         }
                                     )}
                                 </select>
-                                {errors.semester && !data.semester && (
-                                    <InputError message={errors.semester} />
-                                )}
+                                {errors.classified_as &&
+                                    !data.classified_as && (
+                                        <InputError
+                                            message={errors.classified_as}
+                                        />
+                                    )}
                             </div>
                         </div>
                         {data.classified_as === "Old Student" ||
@@ -464,6 +480,7 @@ export default function Application({ program = [], school_year = [] }) {
                                 className="block text-sm/6 font-medium text-gray-900"
                             >
                                 Email
+                                <span className="pl-1 text-red-500">*</span>
                             </Label>
                             <div className="mt-2">
                                 <input
@@ -501,6 +518,7 @@ export default function Application({ program = [], school_year = [] }) {
                                 className="block text-sm/6 font-medium text-gray-900"
                             >
                                 First name
+                                <span className="pl-1 text-red-500">*</span>
                             </Label>
                             <div className="mt-2">
                                 <input
@@ -524,6 +542,7 @@ export default function Application({ program = [], school_year = [] }) {
                                 className="block text-sm/6 font-medium text-gray-900"
                             >
                                 Last name
+                                <span className="pl-1 text-red-500">*</span>
                             </Label>
                             <div className="mt-2">
                                 <input
@@ -566,6 +585,7 @@ export default function Application({ program = [], school_year = [] }) {
                                 className="block text-sm/6 font-medium text-gray-900"
                             >
                                 Address
+                                <span className="pl-1 text-red-500">*</span>
                             </Label>
                             <div className="mt-2">
                                 <input
@@ -589,6 +609,7 @@ export default function Application({ program = [], school_year = [] }) {
                                 className="block text-sm/6 font-medium text-gray-900"
                             >
                                 Date of Birth
+                                <span className="pl-1 text-red-500">*</span>
                             </Label>
                             <div className="mt-2">
                                 <input
@@ -613,6 +634,7 @@ export default function Application({ program = [], school_year = [] }) {
                                 className="block text-sm/6 font-medium text-gray-900"
                             >
                                 Place of Birth
+                                <span className="pl-1 text-red-500">*</span>
                             </Label>
                             <div className="mt-2">
                                 <input
@@ -636,6 +658,7 @@ export default function Application({ program = [], school_year = [] }) {
                                 className="block text-sm/6 font-medium text-gray-900"
                             >
                                 Civil Status
+                                <span className="pl-1 text-red-500">*</span>
                             </Label>
                             <div className="mt-2">
                                 <select
@@ -673,6 +696,7 @@ export default function Application({ program = [], school_year = [] }) {
                                 className="block text-sm/6 font-medium text-gray-900"
                             >
                                 Gender
+                                <span className="pl-1 text-red-500">*</span>
                             </Label>
                             <div className="mt-2">
                                 <select
@@ -961,8 +985,9 @@ export default function Application({ program = [], school_year = [] }) {
                     <AlertDialogTrigger
                         className="bg-primary text-white px-4 py-1 rounded-md"
                         onClick={() => setIsOpen(true)}
+                        disabled={loading}
                     >
-                        Submit
+                        {loading ? "Submitting" : "Submit"}
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                         <AlertDialogHeader>
@@ -970,9 +995,10 @@ export default function Application({ program = [], school_year = [] }) {
                                 Are you absolutely sure?
                             </AlertDialogTitle>
                             <AlertDialogDescription>
-                                This action cannot be undone. This will
-                                permanently delete your account and remove your
-                                data from our servers.
+                                Before finalizing your registration, please
+                                ensure that all details are accurate. Are you
+                                sure you want to continue with the provided
+                                information?"
                             </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>

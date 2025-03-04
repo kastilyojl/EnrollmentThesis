@@ -90,13 +90,11 @@ class ApplicationController extends Controller
 
          DB::commit();
 
-         return Inertia::render('Success');
+         return redirect()->route('200');
 
         } catch(\Exception $e) {
             DB::rollBack();
             return response()->json(['error' => $e->getMessage()], 500);
-        }
-    
-            
+        }        
     }
 }

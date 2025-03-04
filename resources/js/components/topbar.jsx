@@ -52,7 +52,7 @@ export default function Topbar() {
         },
         {
             title: "Tuition Fee",
-            href: "/docs/primitives/hover-card",
+            href: route("public.payment.submit"),
         },
         {
             title: "Guidelines",

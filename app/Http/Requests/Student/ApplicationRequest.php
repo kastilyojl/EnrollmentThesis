@@ -22,7 +22,7 @@ class ApplicationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|email',
+            'email' => 'required|email|unique:users,email',
 
             // student_info table
             'department' => 'required|string|max:50',

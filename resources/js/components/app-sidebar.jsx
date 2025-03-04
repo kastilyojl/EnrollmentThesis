@@ -27,6 +27,7 @@ import {
     SidebarRail,
 } from "@/components/ui/sidebar";
 import { usePage } from "@inertiajs/react";
+import { ScrollArea } from "./ui/scroll-area";
 
 export function AppSidebar({ ...props }) {
     const user = usePage().props.auth.user;
@@ -40,19 +41,9 @@ export function AppSidebar({ ...props }) {
         },
         teams: [
             {
-                name: "Acme Inc",
+                name: "Westbridge",
                 logo: GalleryVerticalEnd,
-                plan: "Enterprise",
-            },
-            {
-                name: "Acme Corp.",
-                logo: AudioWaveform,
-                plan: "Startup",
-            },
-            {
-                name: "Evil Corp.",
-                logo: Command,
-                plan: "Free",
+                plan: "Enrollment System",
             },
         ],
         navMain: [
@@ -83,14 +74,18 @@ export function AppSidebar({ ...props }) {
                 items: [
                     {
                         title: "Application",
-                        url: "#",
+                        url: route("admin.application"),
                     },
                     {
                         title: "Documents",
+                        url: route("admin.documents"),
+                    },
+                    {
+                        title: "Tuition Fee",
                         url: "#",
                     },
                     {
-                        title: "Quantum",
+                        title: "Approval",
                         url: "#",
                     },
                 ],
@@ -120,8 +115,8 @@ export function AppSidebar({ ...props }) {
                         url: route("admin.billing"),
                     },
                     {
-                        title: "Tuition Fee",
-                        url: "#",
+                        title: "Payment",
+                        url: route("admin.payment"),
                     },
                 ],
             },
@@ -145,23 +140,23 @@ export function AppSidebar({ ...props }) {
                 ],
             },
         ],
-        projects: [
-            {
-                name: "Design Engineering",
-                url: "#",
-                icon: Frame,
-            },
-            {
-                name: "Sales & Marketing",
-                url: "#",
-                icon: PieChart,
-            },
-            {
-                name: "Travel",
-                url: "#",
-                icon: Map,
-            },
-        ],
+        // projects: [
+        //     // {
+        //     //     name: "Design Engineering",
+        //     //     url: "#",
+        //     //     icon: Frame,
+        //     // },
+        //     // {
+        //     //     name: "Sales & Marketing",
+        //     //     url: "#",
+        //     //     icon: PieChart,
+        //     // },
+        //     // {
+        //     //     name: "Travel",
+        //     //     url: "#",
+        //     //     icon: Map,
+        //     // },
+        // ],
     };
 
     return (
@@ -169,10 +164,14 @@ export function AppSidebar({ ...props }) {
             <SidebarHeader>
                 <TeamSwitcher teams={data.teams} />
             </SidebarHeader>
+
             <SidebarContent>
-                <NavMain items={data.navMain} />
-                <NavProjects projects={data.projects} />
+                <ScrollArea>
+                    <NavMain items={data.navMain} />
+                    {/* <NavProjects projects={data.projects} /> */}
+                </ScrollArea>
             </SidebarContent>
+
             <SidebarFooter>
                 <NavUser user={data.user} />
             </SidebarFooter>

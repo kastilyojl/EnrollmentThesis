@@ -29,7 +29,10 @@ class PaymentVerification extends FormRequest
             'semester' => 'required|string',
             'reference' => 'required|string',
             'amount' => 'required|numeric|min:0',
-            'payment_receipt' => ['required','image','mimes:jpeg,png,jpg,gif','max:2048']
+            'payment_receipt' => ['required','max:2048'],
+            'year_level' => 'required|string',
+            'program' => 'required|string',
+            // 'status' => 'required|string',
         ];
     }
 
