@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AdminApplicationController;
 use App\Http\Controllers\Admin\BillingController;
 use App\Http\Controllers\Admin\EmailController;
+use App\Http\Controllers\Admin\EnrollmentController;
 use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\ProgramController;
 use App\Http\Controllers\Admin\SubjectController;
@@ -56,6 +57,10 @@ Route::group([], function () {
     Route::get('/private-files/{filename}', [PaymentController::class, 'showImage'])->name("admin.payment.showImage");
     Route::delete('/private-files/{id}/delete', [PaymentController::class, 'destroy'])->name("admin.payment.destroy");
     
+});
+
+Route::prefix('/enrollment')->group(function () {
+    Route::get('/', [EnrollmentController::class, 'index'])->name('admin.enrollment');
 });
 
 Route::prefix('admin/application')->group(function () {

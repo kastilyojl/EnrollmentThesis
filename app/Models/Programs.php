@@ -22,4 +22,19 @@ class Programs extends Model
     public function subjects() {
         return $this->hasOne(Subjects::class, 'program_code', 'code');
     }
+
+    public function shsBilling()
+    {
+        return $this->hasOne(SHS_Billing::class, 'program_code', 'code');
+    }
+
+    public function collegeBilling()
+    {
+        return $this->hasOne(College_Billing::class, 'program_code', 'code');
+    }
+    
+    public function otherBilling()
+    {
+        return $this->hasOne(Other_Billing::class, 'program_code', 'code');
+    }
 }

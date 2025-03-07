@@ -222,7 +222,7 @@ export default function Documents({ student = [] }) {
                                 <DialogDescription>
                                     <ScrollArea className="p-4">
                                         <div>
-                                            <div className="grid grid-cols-2 bg-cyan-50 py-4 px-2">
+                                            <div className="grid rounded-lg grid-cols-2 border py-4 px-2">
                                                 <div className="flex">
                                                     <InputLabel>
                                                         Name:
@@ -260,9 +260,9 @@ export default function Documents({ student = [] }) {
                                             <h1 className="text-black font-bold text-md mt-3">
                                                 Basic Requirements
                                             </h1>
-                                            <div className="flow-root rounded-lg border border-gray-100 py-3 shadow-xs">
+                                            <div className="flow-root rounded-lg border  py-3 shadow-xs">
                                                 <dl className="-my-3 grid md:grid-cols-2 gap-x-4 divide-y divide-gray-100 text-sm">
-                                                    <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-[60%_20%_20%] sm:gap-4">
+                                                    <div className="grid grid-cols-1 gap-1 p-3  sm:grid-cols-[60%_20%_20%] sm:gap-4">
                                                         <dt className="font-medium text-gray-900">
                                                             Form 138A / Report
                                                             Card (original copy)
@@ -332,7 +332,7 @@ export default function Documents({ student = [] }) {
                                                         </dd>
                                                     </div>
 
-                                                    <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-[60%_20%_20%] sm:gap-4">
+                                                    <div className="grid grid-cols-1 gap-1 p-3  sm:grid-cols-[60%_20%_20%] sm:gap-4">
                                                         <dt className="font-medium text-gray-900">
                                                             Form 137 (original
                                                             copy)
@@ -402,7 +402,7 @@ export default function Documents({ student = [] }) {
                                                         </dd>
                                                     </div>
 
-                                                    <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-[60%_20%_20%] sm:gap-4">
+                                                    <div className="grid grid-cols-1 gap-1 p-3  sm:grid-cols-[60%_20%_20%] sm:gap-4">
                                                         <dt className="font-medium text-gray-900">
                                                             Certificate of Good
                                                             Moral (original
@@ -473,7 +473,7 @@ export default function Documents({ student = [] }) {
                                                         </dd>
                                                     </div>
 
-                                                    <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-[60%_20%_20%] sm:gap-4">
+                                                    <div className="grid grid-cols-1 gap-1 p-3  sm:grid-cols-[60%_20%_20%] sm:gap-4">
                                                         <dt className="font-medium text-gray-900">
                                                             PSA Birth
                                                             Certificate (photo
@@ -542,7 +542,7 @@ export default function Documents({ student = [] }) {
                                                         </dd>
                                                     </div>
 
-                                                    <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-[60%_20%_20%] sm:gap-4">
+                                                    <div className="grid grid-cols-1 gap-1 p-3  sm:grid-cols-[60%_20%_20%] sm:gap-4">
                                                         <dt className="font-medium text-gray-900">
                                                             1pc. Passport Size
                                                             picture (white
@@ -622,9 +622,9 @@ export default function Documents({ student = [] }) {
                                                 Additional Requirements for
                                                 Transferee
                                             </h1>
-                                            <div className="flow-root rounded-lg border border-gray-100 py-3 shadow-xs">
+                                            <div className="flow-root rounded-lg border py-3 shadow-xs">
                                                 <dl className="-my-3 grid md:grid-cols-2 gap-x-4 divide-y divide-gray-100 text-sm">
-                                                    <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-[60%_20%_20%] sm:gap-4">
+                                                    <div className="grid grid-cols-1 gap-1 p-3  sm:grid-cols-[60%_20%_20%] sm:gap-4">
                                                         <dt className="font-medium text-gray-900">
                                                             Honorabol Dismissal
                                                             / Certificate of
@@ -695,7 +695,7 @@ export default function Documents({ student = [] }) {
                                                             </RadioGroup>
                                                         </dd>
                                                     </div>
-                                                    <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-[60%_20%_20%] sm:gap-4">
+                                                    <div className="grid grid-cols-1 gap-1 p-3  sm:grid-cols-[60%_20%_20%] sm:gap-4">
                                                         <dt className="font-medium text-gray-900">
                                                             Copy of Grades
                                                             (original copy)
@@ -765,7 +765,7 @@ export default function Documents({ student = [] }) {
                                                         </dd>
                                                     </div>
 
-                                                    <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-[60%_20%_20%] sm:gap-4">
+                                                    <div className="grid grid-cols-1 gap-1 p-3  sm:grid-cols-[60%_20%_20%] sm:gap-4">
                                                         <dt className="font-medium text-gray-900">
                                                             F137 (original copy
                                                             addressed to

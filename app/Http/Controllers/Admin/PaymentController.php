@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Student\PaymentVerification;
 use App\Models\Billing_Type;
 use App\Models\Payment_Verification;
+use App\Models\Student_Info;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -24,12 +25,14 @@ class PaymentController extends Controller
         $user = User::where('email', $request->email)->first();
         
         if($user) {
+            $items = Student_Info::where('users_id', $user->id)->first();
 
             if ($request->hasFile('payment_receipt')) {
                 $path = $request->file('payment_receipt')->store('images');
                 
             Payment_Verification::create([
-                'users_id' => $user->id,
+                'student_info_id' => $items->student_id,
+                
                 'name' => $request->name,
                 'year_level' => $request->year_level,
                 'program' => $request->program,

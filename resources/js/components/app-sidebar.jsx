@@ -54,15 +54,15 @@ export function AppSidebar({ ...props }) {
                 isActive: true,
                 items: [
                     {
-                        title: "History",
+                        title: "Enrollment",
                         url: "#",
                     },
                     {
-                        title: "Starred",
+                        title: "Curriculum Management",
                         url: "#",
                     },
                     {
-                        title: "Settings",
+                        title: "Billing",
                         url: "#",
                     },
                 ],
@@ -86,7 +86,7 @@ export function AppSidebar({ ...props }) {
                     },
                     {
                         title: "Approval",
-                        url: "#",
+                        url: route("admin.enrollment"),
                     },
                 ],
             },

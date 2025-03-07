@@ -12,7 +12,7 @@ class Payment_Verification extends Model
 
     protected $table ='payment_verification';
     protected $fillable = [
-        'users_id',
+        'student_info_id',
         'name',
         'email',
         'purpose',

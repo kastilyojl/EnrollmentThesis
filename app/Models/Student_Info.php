@@ -46,5 +46,10 @@ class Student_Info extends Model
     {
         return $this->hasOne(Documents::class, 'student_info_id', 'student_id');   
     }
+
+    public function paymentVerification() 
+    {
+        return $this->hasOne(Payment_Verification::class, 'student_info_id', 'student_id');
+    }
     
 }

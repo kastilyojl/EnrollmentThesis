@@ -214,11 +214,10 @@ export default function Payment({ program = [], payment = [] }) {
                                 <DialogDescription>
                                     <div className="mt-3 grid grid-cols-2 gap-x-8 gap-y-4">
                                         <div>
-                                            <Label htmlFor="name">name</Label>
+                                            <Label htmlFor="name">Name</Label>
                                             <Input
                                                 name="name"
                                                 type="text"
-                                                placeholder="Program name"
                                                 value={data.name}
                                                 onChange={(e) =>
                                                     setData(
@@ -247,7 +246,6 @@ export default function Payment({ program = [], payment = [] }) {
                                             <Input
                                                 name="year_level"
                                                 type="text"
-                                                placeholder="Program year_level"
                                                 className="text-black"
                                                 value={data.year_level}
                                                 onChange={(e) =>
