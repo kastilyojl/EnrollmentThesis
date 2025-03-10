@@ -5,9 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+
 class Programs extends Model
 {
     //
+
     use SoftDeletes;
     protected $table = 'programs';
     protected $fillable = [
@@ -20,7 +22,7 @@ class Programs extends Model
     ];
 
     public function subjects() {
-        return $this->hasOne(Subjects::class, 'program_code', 'code');
+        return $this->hasMany(Subjects::class, 'program_code', 'code');
     }
 
     public function shsBilling()

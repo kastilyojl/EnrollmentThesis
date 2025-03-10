@@ -12,7 +12,7 @@ export default function Stats() {
     const content = {};
 
     return (
-        <Card className="w-full h-24">
+        <Card className="w-full h-24 bg-gray-50">
             <CardHeader>
                 <CardTitle>Card Title</CardTitle>
             </CardHeader>

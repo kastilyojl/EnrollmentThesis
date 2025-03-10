@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminApplicationController;
 use App\Http\Controllers\Admin\BillingController;
+use App\Http\Controllers\Admin\CurriculumController;
 use App\Http\Controllers\Admin\EmailController;
 use App\Http\Controllers\Admin\EnrollmentController;
 use App\Http\Controllers\Admin\PaymentController;
@@ -75,6 +76,10 @@ Route::prefix('email')->group( function () {
     Route::get('/', [EmailController::class, 'index'])->name('admin.email');
 });
 
+Route::prefix('curriculum')->group(function () {
+    Route::get("/", [CurriculumController::class, 'index'])->name('admin.curriculum');
+});
+
 Route::get('/program', [ProgramController::class, 'index'])->name("admin.program");
 Route::post('/program/store', [ProgramController::class, 'store'])->name("admin.program.store");
 Route::post('/program/{id}/update', [ProgramController::class, 'edit'])->name("admin.program.update");
@@ -89,6 +94,13 @@ Route::prefix('billing')->group(function () {
     Route::get('/', [BillingController::class, 'index'])->name('admin.billing');
     Route::post('/store', [BillingController::class, 'store'])->name("admin.billing.store");
     Route::get('/payment', [PaymentController::class, 'indexPayment'])->name("admin.payment");
+    
+    Route::post('/shs-fee/{id}/update', [BillingController::class, 'editSHSFee'])->name("admin.shsfee.update");
+    Route::delete('/shs-fee/{id}/delete', [BillingController::class, 'destroySHSFee'])->name("admin.shsfee.destroy");
+    Route::post('/college-fee/{id}/update', [BillingController::class, 'editCollegeFee'])->name("admin.collegefee.update");
+    Route::delete('/college-fee/{id}/delete', [BillingController::class, 'destroyCollegeFee'])->name("admin.collegefee.destroy");
+    Route::post('/other-fee/{id}/update', [BillingController::class, 'editOtherFee'])->name("admin.otherfee.update");
+    Route::delete('/other-fee/{id}/delete', [BillingController::class, 'destroyOtherFee'])->name("admin.otherfee.destroy");
 });
 
 Route::middleware('auth')->group(function () {

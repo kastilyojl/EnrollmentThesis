@@ -37,7 +37,18 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 
-export default function BillingSetup({ program = [], subject = [], fee = [] }) {
+import SHSBilling from "./BillingSetup/SHSBilling";
+import OtherBilling from "./BillingSetup/OtherBilling";
+import CollegeBilling from "./BillingSetup/CollegeBilling";
+
+export default function BillingSetup({
+    program = [],
+    subject = [],
+    shs_fee = [],
+    college_fee = [],
+    other_fee = [],
+    fee = [],
+}) {
     const {
         data,
         setData,
@@ -51,7 +62,6 @@ export default function BillingSetup({ program = [], subject = [], fee = [] }) {
         payment_type: "",
         cash: "",
         installment: "",
-        // description_shs: "",
         voucher_amount: "",
         onetime_fee: "",
         down_payment_shs: "",
@@ -249,12 +259,14 @@ export default function BillingSetup({ program = [], subject = [], fee = [] }) {
         });
     };
 
-    const [fees, setFees] = useState([]);
+    const [shsFees, setSHSFees] = useState([]);
+    const [collegeFees, setCollegeFees] = useState([]);
+    const [otherFees, setOtherFees] = useState([]);
 
     const handleFeeList = (e) => {
         e.preventDefault();
 
-        const newFee = {
+        const newSHSFee = {
             program_code: data.program_code,
             year_level: data.year_level,
             payment_type: data.payment_type,
@@ -264,7 +276,10 @@ export default function BillingSetup({ program = [], subject = [], fee = [] }) {
             voucher_amount: data.voucher_amount,
             onetime_fee: data.onetime_fee,
             down_payment_shs: data.down_payment_shs,
+        };
 
+        const newCollegeFee = {
+            program_code: data.program_code,
             discount_title: data.discount_title,
             discount_amount: data.discount_amount,
             down_payment: data.down_payment,
@@ -275,11 +290,19 @@ export default function BillingSetup({ program = [], subject = [], fee = [] }) {
             per_unit: data.per_unit,
             total_amount: data.total_amount,
         };
-        console.log("data here", data);
 
-        setFees([...fees, newFee]);
+        const newOtherFee = {
+            title: data.title,
+            amount: data.amount,
+            description: data.description,
+        };
 
-        setData("fees", [...fees, newFee]);
+        setSHSFees([...shsFees, newSHSFee]);
+        setCollegeFees([...collegeFees, newCollegeFee]);
+        setOtherFees([...otherFees, newOtherFee]);
+        setData("shsFees", [...shsFees, newSHSFee]);
+        setData("collegeFees", [...collegeFees, newCollegeFee]);
+        setData("fees", [...collegeFees, newCollegeFee]);
     };
 
     const payment = {
@@ -325,8 +348,61 @@ export default function BillingSetup({ program = [], subject = [], fee = [] }) {
                 <Input type="text" placeholder="Search" className="w-[300px]" />
                 <Button onClick={handleAdd}>Create</Button>
             </div>
-            <div className="border rounded-sm px-4">
-                <>Here</>
+            <div>
+                <Tabs defaultValue="all">
+                    <TabsList>
+                        <TabsTrigger value="all">All</TabsTrigger>
+                        <TabsTrigger value="shs">SHS</TabsTrigger>
+                        <TabsTrigger value="college">College</TabsTrigger>
+                        <TabsTrigger value="others">Others</TabsTrigger>
+                    </TabsList>
+
+                    <TabsContent value="all" className="space-y-4">
+                        <p className="flex items-center text-gray-500 text-sm text-center">
+                            <div className="w-full">
+                                <Separator />
+                            </div>
+                            <div className="w-full">Senior High School</div>
+                            <div className="w-full">
+                                {" "}
+                                <Separator />
+                            </div>
+                        </p>
+
+                        <SHSBilling shs_fee={shs_fee} />
+                        <p className="flex items-center text-gray-500 text-sm text-center py-4">
+                            <div className="w-full">
+                                <Separator />
+                            </div>
+                            <div className="w-full">College</div>
+                            <div className="w-full">
+                                {" "}
+                                <Separator />
+                            </div>
+                        </p>
+                        <CollegeBilling college_fee={college_fee} />
+                        <p className="flex items-center text-gray-500 text-sm text-center py-4">
+                            <div className="w-full">
+                                <Separator />
+                            </div>
+                            <div className="w-full">Other</div>
+                            <div className="w-full">
+                                {" "}
+                                <Separator />
+                            </div>
+                        </p>
+                        <OtherBilling other_fee={other_fee} />
+                    </TabsContent>
+                    <TabsContent value="shs">
+                        <SHSBilling shs_fee={shs_fee} />
+                    </TabsContent>
+                    <TabsContent value="college">
+                        <CollegeBilling college_fee={college_fee} />
+                    </TabsContent>
+                    <TabsContent value="others">
+                        <OtherBilling other_fee={other_fee} />
+                    </TabsContent>
+                </Tabs>
                 {add && (
                     <Dialog open={add} onOpenChange={(open) => setAdd(open)}>
                         <DialogContent
@@ -617,7 +693,7 @@ export default function BillingSetup({ program = [], subject = [], fee = [] }) {
                                                                     </TableCaption>
 
                                                                     <TableBody>
-                                                                        {fees.map(
+                                                                        {shsFees.map(
                                                                             (
                                                                                 fee
                                                                             ) => {
@@ -952,7 +1028,7 @@ export default function BillingSetup({ program = [], subject = [], fee = [] }) {
                                                                             </TableCaption>
 
                                                                             <TableBody>
-                                                                                {fees.map(
+                                                                                {collegeFees.map(
                                                                                     (
                                                                                         fee
                                                                                     ) => {
@@ -1040,157 +1116,340 @@ export default function BillingSetup({ program = [], subject = [], fee = [] }) {
                                                 </TabsContent>
                                                 <TabsContent value="unit">
                                                     <div className="overflow-x-auto">
-                                                        <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
-                                                            <thead className="ltr:text-left rtl:text-right">
-                                                                <tr>
-                                                                    {payment.College.unit.map(
-                                                                        (
-                                                                            col,
-                                                                            index
-                                                                        ) => (
-                                                                            <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
-                                                                                {
-                                                                                    col
-                                                                                }
-                                                                            </th>
-                                                                        )
-                                                                    )}
-                                                                </tr>
-                                                            </thead>
-
-                                                            <tbody className="divide-y divide-gray-200">
-                                                                <tr>
-                                                                    <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                                                                        <Select name="type">
-                                                                            <SelectTrigger>
-                                                                                Select
-                                                                            </SelectTrigger>
-                                                                            <SelectContent>
-                                                                                <SelectItem value="BSCS">
-                                                                                    Computer
-                                                                                    Science
-                                                                                </SelectItem>
-                                                                                <SelectItem value="BSTM">
-                                                                                    Tourism
-                                                                                </SelectItem>
-                                                                            </SelectContent>
-                                                                        </Select>
-                                                                    </td>
-                                                                    <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                                                                        <Input />
-                                                                    </td>
-                                                                    <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                                                                        <Input />
-                                                                    </td>
-                                                                    <td className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
-                                                                        <Input />
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                    <ScrollArea className="h-auto max-h-[300px] p-4">
-                                                        {itemId === null && (
-                                                            <Table>
-                                                                <TableCaption>
-                                                                    A list of
-                                                                    fees added.
-                                                                </TableCaption>
-                                                                <TableHeader>
-                                                                    <TableRow>
-                                                                        {" "}
-                                                                        <TableHead>
+                                                        <div className="overflow-x-auto grid grid-cols-2">
+                                                            <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
+                                                                <thead className="ltr:text-left rtl:text-right">
+                                                                    <tr>
+                                                                        <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
                                                                             Program
-                                                                        </TableHead>
-                                                                    </TableRow>
-                                                                </TableHeader>
-                                                                <TableBody>
-                                                                    {fees.map(
-                                                                        (
-                                                                            fee
-                                                                        ) => {
-                                                                            return (
-                                                                                <TableRow>
-                                                                                    <TableCell className="font-medium odd:bg-gray-50">
-                                                                                        {
-                                                                                            fee
-                                                                                        }
-                                                                                    </TableCell>
-                                                                                </TableRow>
-                                                                            );
-                                                                        }
+                                                                        </th>
+                                                                        <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                                                                            <Select
+                                                                                className="h-auto"
+                                                                                name="program_code"
+                                                                                value={
+                                                                                    data.program_code
+                                                                                }
+                                                                                onValueChange={(
+                                                                                    value
+                                                                                ) =>
+                                                                                    setData(
+                                                                                        "program_code",
+                                                                                        value
+                                                                                    )
+                                                                                }
+                                                                            >
+                                                                                <SelectTrigger>
+                                                                                    <SelectValue placeholder="Select" />
+                                                                                </SelectTrigger>
+                                                                                <SelectContent>
+                                                                                    <SelectItem value="stem">
+                                                                                        STEM
+                                                                                    </SelectItem>
+                                                                                    <SelectItem value="abm">
+                                                                                        ABM
+                                                                                    </SelectItem>
+                                                                                </SelectContent>
+                                                                            </Select>
+                                                                        </td>
+                                                                    </tr>
+                                                                </thead>
+
+                                                                <tbody className="divide-y divide-gray-200">
+                                                                    <tr>
+                                                                        <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                                                                            No
+                                                                            of
+                                                                            Unit
+                                                                        </th>
+                                                                        <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                                                                            <Input
+                                                                                name="no_unit"
+                                                                                type="number"
+                                                                                className="text-black"
+                                                                                value={
+                                                                                    data.no_unit
+                                                                                }
+                                                                                onChange={(
+                                                                                    e
+                                                                                ) =>
+                                                                                    setData(
+                                                                                        "no_unit",
+                                                                                        e
+                                                                                            .target
+                                                                                            .value
+                                                                                    )
+                                                                                }
+                                                                            />
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                                                                            Amount
+                                                                            Per
+                                                                            unit
+                                                                        </th>
+                                                                        <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                                                                            <Input
+                                                                                name="per_unit"
+                                                                                type="number"
+                                                                                className="text-black"
+                                                                                value={
+                                                                                    data.per_unit
+                                                                                }
+                                                                                onChange={(
+                                                                                    e
+                                                                                ) =>
+                                                                                    setData(
+                                                                                        "per_unit",
+                                                                                        e
+                                                                                            .target
+                                                                                            .value
+                                                                                    )
+                                                                                }
+                                                                            />
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                                                                            Total
+                                                                            Amount
+                                                                        </th>
+                                                                        <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                                                                            <Input
+                                                                                name="total_amount"
+                                                                                type="number"
+                                                                                className="text-black"
+                                                                                value={
+                                                                                    data.total_amount
+                                                                                }
+                                                                                onChange={(
+                                                                                    e
+                                                                                ) =>
+                                                                                    setData(
+                                                                                        "total_amount",
+                                                                                        e
+                                                                                            .target
+                                                                                            .value
+                                                                                    )
+                                                                                }
+                                                                            />
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+
+                                                            <ScrollArea className="h-auto max-h-[400px] p-4">
+                                                                <div className="h-full">
+                                                                    {itemId ===
+                                                                        null && (
+                                                                        <Table>
+                                                                            <TableCaption>
+                                                                                A
+                                                                                list
+                                                                                of
+                                                                                fees
+                                                                                added.
+                                                                            </TableCaption>
+
+                                                                            <TableBody>
+                                                                                {collegeFees.map(
+                                                                                    (
+                                                                                        fee
+                                                                                    ) => {
+                                                                                        return (
+                                                                                            <TableRow className="odd:bg-gray-50 border-b-2 grid grid-cols-6">
+                                                                                                <TableCell className="font-medium ">
+                                                                                                    Program
+                                                                                                </TableCell>
+                                                                                                <TableCell className="font-medium text-gray-700">
+                                                                                                    {
+                                                                                                        fee.program_code
+                                                                                                    }
+                                                                                                </TableCell>
+
+                                                                                                <TableCell className="font-medium ">
+                                                                                                    No
+                                                                                                    of
+                                                                                                    Unit
+                                                                                                </TableCell>
+                                                                                                <TableCell className="font-medium text-gray-700">
+                                                                                                    {
+                                                                                                        fee.no_unit
+                                                                                                    }
+                                                                                                </TableCell>
+                                                                                                <TableCell className="font-medium ">
+                                                                                                    Per
+                                                                                                    Unit
+                                                                                                </TableCell>
+                                                                                                <TableCell className="font-medium text-gray-700">
+                                                                                                    {
+                                                                                                        fee.per_unit
+                                                                                                    }
+                                                                                                </TableCell>
+                                                                                                <TableCell className="font-medium ">
+                                                                                                    Total
+                                                                                                    Amount
+                                                                                                </TableCell>
+                                                                                                <TableCell className="font-medium text-gray-700">
+                                                                                                    {
+                                                                                                        fee.total_amount
+                                                                                                    }
+                                                                                                </TableCell>
+                                                                                            </TableRow>
+                                                                                        );
+                                                                                    }
+                                                                                )}
+                                                                            </TableBody>
+                                                                        </Table>
                                                                     )}
-                                                                </TableBody>
-                                                            </Table>
-                                                        )}
-                                                    </ScrollArea>
+                                                                </div>
+                                                            </ScrollArea>
+                                                        </div>
+                                                    </div>
                                                 </TabsContent>
                                             </Tabs>
                                         </TabsContent>
                                         <TabsContent value="others">
                                             <div className="overflow-x-auto">
-                                                <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
-                                                    <thead className="ltr:text-left rtl:text-right">
-                                                        <tr>
-                                                            {payment.Others.map(
-                                                                (
-                                                                    col,
-                                                                    index
-                                                                ) => (
-                                                                    <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
-                                                                        {col}
-                                                                    </th>
-                                                                )
-                                                            )}
-                                                        </tr>
-                                                    </thead>
+                                                <div className="overflow-x-auto grid grid-cols-2">
+                                                    <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
+                                                        <thead className="ltr:text-left rtl:text-right">
+                                                            <tr>
+                                                                <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                                                                    Name
+                                                                </th>
+                                                                <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                                                                    <Input
+                                                                        name="title"
+                                                                        type="text"
+                                                                        className="text-black"
+                                                                        value={
+                                                                            data.title
+                                                                        }
+                                                                        onChange={(
+                                                                            e
+                                                                        ) =>
+                                                                            setData(
+                                                                                "title",
+                                                                                e
+                                                                                    .target
+                                                                                    .value
+                                                                            )
+                                                                        }
+                                                                    />
+                                                                </td>
+                                                            </tr>
+                                                        </thead>
 
-                                                    <tbody className="divide-y divide-gray-200">
-                                                        <tr>
-                                                            <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                                                                <Input />
-                                                            </td>
-                                                            <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                                                                <Input />
-                                                            </td>
-                                                            <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                                                                <Input />
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <ScrollArea className="h-auto max-h-[300px] p-4">
-                                                {itemId === null && (
-                                                    <Table>
-                                                        <TableCaption>
-                                                            A list of fees
-                                                            added.
-                                                        </TableCaption>
-                                                        <TableHeader>
-                                                            <TableRow>
-                                                                {" "}
-                                                                <TableHead>
-                                                                    Program
-                                                                </TableHead>
-                                                            </TableRow>
-                                                        </TableHeader>
-                                                        <TableBody>
-                                                            {fees.map((fee) => {
-                                                                return (
-                                                                    <TableRow>
-                                                                        <TableCell className="font-medium odd:bg-gray-50">
-                                                                            {
+                                                        <tbody className="divide-y divide-gray-200">
+                                                            <tr>
+                                                                <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                                                                    Amount
+                                                                </th>
+                                                                <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                                                                    <Input
+                                                                        name="amount"
+                                                                        type="number"
+                                                                        className="text-black"
+                                                                        value={
+                                                                            data.amount
+                                                                        }
+                                                                        onChange={(
+                                                                            e
+                                                                        ) =>
+                                                                            setData(
+                                                                                "amount",
+                                                                                e
+                                                                                    .target
+                                                                                    .value
+                                                                            )
+                                                                        }
+                                                                    />
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                                                                    Descrition
+                                                                </th>
+                                                                <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                                                                    <Input
+                                                                        name="description"
+                                                                        type="text"
+                                                                        className="text-black"
+                                                                        value={
+                                                                            data.description
+                                                                        }
+                                                                        onChange={(
+                                                                            e
+                                                                        ) =>
+                                                                            setData(
+                                                                                "description",
+                                                                                e
+                                                                                    .target
+                                                                                    .value
+                                                                            )
+                                                                        }
+                                                                    />
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+
+                                                    <ScrollArea className="h-auto max-h-[400px] p-4">
+                                                        <div className="h-full">
+                                                            {itemId ===
+                                                                null && (
+                                                                <Table>
+                                                                    <TableCaption>
+                                                                        A list
+                                                                        of fees
+                                                                        added.
+                                                                    </TableCaption>
+
+                                                                    <TableBody>
+                                                                        {otherFees.map(
+                                                                            (
                                                                                 fee
+                                                                            ) => {
+                                                                                return (
+                                                                                    <TableRow className="odd:bg-gray-50 border-b-2 grid grid-cols-6">
+                                                                                        <TableCell className="font-medium ">
+                                                                                            Name
+                                                                                        </TableCell>
+                                                                                        <TableCell className="font-medium text-gray-700">
+                                                                                            {
+                                                                                                fee.title
+                                                                                            }
+                                                                                        </TableCell>
+
+                                                                                        <TableCell className="font-medium ">
+                                                                                            Amount
+                                                                                        </TableCell>
+                                                                                        <TableCell className="font-medium text-gray-700">
+                                                                                            {
+                                                                                                fee.amount
+                                                                                            }
+                                                                                        </TableCell>
+                                                                                        <TableCell className="font-medium ">
+                                                                                            Description
+                                                                                        </TableCell>
+                                                                                        <TableCell className="font-medium text-gray-700">
+                                                                                            {
+                                                                                                fee.description
+                                                                                            }
+                                                                                        </TableCell>
+                                                                                    </TableRow>
+                                                                                );
                                                                             }
-                                                                        </TableCell>
-                                                                    </TableRow>
-                                                                );
-                                                            })}
-                                                        </TableBody>
-                                                    </Table>
-                                                )}
-                                            </ScrollArea>
+                                                                        )}
+                                                                    </TableBody>
+                                                                </Table>
+                                                            )}
+                                                        </div>
+                                                    </ScrollArea>
+                                                </div>
+                                            </div>
                                         </TabsContent>
                                     </Tabs>
                                 </div>
@@ -1262,256 +1521,3 @@ export default function BillingSetup({ program = [], subject = [], fee = [] }) {
         </Layout>
     );
 }
-
-// <div className="mt-3 grid grid-cols-4 gap-x-8 gap-y-4">
-//                                         <div>
-//                                             <Label htmlFor="fee_type">
-//                                                 Type
-//                                             </Label>
-//                                             <RadioGroup
-//                                                 name="fee_type"
-//                                                 value={data.fee_type}
-//                                                 onValueChange={(value) =>
-//                                                     setData("fee_type", value)
-//                                                 }
-//                                             >
-//                                                 <div className="flex items-center space-x-2">
-//                                                     <RadioGroupItem
-//                                                         value="tuition fee"
-//                                                         id="tuition"
-//                                                     />
-//                                                     <Label htmlFor="tuition">
-//                                                         Tuition fee
-//                                                     </Label>
-//                                                 </div>
-//                                                 <div className="flex items-center space-x-2">
-//                                                     <RadioGroupItem
-//                                                         value="miscellaneous & others"
-//                                                         id="miscellaneous"
-//                                                     />
-//                                                     <Label htmlFor="miscellaneous">
-//                                                         Miscellaneous & Others
-//                                                     </Label>
-//                                                 </div>
-//                                             </RadioGroup>
-//                                         </div>
-//                                         {data.fee_type === "tuition fee" && (
-//                                             <div>
-//                                                 <Label htmlFor="tuition fee">
-//                                                     Tuition Fee
-//                                                 </Label>
-//                                                 <RadioGroup
-//                                                     defaultValue="per unit"
-//                                                     name="tuition_fee"
-//                                                     value={data.tuition_fee}
-//                                                     onValueChange={(value) =>
-//                                                         setData(
-//                                                             "tuition_fee",
-//                                                             value
-//                                                         )
-//                                                     }
-//                                                 >
-//                                                     <div className="flex items-center space-x-2">
-//                                                         <RadioGroupItem
-//                                                             value="per unit"
-//                                                             id="perunit"
-//                                                         />
-//                                                         <Label htmlFor="perunit">
-//                                                             Per Unit
-//                                                         </Label>
-//                                                     </div>
-//                                                     <div className="flex items-center space-x-2">
-//                                                         <RadioGroupItem
-//                                                             value="per course"
-//                                                             id="percourse"
-//                                                         />
-//                                                         <Label htmlFor="percourse">
-//                                                             Per Course
-//                                                         </Label>
-//                                                     </div>
-//                                                 </RadioGroup>
-//                                             </div>
-//                                         )}
-//                                         <div>
-//                                             <Label htmlFor="discount">
-//                                                 Discount
-//                                             </Label>
-//                                             <RadioGroup
-//                                                 defaultValue="no"
-//                                                 name="discount"
-//                                                 value={data.discount}
-//                                                 onValueChange={(value) =>
-//                                                     setData("discount", value)
-//                                                 }
-//                                             >
-//                                                 <div className="flex items-center space-x-2">
-//                                                     <RadioGroupItem
-//                                                         value="yes"
-//                                                         id="yes"
-//                                                     />
-//                                                     <Label htmlFor="yes">
-//                                                         Yes
-//                                                     </Label>
-//                                                 </div>
-//                                                 <div className="flex items-center space-x-2">
-//                                                     <RadioGroupItem
-//                                                         value="no"
-//                                                         id="no"
-//                                                     />
-//                                                     <Label htmlFor="no">
-//                                                         No
-//                                                     </Label>
-//                                                 </div>
-//                                             </RadioGroup>
-//                                         </div>
-//                                         <div>
-//                                             <Label>Total Amount</Label>
-//                                             <Input
-//                                                 name="total_amount"
-//                                                 type="number"
-//                                                 min={0}
-//                                                 value={
-//                                                     (data.total_amount =
-//                                                         Number(data.amount) -
-//                                                         Number(
-//                                                             data.discount_amount
-//                                                         ))
-//                                                 }
-//                                                 onChange={(e) =>
-//                                                     setData(
-//                                                         "total_amount",
-//                                                         e.target.value
-//                                                     )
-//                                                 }
-//                                             />
-//                                         </div>
-//                                         {/* Tuition Fee */}
-//                                         {data.fee_type === "tuition fee" &&
-//                                             (data.tuition_fee === "per unit" ? (
-//                                                 <div>
-//                                                     <Label># of Unit</Label>
-//                                                     <Input
-//                                                         name="no_unit"
-//                                                         type="number"
-//                                                         min={0}
-//                                                         value={data.no_unit}
-//                                                         onChange={(e) =>
-//                                                             setData(
-//                                                                 "no_unit",
-//                                                                 e.target.value
-//                                                             )
-//                                                         }
-//                                                     />
-//                                                 </div>
-//                                             ) : (
-//                                                 <div>
-//                                                     <Label>Program</Label>
-//                                                     <Input
-//                                                         name="program_name"
-//                                                         type="text"
-//                                                         onChange={(e) =>
-//                                                             setData(
-//                                                                 "program_name",
-//                                                                 e.target.value
-//                                                             )
-//                                                         }
-//                                                     />
-//                                                 </div>
-//                                             ))}
-//                                         {/* Miscellaneous Fee */}
-//                                         {data.fee_type ===
-//                                             "miscellaneous & others" && (
-//                                             <>
-//                                                 <div>
-//                                                     <Label htmlFor="misellaneous_name">
-//                                                         Name
-//                                                     </Label>
-//                                                     <Input
-//                                                         name="misellaneous_name"
-//                                                         type="text"
-//                                                         onChange={(e) =>
-//                                                             setData(
-//                                                                 "misellaneous_name",
-//                                                                 e.target.value
-//                                                             )
-//                                                         }
-//                                                     />
-//                                                 </div>
-//                                                 <div>
-//                                                     <Label htmlFor="misellaneous_description">
-//                                                         Description
-//                                                     </Label>
-//                                                     <Input
-//                                                         name="misellaneous_description"
-//                                                         type="text"
-//                                                         onChange={(e) =>
-//                                                             setData(
-//                                                                 "misellaneous_description",
-//                                                                 e.target.value
-//                                                             )
-//                                                         }
-//                                                     />
-//                                                 </div>
-//                                             </>
-//                                         )}
-
-//                                         {data.fee_type && (
-//                                             <div>
-//                                                 <Label>Amount</Label>
-//                                                 <Input
-//                                                     name="amount"
-//                                                     type="number"
-//                                                     min={0}
-//                                                     onChange={(e) =>
-//                                                         setData(
-//                                                             "amount",
-//                                                             e.target.value
-//                                                         )
-//                                                     }
-//                                                 />
-//                                             </div>
-//                                         )}
-//                                         {/* Discount */}
-//                                         {data.discount === "yes" ? (
-//                                             <>
-//                                                 <div>
-//                                                     <Label htmlFor="discount_name">
-//                                                         Discount Name
-//                                                     </Label>
-//                                                     <Input
-//                                                         name="discount_name"
-//                                                         type="text"
-//                                                         onChange={(e) =>
-//                                                             setData(
-//                                                                 "discount_name",
-//                                                                 e.target.value
-//                                                             )
-//                                                         }
-//                                                     />
-//                                                 </div>
-//                                                 <div>
-//                                                     <Label>
-//                                                         Discount Amount
-//                                                     </Label>
-//                                                     <Input
-//                                                         name="discount_amount"
-//                                                         type="number"
-//                                                         min={0}
-//                                                         value={
-//                                                             data.discount_amount
-//                                                         }
-//                                                         onChange={(e) =>
-//                                                             setData(
-//                                                                 "discount_amount",
-//                                                                 e.target.value
-//                                                             )
-//                                                         }
-//                                                     />
-//                                                 </div>
-//                                             </>
-//                                         ) : (
-//                                             <div className="hidden">
-//                                                 {(data.discount_amount = 0)}
-//                                             </div>
-//                                         )}
-//                                     </div>

@@ -54,6 +54,10 @@ export function AppSidebar({ ...props }) {
                 isActive: true,
                 items: [
                     {
+                        title: "Home",
+                        url: route("dashboard"),
+                    },
+                    {
                         title: "Enrollment",
                         url: "#",
                     },
@@ -81,10 +85,6 @@ export function AppSidebar({ ...props }) {
                         url: route("admin.documents"),
                     },
                     {
-                        title: "Tuition Fee",
-                        url: "#",
-                    },
-                    {
                         title: "Approval",
                         url: route("admin.enrollment"),
                     },
@@ -102,6 +102,10 @@ export function AppSidebar({ ...props }) {
                     {
                         title: "Subject",
                         url: route("admin.subject"),
+                    },
+                    {
+                        title: "Curriculum",
+                        url: route("admin.curriculum"),
                     },
                 ],
             },

@@ -34,6 +34,7 @@ import {
 } from "@/components/ui/select";
 import InputError from "@/components/InputError";
 import { useForm } from "@inertiajs/react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function Subjects({ program = [], subject = [] }) {
     const tableHeader = [
@@ -262,7 +263,7 @@ export default function Subjects({ program = [], subject = [] }) {
                     <Dialog open={add} onOpenChange={(open) => setAdd(open)}>
                         <DialogContent
                             className={`${
-                                itemId === null ? "max-w-5xl" : "max-w-xl"
+                                itemId === null ? "max-w-7xl" : "max-w-xl"
                             }`}
                         >
                             <DialogHeader>
@@ -551,6 +552,13 @@ export default function Subjects({ program = [], subject = [] }) {
                                                     <SelectItem value="None">
                                                         None
                                                     </SelectItem>
+                                                    {subject.map((sub) => (
+                                                        <SelectItem
+                                                            value={sub.name}
+                                                        >
+                                                            {sub.name}
+                                                        </SelectItem>
+                                                    ))}
                                                 </SelectContent>
                                             </Select>
                                             {errors.prerequisites &&
@@ -674,71 +682,80 @@ export default function Subjects({ program = [], subject = [] }) {
                                             </div>
                                         </div>
                                     </div>
-                                    {itemId === null && (
-                                        <Table>
-                                            <TableCaption>
-                                                A list of subject added.
-                                            </TableCaption>
-                                            <TableHeader>
-                                                <TableRow>
-                                                    {tableAddHeader.map(
-                                                        (row) => {
-                                                            return (
-                                                                <TableHead>
-                                                                    {row}
-                                                                </TableHead>
-                                                            );
-                                                        }
-                                                    )}
-                                                </TableRow>
-                                            </TableHeader>
-                                            <TableBody>
-                                                {sub.map((sub) => {
-                                                    return (
-                                                        <TableRow>
-                                                            <TableCell className="font-medium">
-                                                                {
-                                                                    sub.program_code
-                                                                }
-                                                            </TableCell>
-                                                            <TableCell className="font-medium">
-                                                                {sub.name}
-                                                            </TableCell>
-                                                            <TableCell className="font-medium">
-                                                                {
-                                                                    sub.prerequisites
-                                                                }
-                                                            </TableCell>
-                                                            <TableCell className="font-medium">
-                                                                {sub.period}
-                                                            </TableCell>
-                                                            <TableCell className="font-medium">
-                                                                {sub.department}
-                                                            </TableCell>
-                                                            <TableCell className="font-medium">
-                                                                {sub.year_level}
-                                                            </TableCell>
-                                                            <TableCell className="font-medium">
-                                                                {sub.category}
-                                                            </TableCell>
-                                                            <TableCell className="font-medium">
-                                                                {sub.lec}
-                                                            </TableCell>
-                                                            <TableCell className="font-medium">
-                                                                {sub.lab}
-                                                            </TableCell>
-                                                            <TableCell className="font-medium">
-                                                                {sub.unit}
-                                                            </TableCell>
-                                                            <TableCell className="font-medium">
-                                                                {sub.total}
-                                                            </TableCell>
-                                                        </TableRow>
-                                                    );
-                                                })}
-                                            </TableBody>
-                                        </Table>
-                                    )}
+                                    <ScrollArea className="h-auto max-h-[400px] p-4">
+                                        {itemId === null && (
+                                            <Table>
+                                                <TableCaption>
+                                                    A list of subject added.
+                                                </TableCaption>
+                                                <TableHeader>
+                                                    <TableRow>
+                                                        {tableAddHeader.map(
+                                                            (row) => {
+                                                                return (
+                                                                    <TableHead>
+                                                                        {row}
+                                                                    </TableHead>
+                                                                );
+                                                            }
+                                                        )}
+                                                    </TableRow>
+                                                </TableHeader>
+                                                <TableBody>
+                                                    {sub.map((sub) => {
+                                                        return (
+                                                            <TableRow className="odd:bg-cyan-50">
+                                                                <TableCell className="font-medium">
+                                                                    {
+                                                                        sub.program_code
+                                                                    }
+                                                                </TableCell>
+                                                                <TableCell className="font-medium">
+                                                                    {sub.name}
+                                                                </TableCell>
+                                                                <TableCell className="font-medium">
+                                                                    {
+                                                                        sub.prerequisites
+                                                                    }
+                                                                </TableCell>
+                                                                <TableCell className="font-medium">
+                                                                    {sub.period}
+                                                                </TableCell>
+                                                                <TableCell className="font-medium">
+                                                                    {
+                                                                        sub.department
+                                                                    }
+                                                                </TableCell>
+                                                                <TableCell className="font-medium">
+                                                                    {
+                                                                        sub.year_level
+                                                                    }
+                                                                </TableCell>
+                                                                <TableCell className="font-medium">
+                                                                    {
+                                                                        sub.category
+                                                                    }
+                                                                </TableCell>
+                                                                <TableCell className="font-medium">
+                                                                    {sub.lec}
+                                                                </TableCell>
+                                                                <TableCell className="font-medium">
+                                                                    {sub.lab}
+                                                                </TableCell>
+                                                                <TableCell className="font-medium">
+                                                                    {sub.unit}
+                                                                </TableCell>
+                                                                <TableCell className="font-medium">
+                                                                    {sub.total}
+                                                                </TableCell>
+                                                            </TableRow>
+                                                        );
+                                                    })}
+                                                </TableBody>
+                                            </Table>
+                                        )}
+                                    </ScrollArea>
+
                                     <div
                                         className={`flex gap-4 ${
                                             itemId === null

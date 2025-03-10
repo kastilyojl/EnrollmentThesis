@@ -22,8 +22,11 @@ class SubjectController extends Controller
         DB::beginTransaction();
         try {
             foreach ($request->sub as $subject) {
+                $programCode = $subject['program_code'];
+                $program = Programs::where('code', $programCode)->first();
+                $program_code = $program->code;
                 Subjects::create([
-                    'program_code' => $subject['program_code'],
+                    'program_code' => $program_code,
                     'code' => $subject['code'],
                     'name' => $subject['name'],
                     'prerequisites'  => $subject['prerequisites'],
@@ -35,9 +38,9 @@ class SubjectController extends Controller
                     'lab'  => $subject['lab'],
                     'unit'  => $subject['unit'],
                     'total'  => $subject['total'],
-                        ]);
+                ]);
+                DB::commit();
             }
-            DB::commit();
            
         } catch (\Exception $e) {
             DB::rollBack();
