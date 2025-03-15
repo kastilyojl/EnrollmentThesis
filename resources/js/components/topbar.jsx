@@ -55,8 +55,8 @@ export default function Topbar() {
             href: route("public.payment.submit"),
         },
         {
-            title: "Guidelines",
-            href: "/docs/primitives/progress",
+            title: "Admission Guide",
+            href: route("public.admission.guide"),
         },
     ];
 

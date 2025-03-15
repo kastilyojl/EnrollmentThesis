@@ -127,7 +127,6 @@ export default function Program({ program = [] }) {
     };
 
     const handleUpdateSubmit = () => {
-        // console.log("editing program:", itemId.id);
         post(route("admin.program.update", { id: itemId }), {
             onSuccess: () => {
                 toast("Program has been updated", {

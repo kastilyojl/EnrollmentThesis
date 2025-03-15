@@ -25,8 +25,9 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import ApplicationForm from "../Public/Section/Application";
+import { Label } from "@/components/ui/label";
 
-export default function Application({ student = [] }) {
+export default function Application({ student = [], college_fee = [] }) {
     const tableHeader = [
         "Name",
         "Year Level",
@@ -230,7 +231,7 @@ export default function Application({ student = [] }) {
             </div>
             <div className="flex justify-between mb-3">
                 <Input type="text" placeholder="Search" className="w-[300px]" />
-                <Button onClick={handleCreate}>Create</Button>
+                {/* <Button onClick={handleCreate}>Create</Button> */}
             </div>
             <div className="border rounded-sm px-4">
                 <TableData
@@ -241,7 +242,7 @@ export default function Application({ student = [] }) {
                 />
                 {add && (
                     <Dialog open={add} onOpenChange={(open) => setAdd(open)}>
-                        <DialogContent className="max-w-4xl">
+                        <DialogContent className="max-w-4xl h-[600px]">
                             <DialogHeader>
                                 <Tabs defaultValue="details">
                                     <div className="flex justify-between">
@@ -584,8 +585,203 @@ export default function Application({ student = [] }) {
                                             </ScrollArea>
                                         </DialogDescription>
                                     </TabsContent>
+                                    <TabsContent value="documents">
+                                        Display Student Documents Here
+                                    </TabsContent>
+                                    <TabsContent value="payment">
+                                        Display Student Payment Here
+                                    </TabsContent>
                                     <TabsContent value="school_fee">
-                                        Change your password here.
+                                        <div>
+                                            <div className="overflow-x-auto ">
+                                                <div className="text-white bg-primary px-4 font-bold py-1">
+                                                    {data.program}
+                                                </div>
+
+                                                <table className="min-w-full divide-y-2 divide-primary bg-white text-sm">
+                                                    <tbody className="divide-y divide-gray-200">
+                                                        {college_fee
+                                                            .filter(
+                                                                (fee) =>
+                                                                    fee.program_code ===
+                                                                    data.program
+                                                            )
+                                                            .map((fee) => (
+                                                                <div>
+                                                                    <tr>
+                                                                        <th className="whitespace-nowrap w-1/6 text-wrap border border-primary px-4  font-medium text-gray-900">
+                                                                            Down
+                                                                            Payment
+                                                                        </th>
+                                                                        <th className="whitespace-nowrap w-1/2 text-wrap border border-primary px-4  font-medium text-gray-900">
+                                                                            {
+                                                                                fee.down_payment
+                                                                            }
+                                                                        </th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th className="whitespace-nowrap w-1/6 text-wrap border border-primary px-4  font-medium text-gray-900">
+                                                                            Prelim
+                                                                        </th>
+                                                                        <th className="whitespace-nowrap w-1/2 text-wrap border border-primary px-4  font-medium text-gray-900">
+                                                                            {
+                                                                                fee.prelim
+                                                                            }
+                                                                        </th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th className="whitespace-nowrap w-1/6 text-wrap border border-primary px-4  font-medium text-gray-900">
+                                                                            Midterm
+                                                                        </th>
+                                                                        <th className="whitespace-nowrap w-1/2 text-wrap border border-primary px-4  font-medium text-gray-900">
+                                                                            {
+                                                                                fee.midterm
+                                                                            }
+                                                                        </th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th className="whitespace-nowrap w-1/6 text-wrap border border-primary px-4  font-medium text-gray-900">
+                                                                            Finals
+                                                                        </th>
+                                                                        <th className="whitespace-nowrap w-1/2 text-wrap border border-primary px-4  font-medium text-gray-900">
+                                                                            {
+                                                                                fee.finals
+                                                                            }
+                                                                        </th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th className="whitespace-nowrap w-1/6 text-wrap border border-primary px-4  font-medium text-gray-900">
+                                                                            Discount
+                                                                            Name
+                                                                        </th>
+                                                                        <th className="whitespace-nowrap w-1/2 text-wrap border border-primary px-4  font-medium text-gray-900">
+                                                                            {
+                                                                                fee.discount_title
+                                                                            }
+                                                                        </th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th className="whitespace-nowrap w-1/6 text-wrap border border-primary px-4  font-medium text-gray-900">
+                                                                            Discount
+                                                                            Amount
+                                                                        </th>
+                                                                        <th className="whitespace-nowrap w-1/2 text-wrap border border-primary px-4  font-medium text-gray-900">
+                                                                            {
+                                                                                fee.discount_amount
+                                                                            }
+                                                                        </th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th className="whitespace-nowrap w-1/6 text-wrap border border-primary px-4  font-medium text-gray-900">
+                                                                            Total
+                                                                            Amount
+                                                                        </th>
+                                                                        <th className="whitespace-nowrap w-1/2 text-wrap border border-primary px-4  font-medium text-gray-900">
+                                                                            {
+                                                                                fee.total_amount
+                                                                            }
+                                                                        </th>
+                                                                    </tr>
+                                                                </div>
+                                                            ))}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div className="overflow-x-auto ">
+                                                <div className="text-white bg-primary px-4 font-bold py-1">
+                                                    Other Fees
+                                                </div>
+
+                                                <table className="min-w-full divide-y-2 divide-primary bg-white text-sm">
+                                                    <tbody className="divide-y divide-gray-200">
+                                                        {college_fee
+                                                            .filter(
+                                                                (fee) =>
+                                                                    fee.program_code ===
+                                                                    data.program
+                                                            )
+                                                            .map((fee) => (
+                                                                <div>
+                                                                    <tr>
+                                                                        <th className="whitespace-nowrap w-1/6 text-wrap border border-primary px-4  font-medium text-gray-900">
+                                                                            Down
+                                                                            Payment
+                                                                        </th>
+                                                                        <th className="whitespace-nowrap w-1/2 text-wrap border border-primary px-4  font-medium text-gray-900">
+                                                                            {
+                                                                                fee.down_payment
+                                                                            }
+                                                                        </th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th className="whitespace-nowrap w-1/6 text-wrap border border-primary px-4  font-medium text-gray-900">
+                                                                            Prelim
+                                                                        </th>
+                                                                        <th className="whitespace-nowrap w-1/2 text-wrap border border-primary px-4  font-medium text-gray-900">
+                                                                            {
+                                                                                fee.prelim
+                                                                            }
+                                                                        </th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th className="whitespace-nowrap w-1/6 text-wrap border border-primary px-4  font-medium text-gray-900">
+                                                                            Midterm
+                                                                        </th>
+                                                                        <th className="whitespace-nowrap w-1/2 text-wrap border border-primary px-4  font-medium text-gray-900">
+                                                                            {
+                                                                                fee.midterm
+                                                                            }
+                                                                        </th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th className="whitespace-nowrap w-1/6 text-wrap border border-primary px-4  font-medium text-gray-900">
+                                                                            Finals
+                                                                        </th>
+                                                                        <th className="whitespace-nowrap w-1/2 text-wrap border border-primary px-4  font-medium text-gray-900">
+                                                                            {
+                                                                                fee.finals
+                                                                            }
+                                                                        </th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th className="whitespace-nowrap w-1/6 text-wrap border border-primary px-4  font-medium text-gray-900">
+                                                                            Discount
+                                                                            Name
+                                                                        </th>
+                                                                        <th className="whitespace-nowrap w-1/2 text-wrap border border-primary px-4  font-medium text-gray-900">
+                                                                            {
+                                                                                fee.discount_title
+                                                                            }
+                                                                        </th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th className="whitespace-nowrap w-1/6 text-wrap border border-primary px-4  font-medium text-gray-900">
+                                                                            Discount
+                                                                            Amount
+                                                                        </th>
+                                                                        <th className="whitespace-nowrap w-1/2 text-wrap border border-primary px-4  font-medium text-gray-900">
+                                                                            {
+                                                                                fee.discount_amount
+                                                                            }
+                                                                        </th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th className="whitespace-nowrap w-1/6 text-wrap border border-primary px-4  font-medium text-gray-900">
+                                                                            Total
+                                                                            Amount
+                                                                        </th>
+                                                                        <th className="whitespace-nowrap w-1/2 text-wrap border border-primary px-4  font-medium text-gray-900">
+                                                                            {
+                                                                                fee.total_amount
+                                                                            }
+                                                                        </th>
+                                                                    </tr>
+                                                                </div>
+                                                            ))}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
                                     </TabsContent>
                                 </Tabs>
                             </DialogHeader>

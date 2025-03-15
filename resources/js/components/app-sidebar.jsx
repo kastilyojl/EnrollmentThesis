@@ -11,6 +11,7 @@ import {
     Map,
     Notebook,
     PieChart,
+    School,
     Settings2,
     SquareTerminal,
 } from "lucide-react";
@@ -88,6 +89,14 @@ export function AppSidebar({ ...props }) {
                         title: "Approval",
                         url: route("admin.enrollment"),
                     },
+                    {
+                        title: "Course Selection",
+                        url: "",
+                    },
+                    {
+                        title: "Evaluation",
+                        url: "",
+                    },
                 ],
             },
             {
@@ -107,8 +116,13 @@ export function AppSidebar({ ...props }) {
                         title: "Curriculum",
                         url: route("admin.curriculum"),
                     },
+                    {
+                        title: "Section",
+                        url: route("admin.section"),
+                    },
                 ],
             },
+
             {
                 title: "Billing",
                 url: "#",
@@ -134,11 +148,7 @@ export function AppSidebar({ ...props }) {
                         url: "#",
                     },
                     {
-                        title: "ID",
-                        url: "#",
-                    },
-                    {
-                        title: "Landing Page",
+                        title: "User Management",
                         url: "#",
                     },
                 ],

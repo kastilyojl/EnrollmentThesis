@@ -245,80 +245,80 @@ export default function Application({ student = [] }) {
                                             <div className="flow-root rounded-lg border border-gray-100 py-3 shadow-xs">
                                                 <dl className="-my-3 grid md:grid-cols-2 gap-x-4 divide-y divide-gray-100 text-sm">
                                                     <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                        <dt className="font-medium text-gray-900">
+                                                        <dt className=" text-gray-700">
                                                             Email
                                                         </dt>
-                                                        <dd className="text-gray-700 sm:col-span-2">
+                                                        <dd className="text-gray-900 font-medium sm:col-span-2">
                                                             {data.email}
                                                         </dd>
                                                     </div>
 
                                                     <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                        <dt className="font-medium text-gray-900">
+                                                        <dt className=" text-gray-700">
                                                             Branch
                                                         </dt>
-                                                        <dd className="text-gray-700 sm:col-span-2">
+                                                        <dd className="text-gray-900 font-medium sm:col-span-2">
                                                             {data.branch}
                                                         </dd>
                                                     </div>
 
                                                     <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                        <dt className="font-medium text-gray-900">
+                                                        <dt className=" text-gray-700">
                                                             Department
                                                         </dt>
-                                                        <dd className="text-gray-700 sm:col-span-2">
+                                                        <dd className="text-gray-900 font-medium sm:col-span-2">
                                                             {data.department}
                                                         </dd>
                                                     </div>
 
                                                     <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                        <dt className="font-medium text-gray-900">
+                                                        <dt className=" text-gray-700">
                                                             Program
                                                         </dt>
-                                                        <dd className="text-gray-700 sm:col-span-2">
+                                                        <dd className="text-gray-900 font-medium sm:col-span-2">
                                                             {data.program}
                                                         </dd>
                                                     </div>
 
                                                     <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                        <dt className="font-medium text-gray-900">
+                                                        <dt className=" text-gray-700">
                                                             Year Level
                                                         </dt>
-                                                        <dd className="text-gray-700 sm:col-span-2">
+                                                        <dd className="text-gray-900 font-medium sm:col-span-2">
                                                             {data.year_level}
                                                         </dd>
                                                     </div>
 
                                                     <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                        <dt className="font-medium text-gray-900">
+                                                        <dt className=" text-gray-700">
                                                             Semester
                                                         </dt>
-                                                        <dd className="text-gray-700 sm:col-span-2">
+                                                        <dd className="text-gray-900 font-medium sm:col-span-2">
                                                             {data.semester}
                                                         </dd>
                                                     </div>
                                                     <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                        <dt className="font-medium text-gray-900">
+                                                        <dt className=" text-gray-700">
                                                             School Year
                                                         </dt>
-                                                        <dd className="text-gray-700 sm:col-span-2">
+                                                        <dd className="text-gray-900 font-medium sm:col-span-2">
                                                             {data.school_year}
                                                         </dd>
                                                     </div>
 
                                                     <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                        <dt className="font-medium text-gray-900">
+                                                        <dt className=" text-gray-700">
                                                             Classified As
                                                         </dt>
-                                                        <dd className="text-gray-700 sm:col-span-2">
+                                                        <dd className="text-gray-900 font-medium sm:col-span-2">
                                                             {data.classified_as}
                                                         </dd>
                                                     </div>
                                                     <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                        <dt className="font-medium text-gray-900">
+                                                        <dt className=" text-gray-700">
                                                             Last School Attended
                                                         </dt>
-                                                        <dd className="text-gray-700 sm:col-span-2">
+                                                        <dd className="text-gray-900 font-medium sm:col-span-2">
                                                             {
                                                                 data.last_school_attended
                                                             }
@@ -326,10 +326,10 @@ export default function Application({ student = [] }) {
                                                     </div>
 
                                                     <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                        <dt className="font-medium text-gray-900">
+                                                        <dt className=" text-gray-700">
                                                             Last School Address
                                                         </dt>
-                                                        <dd className="text-gray-700 sm:col-span-2">
+                                                        <dd className="text-gray-900 font-medium sm:col-span-2">
                                                             {
                                                                 data.last_school_address
                                                             }
@@ -345,63 +345,63 @@ export default function Application({ student = [] }) {
                                             <div className="flow-root rounded-lg border border-gray-100 py-3 shadow-xs">
                                                 <dl className="-my-3 grid md:grid-cols-2 gap-x-4 divide-y divide-gray-100 text-sm">
                                                     <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                        <dt className="font-medium text-gray-900">
+                                                        <dt className=" text-gray-700">
                                                             Name
                                                         </dt>
-                                                        <dd className="text-gray-700 sm:col-span-2">
+                                                        <dd className="text-gray-900 font-medium sm:col-span-2">
                                                             {data.name}
                                                         </dd>
                                                     </div>
 
                                                     <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                        <dt className="font-medium text-gray-900">
+                                                        <dt className=" text-gray-700">
                                                             Address
                                                         </dt>
-                                                        <dd className="text-gray-700 sm:col-span-2">
+                                                        <dd className="text-gray-900 font-medium sm:col-span-2">
                                                             {data.address}
                                                         </dd>
                                                     </div>
 
                                                     <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                        <dt className="font-medium text-gray-900">
+                                                        <dt className=" text-gray-700">
                                                             Date of Birth
                                                         </dt>
-                                                        <dd className="text-gray-700 sm:col-span-2">
+                                                        <dd className="text-gray-900 font-medium sm:col-span-2">
                                                             {data.birth_date}
                                                         </dd>
                                                     </div>
 
                                                     <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                        <dt className="font-medium text-gray-900">
+                                                        <dt className=" text-gray-700">
                                                             Place of Birth
                                                         </dt>
-                                                        <dd className="text-gray-700 sm:col-span-2">
+                                                        <dd className="text-gray-900 font-medium sm:col-span-2">
                                                             {data.birth_place}
                                                         </dd>
                                                     </div>
 
                                                     <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                        <dt className="font-medium text-gray-900">
+                                                        <dt className=" text-gray-700">
                                                             Civil Status
                                                         </dt>
-                                                        <dd className="text-gray-700 sm:col-span-2">
+                                                        <dd className="text-gray-900 font-medium sm:col-span-2">
                                                             {data.civil_status}
                                                         </dd>
                                                     </div>
                                                     <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                        <dt className="font-medium text-gray-900">
+                                                        <dt className=" text-gray-700">
                                                             Gender
                                                         </dt>
-                                                        <dd className="text-gray-700 sm:col-span-2">
+                                                        <dd className="text-gray-900 font-medium sm:col-span-2">
                                                             {data.gender}
                                                         </dd>
                                                     </div>
 
                                                     <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                        <dt className="font-medium text-gray-900">
+                                                        <dt className=" text-gray-700">
                                                             Religion
                                                         </dt>
-                                                        <dd className="text-gray-700 sm:col-span-2">
+                                                        <dd className="text-gray-900 font-medium sm:col-span-2">
                                                             {data.religion}
                                                         </dd>
                                                     </div>
@@ -415,19 +415,19 @@ export default function Application({ student = [] }) {
                                             <div className="flow-root rounded-lg border border-gray-100 py-3 shadow-xs">
                                                 <dl className="-my-3 grid md:grid-cols-2 gap-x-4 divide-y divide-gray-100 text-sm">
                                                     <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                        <dt className="font-medium text-gray-900">
+                                                        <dt className=" text-gray-700">
                                                             Father's Name
                                                         </dt>
-                                                        <dd className="text-gray-700 sm:col-span-2">
+                                                        <dd className="text-gray-900 font-medium sm:col-span-2">
                                                             {data.father_name}
                                                         </dd>
                                                     </div>
 
                                                     <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                        <dt className="font-medium text-gray-900">
+                                                        <dt className=" text-gray-700">
                                                             Occupation
                                                         </dt>
-                                                        <dd className="text-gray-700 sm:col-span-2">
+                                                        <dd className="text-gray-900 font-medium sm:col-span-2">
                                                             {
                                                                 data.father_occupation
                                                             }
@@ -435,28 +435,28 @@ export default function Application({ student = [] }) {
                                                     </div>
 
                                                     <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                        <dt className="font-medium text-gray-900">
+                                                        <dt className=" text-gray-700">
                                                             Phone #
                                                         </dt>
-                                                        <dd className="text-gray-700 sm:col-span-2">
+                                                        <dd className="text-gray-900 font-medium sm:col-span-2">
                                                             {data.father_phone}
                                                         </dd>
                                                     </div>
                                                     <div></div>
                                                     <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                        <dt className="font-medium text-gray-900">
+                                                        <dt className=" text-gray-700">
                                                             Mother's Name
                                                         </dt>
-                                                        <dd className="text-gray-700 sm:col-span-2">
+                                                        <dd className="text-gray-900 font-medium sm:col-span-2">
                                                             {data.mother_name}
                                                         </dd>
                                                     </div>
 
                                                     <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                        <dt className="font-medium text-gray-900">
+                                                        <dt className=" text-gray-700">
                                                             Occupation
                                                         </dt>
-                                                        <dd className="text-gray-700 sm:col-span-2">
+                                                        <dd className="text-gray-900 font-medium sm:col-span-2">
                                                             {
                                                                 data.mother_occupation
                                                             }
@@ -464,38 +464,38 @@ export default function Application({ student = [] }) {
                                                     </div>
 
                                                     <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                        <dt className="font-medium text-gray-900">
+                                                        <dt className=" text-gray-700">
                                                             Phone #
                                                         </dt>
-                                                        <dd className="text-gray-700 sm:col-span-2">
+                                                        <dd className="text-gray-900 font-medium sm:col-span-2">
                                                             {data.mother_phone}
                                                         </dd>
                                                     </div>
                                                     <br />
                                                     <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                        <dt className="font-medium text-gray-900">
+                                                        <dt className=" text-gray-700">
                                                             Guardian's Name
                                                         </dt>
-                                                        <dd className="text-gray-700 sm:col-span-2">
+                                                        <dd className="text-gray-900 font-medium sm:col-span-2">
                                                             {data.guardian_name}
                                                         </dd>
                                                     </div>
 
                                                     <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                        <dt className="font-medium text-gray-900">
+                                                        <dt className=" text-gray-700">
                                                             Relationship
                                                         </dt>
-                                                        <dd className="text-gray-700 sm:col-span-2">
+                                                        <dd className="text-gray-900 font-medium sm:col-span-2">
                                                             {
                                                                 data.guardian_relationship
                                                             }
                                                         </dd>
                                                     </div>
                                                     <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                        <dt className="font-medium text-gray-900">
+                                                        <dt className=" text-gray-700">
                                                             Phone #
                                                         </dt>
-                                                        <dd className="text-gray-700 sm:col-span-2">
+                                                        <dd className="text-gray-900 font-medium sm:col-span-2">
                                                             {
                                                                 data.guardian_phone
                                                             }

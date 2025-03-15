@@ -7,8 +7,10 @@ use App\Http\Controllers\Admin\EmailController;
 use App\Http\Controllers\Admin\EnrollmentController;
 use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\ProgramController;
+use App\Http\Controllers\Admin\SectionController;
 use App\Http\Controllers\Admin\SubjectController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PublicController;
 use App\Http\Controllers\Student\ApplicationController;
 use App\Models\Programs;
 use Illuminate\Foundation\Application;
@@ -49,10 +51,12 @@ Route::group([], function () {
     })->name('200');
 });
 
+// public section / landing page
 Route::group([], function () {
     Route::get('/application', [ApplicationController::class, 'index'])->name('landing-page.section.application');
     Route::post('/application', [ApplicationController::class, 'create'])->name('public.application.submit');
     Route::get('/application/payment', [PaymentController::class, 'index'])->name('public.payment.submit');
+    Route::get('/admission-guide', [PublicController::class, 'admissionGuide'])->name('public.admission.guide');
     Route::post('/private-file', [PaymentController::class, 'store'])->name('student.payment');
     Route::post('/private-file/{id}/update', [PaymentController::class, 'edit'])->name("admin.payment.update");
     Route::get('/private-files/{filename}', [PaymentController::class, 'showImage'])->name("admin.payment.showImage");
@@ -89,6 +93,11 @@ Route::get('/subject', [SubjectController::class, 'index'])->name("admin.subject
 Route::post('/subject/store', [SubjectController::class, 'store'])->name("admin.subject.store");
 Route::post('/subject/{id}/update', [SubjectController::class, 'edit'])->name("admin.subject.update");
 Route::delete('/subject/{id}/delete', [SubjectController::class, 'destroy'])->name("admin.subject.destroy");
+
+Route::get('/section', [SectionController::class, 'index'])->name("admin.section");
+Route::post('/section/store', [SectionController::class, 'store'])->name("admin.section.store");
+Route::post('/section/schedule/store', [SectionController::class, 'storeSchedule'])->name("admin.schedule.store");
+Route::post('/section/{id}/update', [SectionController::class, 'editSchedule'])->name("admin.schedule.update");
 
 Route::prefix('billing')->group(function () {
     Route::get('/', [BillingController::class, 'index'])->name('admin.billing');
