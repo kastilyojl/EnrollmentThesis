@@ -21,6 +21,13 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 
 import { Textarea } from "@/components/ui/textarea";
 
@@ -45,7 +52,8 @@ export default function OtherBilling({ other_fee = [] }) {
         errors,
         delete: onDelete,
     } = useForm({
-        title: "",
+        payment_type: "",
+        name: "",
         amount: "",
         description: "",
     });
@@ -55,7 +63,8 @@ export default function OtherBilling({ other_fee = [] }) {
         setEdit(true);
         setData({
             id: other_fee.id,
-            title: other_fee.title,
+            payment_type: other_fee.payment_type,
+            name: other_fee.name,
             amount: other_fee.amount,
             description: other_fee.description,
         });
@@ -69,7 +78,8 @@ export default function OtherBilling({ other_fee = [] }) {
                 });
                 setEdit(false);
                 setData({
-                    title: "",
+                    payment_type: "",
+                    name: "",
                     amount: "",
                     description: "",
                 });
@@ -104,7 +114,7 @@ export default function OtherBilling({ other_fee = [] }) {
                     >
                         <CardHeader className="w-full">
                             <CardTitle className="text-md text-primary flex justify-between">
-                                {other_fee.title}
+                                {other_fee.name}
                                 <div>
                                     <DropdownMenu>
                                         <DropdownMenuTrigger>
@@ -138,6 +148,14 @@ export default function OtherBilling({ other_fee = [] }) {
                         </CardHeader>
                         <Separator />
                         <CardContent className="space-y-2">
+                            {other_fee.payment_type && (
+                                <p className="grid grid-cols-2">
+                                    type:
+                                    <span className="text-black text-end">
+                                        {other_fee.payment_type}
+                                    </span>
+                                </p>
+                            )}
                             {other_fee.amount && (
                                 <p className="grid grid-cols-2">
                                     amount:{" "}
@@ -194,14 +212,37 @@ export default function OtherBilling({ other_fee = [] }) {
                             <DialogDescription>
                                 <div className="mt-3 grid grid-cols-2 gap-x-8 gap-y-4">
                                     <div>
+                                        <Label htmlFor="title">Type</Label>
+                                        <Select
+                                            className="h-auto"
+                                            name="payment_type"
+                                            value={data.payment_type}
+                                            onValueChange={(value) =>
+                                                setData("payment_type", value)
+                                            }
+                                        >
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Select" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="fee">
+                                                    Fee
+                                                </SelectItem>
+                                                <SelectItem value="discount">
+                                                    Discount
+                                                </SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    <div>
                                         <Label htmlFor="title">Name</Label>
                                         <Input
-                                            name="title"
+                                            name="name"
                                             type="text"
                                             className="text-black"
-                                            value={data.title}
+                                            value={data.name}
                                             onChange={(e) =>
-                                                setData("title", e.target.value)
+                                                setData("name", e.target.value)
                                             }
                                         />
                                     </div>

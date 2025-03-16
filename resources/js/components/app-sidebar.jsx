@@ -60,15 +60,15 @@ export function AppSidebar({ ...props }) {
                     },
                     {
                         title: "Enrollment",
-                        url: "#",
-                    },
-                    {
-                        title: "Curriculum Management",
-                        url: "#",
+                        url: route("admin.dashboard.enrollment"),
                     },
                     {
                         title: "Billing",
                         url: "#",
+                    },
+                    {
+                        title: "Audit Trail",
+                        url: route("admin.dashboard.audit-trail"),
                     },
                 ],
             },
@@ -85,10 +85,7 @@ export function AppSidebar({ ...props }) {
                         title: "Documents",
                         url: route("admin.documents"),
                     },
-                    {
-                        title: "Approval",
-                        url: route("admin.enrollment"),
-                    },
+
                     {
                         title: "Course Selection",
                         url: "",
@@ -96,6 +93,10 @@ export function AppSidebar({ ...props }) {
                     {
                         title: "Evaluation",
                         url: "",
+                    },
+                    {
+                        title: "Enrollment Processing",
+                        url: route("admin.enrollment"),
                     },
                 ],
             },

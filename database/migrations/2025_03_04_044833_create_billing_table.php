@@ -48,14 +48,14 @@ return new class extends Migration
 
         Schema::create('shs_billing', function (Blueprint $table) {
             $table->id();
-            $table->string('program_code')->nullable();
-            $table->text('year_level')->nullable();
-            $table->text('payment_type')->nullable();
-            $table->double('cash')->nullable();
-            $table->double('installment')->nullable();
-            $table->double('voucher_amount')->nullable();
-            $table->double('onetime_fee')->nullable();
-            $table->double('down_payment_shs')->nullable();
+            $table->string('program_code');
+            $table->text('year_level');
+            $table->text('payment_type');
+            $table->double('down_payment')->nullable();
+            $table->double('prelim')->nullable();
+            $table->double('midterm')->nullable();
+            $table->double('finals')->nullable();
+            $table->double('total_amount')->nullable();
             $table->foreign('program_code')->references('code')->on('programs')->onDelete('cascade')->onUpdate('cascade');
             $table->softDeletes();
             $table->timestamps();
@@ -63,9 +63,9 @@ return new class extends Migration
 
         Schema::create('college_billing', function (Blueprint $table) {
             $table->id();
-            $table->string('program_code')->nullable();
-            $table->text('discount_title')->nullable();
-            $table->double('discount_amount')->nullable();
+            $table->string('program_code');
+            $table->string('year_level');
+            $table->string('payment_type');
             $table->double('down_payment')->nullable();
             $table->double('prelim')->nullable();
             $table->double('midterm')->nullable();
@@ -80,7 +80,8 @@ return new class extends Migration
 
         Schema::create('other_billing', function (Blueprint $table) {
             $table->id();
-            $table->string('title')->nullable();
+            $table->string('payment_type')->nullable();
+            $table->string('name')->nullable();
             $table->double('amount')->nullable();
             $table->text('description')->nullable();
             $table->softDeletes();

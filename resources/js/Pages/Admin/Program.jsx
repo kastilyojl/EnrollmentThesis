@@ -352,18 +352,6 @@ export default function Program({ program = [] }) {
                                                     <SelectItem value="4 Years">
                                                         4 Years
                                                     </SelectItem>
-                                                    <SelectItem value="5 Years">
-                                                        5 Years
-                                                    </SelectItem>
-                                                    <SelectItem value="6 Years">
-                                                        6 Years
-                                                    </SelectItem>
-                                                    <SelectItem value="7 Years">
-                                                        7 Yeas
-                                                    </SelectItem>
-                                                    <SelectItem value="8 Years">
-                                                        8 Years
-                                                    </SelectItem>
                                                 </SelectContent>
                                             </Select>
                                             {errors.duration &&

@@ -27,9 +27,16 @@ export default function TableData({
     return (
         <Table>
             <TableHeader>
-                <TableRow>
+                <TableRow className="table-fixed">
                     {tablerow.map((row, index) => {
-                        return <TableHead key={index}>{row}</TableHead>;
+                        return (
+                            <TableHead
+                                key={index}
+                                className="w-1/12 text-center"
+                            >
+                                {row}
+                            </TableHead>
+                        );
                     })}
                 </TableRow>
             </TableHeader>
@@ -37,11 +44,11 @@ export default function TableData({
                 {tabledata.map((program) => {
                     const { id, ...programWithoutId } = program;
                     return (
-                        <TableRow key={id}>
+                        <TableRow key={id} className="table-fixed">
                             {Object.values(programWithoutId).map((col, idx) => {
                                 return (
                                     <TableCell
-                                        className="font-medium"
+                                        className="font-medium w-1/12 text-center"
                                         key={idx}
                                     >
                                         {col === "approved" ? (
@@ -54,7 +61,7 @@ export default function TableData({
                                     </TableCell>
                                 );
                             })}
-                            <TableCell>
+                            <TableCell className="font-medium w-1/12 text-center">
                                 <DropdownMenu>
                                     <DropdownMenuTrigger>
                                         <MoreHorizontal />

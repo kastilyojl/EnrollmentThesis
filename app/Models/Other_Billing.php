@@ -11,14 +11,10 @@ class Other_Billing extends Model
     use SoftDeletes;
     protected $table  = 'other_billing';
     protected $fillable = [
-        'title',
+        'payment_type',
+        'name',
         'amount',
-       'description',
+        'description',
        
     ];
-
-    public function programs()
-    {
-        return $this->belongsTo(User::class, 'program_code', 'code');
-    }
 }

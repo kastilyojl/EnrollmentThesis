@@ -1,13 +1,6 @@
 "use client";
 
-import {
-    BadgeCheck,
-    Bell,
-    ChevronsUpDown,
-    CreditCard,
-    LogOut,
-    Sparkles,
-} from "lucide-react";
+import { BadgeCheck, ChevronsUpDown, LogOut, User } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -45,7 +38,7 @@ export function NavUser({ user }) {
                                     alt={user.name}
                                 />
                                 <AvatarFallback className="rounded-lg">
-                                    CN
+                                    <User className="text-gray-900" />
                                 </AvatarFallback>
                             </Avatar>
                             <div className="grid flex-1 text-left text-sm leading-tight">
@@ -73,7 +66,7 @@ export function NavUser({ user }) {
                                         alt={user.name}
                                     />
                                     <AvatarFallback className="rounded-lg">
-                                        CN
+                                        <User className="text-gray-900" />
                                     </AvatarFallback>
                                 </Avatar>
                                 <div className="grid flex-1 text-left text-sm leading-tight">
@@ -87,26 +80,15 @@ export function NavUser({ user }) {
                             </div>
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        {/* <DropdownMenuGroup>
-                            <DropdownMenuItem>
-                                <Sparkles />
-                                Upgrade to Pro
-                            </DropdownMenuItem>
-                        </DropdownMenuGroup> */}
+
                         <DropdownMenuSeparator />
                         <DropdownMenuGroup>
-                            <DropdownMenuItem>
-                                <BadgeCheck />
-                                Account
-                            </DropdownMenuItem>
-                            {/* <DropdownMenuItem>
-                                <CreditCard />
-                                Billing
-                            </DropdownMenuItem> */}
-                            {/* <DropdownMenuItem>
-                                <Bell />
-                                Notifications
-                            </DropdownMenuItem> */}
+                            <Link href={route("profile.edit")}>
+                                <DropdownMenuItem>
+                                    <BadgeCheck />
+                                    Account
+                                </DropdownMenuItem>
+                            </Link>
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />
                         <Link href={route("logout")} method="post">

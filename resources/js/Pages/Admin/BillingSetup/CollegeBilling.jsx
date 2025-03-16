@@ -54,8 +54,8 @@ export default function CollegeBilling({ college_fee = [] }) {
         delete: onDelete,
     } = useForm({
         program_code: "",
-        discount_title: "",
-        discount_amount: "",
+        year_level: "",
+        payment_type: "",
         down_payment: "",
         prelim: "",
         midterm: "",
@@ -71,8 +71,8 @@ export default function CollegeBilling({ college_fee = [] }) {
         setData({
             id: college_fee.id,
             program_code: college_fee.program_code,
-            discount_title: college_fee.discount_title,
-            discount_amount: college_fee.discount_amount,
+            year_level: college_fee.year_level,
+            payment_type: college_fee.payment_type,
             down_payment: college_fee.down_payment,
             prelim: college_fee.prelim,
             midterm: college_fee.midterm,
@@ -102,12 +102,14 @@ export default function CollegeBilling({ college_fee = [] }) {
                 setProgramEdit(false);
                 setData({
                     program_code: "",
-                    discount_title: "",
-                    discount_amount: "",
+                    year_level: "",
+                    payment_type: "",
                     down_payment: "",
                     prelim: "",
                     midterm: "",
                     finals: "",
+                    no_unit: "",
+                    per_unit: "",
                     total_amount: "",
                 });
             },
@@ -208,6 +210,30 @@ export default function CollegeBilling({ college_fee = [] }) {
                                     </CardHeader>
                                     <Separator />
                                     <CardContent className="space-y-2">
+                                        {college_fee.year_level && (
+                                            <p className="text-gray-600 grid grid-cols-2">
+                                                year level:{" "}
+                                                <span className="text-black text-end">
+                                                    {college_fee.year_level}
+                                                </span>
+                                            </p>
+                                        )}
+                                        {college_fee.payment_type && (
+                                            <p className="text-gray-600 grid grid-cols-2">
+                                                type:
+                                                <span className="text-black text-end">
+                                                    {college_fee.payment_type}
+                                                </span>
+                                            </p>
+                                        )}
+                                        {college_fee.down_payment && (
+                                            <p className="text-gray-600 grid grid-cols-2">
+                                                down payment:{" "}
+                                                <span className="text-black text-end">
+                                                    {college_fee.down_payment}
+                                                </span>
+                                            </p>
+                                        )}
                                         {college_fee.prelim && (
                                             <p className="text-gray-600 grid grid-cols-2">
                                                 prelim:{" "}
@@ -232,27 +258,9 @@ export default function CollegeBilling({ college_fee = [] }) {
                                                 </span>
                                             </p>
                                         )}
-                                        {college_fee.discount_title && (
-                                            <p className="text-gray-600 grid grid-cols-2">
-                                                discount:{" "}
-                                                <span className="text-black text-end">
-                                                    {college_fee.discount_title}
-                                                </span>
-                                            </p>
-                                        )}
-                                        {college_fee.discount_amount && (
-                                            <p className="text-gray-600 grid grid-cols-2">
-                                                discount amount:{" "}
-                                                <span className="text-black text-end">
-                                                    {
-                                                        college_fee.discount_amount
-                                                    }
-                                                </span>
-                                            </p>
-                                        )}
                                         {college_fee.total_amount && (
                                             <p className="text-gray-600 grid grid-cols-2">
-                                                amount:{" "}
+                                                total amount:
                                                 <span className="text-black text-end">
                                                     {college_fee.total_amount}
                                                 </span>
@@ -452,6 +460,7 @@ export default function CollegeBilling({ college_fee = [] }) {
                                             Program
                                         </Label>
                                         <Select
+                                            className="h-auto"
                                             name="program_code"
                                             value={data.program_code}
                                             onValueChange={(value) =>
@@ -462,18 +471,77 @@ export default function CollegeBilling({ college_fee = [] }) {
                                                 <SelectValue placeholder="Select" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="stem">
-                                                    Computer Science
+                                                <SelectItem value="general">
+                                                    General
                                                 </SelectItem>
-                                                <SelectItem value="abm">
-                                                    Information System
+                                                <SelectItem value="STEM">
+                                                    STEM
+                                                </SelectItem>
+                                                <SelectItem value="ABM">
+                                                    ABM
+                                                </SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    <div>
+                                        <Label htmlFor="year_level">
+                                            Year Level
+                                        </Label>
+                                        <Select
+                                            className="h-auto"
+                                            name="year_level"
+                                            value={data.year_level}
+                                            onValueChange={(value) =>
+                                                setData("year_level", value)
+                                            }
+                                        >
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Select" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="grade 11">
+                                                    Grade 11
+                                                </SelectItem>
+                                                <SelectItem value="grade 12">
+                                                    Grade 12
+                                                </SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    <div>
+                                        <Label htmlFor="payment_type">
+                                            Type
+                                        </Label>
+                                        <Select
+                                            className="h-auto"
+                                            name="payment_type"
+                                            value={data.payment_type}
+                                            onValueChange={(value) =>
+                                                setData("payment_type", value)
+                                            }
+                                        >
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Select" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="cash">
+                                                    Cash
+                                                </SelectItem>
+                                                <SelectItem value="installment">
+                                                    Installment
+                                                </SelectItem>
+                                                <SelectItem value="voucher grantee">
+                                                    Voucher Grantee
+                                                </SelectItem>
+                                                <SelectItem value="esc & non-esc grantee">
+                                                    ESC & Non-ESC grantee
                                                 </SelectItem>
                                             </SelectContent>
                                         </Select>
                                     </div>
                                     <div>
                                         <Label htmlFor="down_payment">
-                                            Downpayment
+                                            Down payment
                                         </Label>
                                         <Input
                                             name="down_payment"
@@ -528,40 +596,6 @@ export default function CollegeBilling({ college_fee = [] }) {
                                             onChange={(e) =>
                                                 setData(
                                                     "finals",
-                                                    e.target.value
-                                                )
-                                            }
-                                        />
-                                    </div>
-                                    <div>
-                                        <Label htmlFor="discount_title">
-                                            Discount Name
-                                        </Label>
-                                        <Input
-                                            name="discount_title"
-                                            type="text"
-                                            className="text-black"
-                                            value={data.discount_title}
-                                            onChange={(e) =>
-                                                setData(
-                                                    "discount_title",
-                                                    e.target.value
-                                                )
-                                            }
-                                        />
-                                    </div>
-                                    <div>
-                                        <Label htmlFor="discount_amount">
-                                            Discount Amount
-                                        </Label>
-                                        <Input
-                                            name="discount_amount"
-                                            type="number"
-                                            className="text-black"
-                                            value={data.discount_amount}
-                                            onChange={(e) =>
-                                                setData(
-                                                    "discount_amount",
                                                     e.target.value
                                                 )
                                             }

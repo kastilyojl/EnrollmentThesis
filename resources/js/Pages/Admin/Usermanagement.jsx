@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import { format } from "date-fns";
 import Layout from "@/components/layout";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,9 @@ import {
 } from "@/components/ui/table";
 
 import { Edit, Filter, Trash, User } from "lucide-react";
+import BadgeWarning from "@/components/BadgeWarning";
+import BadgereDanger from "@/components/BadgeDanger";
+import BadgeSuccess from "@/components/BadgeSuccess";
 
 export default function UserManagement({ user = [] }) {
     const [itemId, setItemId] = useState(null);
@@ -109,10 +112,28 @@ export default function UserManagement({ user = [] }) {
                                         {users.role}
                                     </TableCell>
                                     <TableCell className="font-medium text-center w-1/12">
-                                        {users.email_verified_at}
+                                        {users.email_verified_at ? (
+                                            <BadgeSuccess>
+                                                {format(
+                                                    new Date(
+                                                        users.email_verified_at
+                                                    ),
+                                                    "yyyy-MM-dd"
+                                                )}
+                                            </BadgeSuccess>
+                                        ) : (
+                                            <BadgereDanger>
+                                                not verified
+                                            </BadgereDanger>
+                                        )}
                                     </TableCell>
                                     <TableCell className="font-medium text-center w-1/12">
-                                        {users.created_at}
+                                        {users.created_at
+                                            ? format(
+                                                  new Date(users.created_at),
+                                                  "yyyy-MM-dd"
+                                              )
+                                            : "not verified yet"}
                                     </TableCell>
                                     <TableCell className="flex justify-center items-center">
                                         <Edit className="h-5 text-blue-600" />

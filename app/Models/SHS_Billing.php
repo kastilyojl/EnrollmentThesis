@@ -14,15 +14,15 @@ class SHS_Billing extends Model
             'program_code',
             'year_level',
             'payment_type',
-            'cash',
-            'installment',
-            'voucher_amount',
-            'onetime_fee',
-            'down_payment_shs',
+            'down_payment',
+            'prelim',
+            'midterm',
+            'finals',
+            'total_amount'
     ];
 
     public function programs()
     {
-        return $this->belongsTo(User::class, 'program_code', 'code');
+        return $this->belongsTo(Programs::class, 'program_code', 'code');
     }
 }

@@ -23,14 +23,14 @@ class SHSBillingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'program_code' => "nullable",
-            'year_level' => "nullable",
-            'payment_type' => "nullable",
-            'cash' => "nullable",
-            'installment'=> "nullable",
-            'voucher_amount'=> "nullable",
-            'onetime_fee'=> "nullable",
-            'down_payment_shs'=> "nullable",
+            'program_code' => 'required|string',
+            'year_level' => 'required|string',
+            'payment_type' => 'required|string',
+            'down_payment' => 'nullable',
+            'prelim'  => 'nullable',
+            'midterm'  => 'nullable',
+            'finals'  => 'nullable',
+            'total_amount' => 'nullable'
         ];
     }
 }

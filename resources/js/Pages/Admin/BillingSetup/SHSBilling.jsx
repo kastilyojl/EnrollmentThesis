@@ -52,11 +52,11 @@ export default function SHSBilling({ shs_fee = [] }) {
         program_code: "",
         year_level: "",
         payment_type: "",
-        cash: "",
-        installment: "",
-        voucher_amount: "",
-        onetime_fee: "",
-        down_payment_shs: "",
+        down_payment: "",
+        prelim: "",
+        midterm: "",
+        finals: "",
+        total_amount: "",
     });
 
     const handleEdit = (shs_fee) => {
@@ -67,11 +67,11 @@ export default function SHSBilling({ shs_fee = [] }) {
             program_code: shs_fee.program_code,
             year_level: shs_fee.year_level,
             payment_type: shs_fee.payment_type,
-            cash: shs_fee.cash,
-            installment: shs_fee.installment,
-            voucher_amount: shs_fee.voucher_amount,
-            onetime_fee: shs_fee.onetime_fee,
-            down_payment_shs: shs_fee.down_payment_shs,
+            down_payment: shs_fee.down_payment,
+            prelim: shs_fee.prelim,
+            midterm: shs_fee.midterm,
+            finals: shs_fee.finals,
+            total_amount: shs_fee.total_amount,
         });
     };
 
@@ -86,11 +86,11 @@ export default function SHSBilling({ shs_fee = [] }) {
                     program_code: "",
                     year_level: "",
                     payment_type: "",
-                    cash: "",
-                    installment: "",
-                    voucher_amount: "",
-                    onetime_fee: "",
-                    down_payment_shs: "",
+                    down_payment: "",
+                    prelim: "",
+                    midterm: "",
+                    finals: "",
+                    total_amount: "",
                 });
             },
         });
@@ -172,43 +172,43 @@ export default function SHSBilling({ shs_fee = [] }) {
                                     </span>
                                 </p>
                             )}
-                            {shs_fee.cash && (
-                                <p className="text-gray-600 grid grid-cols-2">
-                                    cash:{" "}
-                                    <span className="text-black text-end">
-                                        {shs_fee.cash}
-                                    </span>
-                                </p>
-                            )}
-                            {shs_fee.installment && (
-                                <p className="text-gray-600 grid grid-cols-2">
-                                    installment:{" "}
-                                    <span className="text-black text-end">
-                                        {shs_fee.installment}
-                                    </span>
-                                </p>
-                            )}
-                            {shs_fee.down_payment_shs && (
+                            {shs_fee.down_payment && (
                                 <p className="text-gray-600 grid grid-cols-2">
                                     down payment:{" "}
                                     <span className="text-black text-end">
-                                        {shs_fee.down_payment_shs}
+                                        {shs_fee.down_payment}
                                     </span>
                                 </p>
                             )}
-                            {shs_fee.voucher_amount && (
+                            {shs_fee.prelim && (
                                 <p className="text-gray-600 grid grid-cols-2">
-                                    voucher amount:{" "}
+                                    prelim:{" "}
                                     <span className="text-black text-end">
-                                        {shs_fee.voucher_amount}
+                                        {shs_fee.prelim}
                                     </span>
                                 </p>
                             )}
-                            {shs_fee.onetime_fee && (
+                            {shs_fee.midterm && (
                                 <p className="text-gray-600 grid grid-cols-2">
-                                    one-time fee:{" "}
+                                    midterm:{" "}
                                     <span className="text-black text-end">
-                                        {shs_fee.onetime_fee}
+                                        {shs_fee.midterm}
+                                    </span>
+                                </p>
+                            )}
+                            {shs_fee.finals && (
+                                <p className="text-gray-600 grid grid-cols-2">
+                                    finals:{" "}
+                                    <span className="text-black text-end">
+                                        {shs_fee.finals}
+                                    </span>
+                                </p>
+                            )}
+                            {shs_fee.total_amount && (
+                                <p className="text-gray-600 grid grid-cols-2">
+                                    total amount:
+                                    <span className="text-black text-end">
+                                        {shs_fee.total_amount}
                                     </span>
                                 </p>
                             )}
@@ -253,9 +253,10 @@ export default function SHSBilling({ shs_fee = [] }) {
                                 <div className="mt-3 grid grid-cols-2 gap-x-8 gap-y-4">
                                     <div>
                                         <Label htmlFor="program_code">
-                                            Strand
+                                            Program
                                         </Label>
                                         <Select
+                                            className="h-auto"
                                             name="program_code"
                                             value={data.program_code}
                                             onValueChange={(value) =>
@@ -266,10 +267,13 @@ export default function SHSBilling({ shs_fee = [] }) {
                                                 <SelectValue placeholder="Select" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="stem">
+                                                <SelectItem value="general">
+                                                    General
+                                                </SelectItem>
+                                                <SelectItem value="STEM">
                                                     STEM
                                                 </SelectItem>
-                                                <SelectItem value="abm">
+                                                <SelectItem value="ABM">
                                                     ABM
                                                 </SelectItem>
                                             </SelectContent>
@@ -305,6 +309,7 @@ export default function SHSBilling({ shs_fee = [] }) {
                                             Type
                                         </Label>
                                         <Select
+                                            className="h-auto"
                                             name="payment_type"
                                             value={data.payment_type}
                                             onValueChange={(value) =>
@@ -315,8 +320,11 @@ export default function SHSBilling({ shs_fee = [] }) {
                                                 <SelectValue placeholder="Select" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="payee">
-                                                    Payee
+                                                <SelectItem value="cash">
+                                                    Cash
+                                                </SelectItem>
+                                                <SelectItem value="installment">
+                                                    Installment
                                                 </SelectItem>
                                                 <SelectItem value="voucher grantee">
                                                     Voucher Grantee
@@ -328,82 +336,79 @@ export default function SHSBilling({ shs_fee = [] }) {
                                         </Select>
                                     </div>
                                     <div>
-                                        <Label htmlFor="cash">
-                                            Cash (Discounted)
+                                        <Label htmlFor="down_payment">
+                                            Down payment
                                         </Label>
                                         <Input
-                                            name="cash"
+                                            name="down_payment"
                                             type="number"
                                             className="text-black"
-                                            value={data.cash}
-                                            onChange={(e) =>
-                                                setData("cash", e.target.value)
-                                            }
-                                        />
-                                    </div>
-                                    <div>
-                                        <Label htmlFor="installment">
-                                            Installment
-                                        </Label>
-                                        <Input
-                                            name="installment"
-                                            type="number"
-                                            className="text-black"
-                                            value={data.installment}
+                                            value={data.down_payment}
                                             onChange={(e) =>
                                                 setData(
-                                                    "installment",
+                                                    "down_payment",
                                                     e.target.value
                                                 )
                                             }
                                         />
                                     </div>
                                     <div>
-                                        <Label htmlFor="down_payment_shs">
-                                            Downpayment (Installment)
-                                        </Label>
+                                        <Label htmlFor="prelim">Prelim</Label>
                                         <Input
-                                            name="down_payment_shs"
+                                            name="prelim"
                                             type="number"
                                             className="text-black"
-                                            value={data.down_payment_shs}
+                                            value={data.prelim}
                                             onChange={(e) =>
                                                 setData(
-                                                    "down_payment_shs",
+                                                    "prelim",
                                                     e.target.value
                                                 )
                                             }
                                         />
                                     </div>
                                     <div>
-                                        <Label htmlFor="voucher_amount">
-                                            Voucher Amount
-                                        </Label>
+                                        <Label htmlFor="midterm">Midterm</Label>
                                         <Input
-                                            name="voucher_amount"
+                                            name="midterm"
                                             type="number"
                                             className="text-black"
-                                            value={data.voucher_amount}
+                                            value={data.midterm}
                                             onChange={(e) =>
                                                 setData(
-                                                    "voucher_amount",
+                                                    "midterm",
                                                     e.target.value
                                                 )
                                             }
                                         />
                                     </div>
                                     <div>
-                                        <Label htmlFor="onetime_fee">
-                                            One-time fee
-                                        </Label>
+                                        <Label htmlFor="finals">Finals</Label>
                                         <Input
-                                            name="onetime_fee"
+                                            name="finals"
                                             type="number"
                                             className="text-black"
-                                            value={data.onetime_fee}
+                                            value={data.finals}
                                             onChange={(e) =>
                                                 setData(
-                                                    "onetime_fee",
+                                                    "finals",
+                                                    e.target.value
+                                                )
+                                            }
+                                        />
+                                    </div>
+                                    <div>
+                                        <Label htmlFor="total_amount">
+                                            Total Amount
+                                        </Label>
+                                        <Input
+                                            name="total_amount"
+                                            type="number"
+                                            className="text-black"
+                                            value={data.total_amount}
+                                            onChange={(e) =>
+                                                setData(
+                                                    "total_amount",
                                                     e.target.value
                                                 )
                                             }

@@ -32,68 +32,39 @@ class BillingController extends Controller
         return Inertia::render("Admin/BillingSetup/SHSBilling", ['shs_fee' => $shs_fee]);
     }
 
-    public function store(SHSBillingRequest $request) {
-        
-            Log::info('Request Data:', $request->all());
-            foreach ($request->fees as $shs_Billing) {
-                Log::info('Processing fee:', $shs_Billing); 
-                $code = Programs::where('code', $shs_Billing['program_code'])->first();
-                SHS_Billing::create([
-                    // 'program_code' => $subject['program_code'],
-                    // 'code' => $subject['code'],
-                    // 'name' => $subject['name'],
-                    // 'prerequisites'  => $subject['prerequisites'],
-                    // 'period'  => $subject['period'],
-                    // 'department' => $subject['department'],
-                    // 'year_level'  => $subject['year_level'],
-                    // 'category'  => $subject['category'],
-                    // 'lec'  => $subject['lec'],
-                    // 'lab'  => $subject['lab'],
-                    // 'unit'  => $subject['unit'],
-                    // 'total'  => $subject['total'],
+    public function storeSHSBilling(SHSBillingRequest $request) {
+        SHS_Billing::create([
+            'program_code' => $request->program_code,
+            'year_level' => $request->year_level,
+            'payment_type' => $request->payment_type,
+            'down_payment' => $request->down_payment,
+            'prelim' => $request->prelim,
+            'midterm' => $request->midterm,
+            'finals' => $request->finals,
+            'total_amount' => $request->total_amount
+        ]);
+    }
 
-                    // "fee_type" => $subject['fee_type'],
-                    // "program_name" => $subject['program_name'],
-                    // "no_unit" => $subject['no_unit'],
-                    // "amount" => $subject['amount'],
-                    // "misellaneous_name" => $subject['misellaneous_name'],
-                    // "misellaneous_description" => $subject['misellaneous_description'],
-                    // "discount_name" => $subject['discount_name'],
-                    // "discount_amount" => $subject['discount_amount'],
-                    // "total_amount" => $subject['total_amount'],
-                    'program_code' =>$code,
-                    'year_level' =>$shs_Billing['year_level'],
-                    'payment_type' =>$shs_Billing['payment_type'],
-                    'cash' =>$shs_Billing['cash'],
-                    'installment' =>$shs_Billing['installment'],
-                    'voucher_amount' =>$shs_Billing['voucher_amount'],
-                    'onetime_fee' =>$shs_Billing['onetime_fee'],
-                    'down_payment_shs' =>$shs_Billing['down_payment_shs'],
-                    ]);
-            }
+    public function storeCollegeBilling(Request $request) {
+            College_Billing::create([
+            'program_code' => $request->program_code,
+            'year_level' => $request->year_level,
+            'payment_type' => $request->payment_type,
+            'down_payment' => $request->down_payment,
+            'prelim' => $request->prelim,
+            'midterm' => $request->midterm,
+            'finals' => $request->finals,
+            'no_unit' => $request->no_unit,
+            'per_unit' => $request->per_unit,
+            'total_amount' => $request->total_amount
+        ]);
+    }
 
-            foreach ($request->fees as $college_Billing) {
-                Log::info('Processing fee:', $college_Billing); 
-                $code = Programs::where('code', $college_Billing['program_code'])->first();
-                College_Billing::create([
-                    'program_code' =>$code,
-                    'discount_title'=> $college_Billing['discount_title'],
-                    'discount_amount'=> $college_Billing['discount_amount'],
-                    'down_payment'=> $college_Billing['down_payment'],
-                    'prelim'=> $college_Billing['prelim'],
-                    'midterm'=> $college_Billing['midterm'],
-                    'finals'=> $college_Billing['finals'],
-                    'no_unit'=> $college_Billing['no_unit'],
-                    'per_unit'=> $college_Billing['per_unit'],
-                    'total_amount'=> $college_Billing['total_amount'],
-                    ]);
-            }
-
+    public function storeOtherBilling(Request $request) {
             foreach ($request->fees as $other_Billing) {
-                Log::info('Processing fee:', $other_Billing); 
-                
                 Other_Billing::create([
-                    'title'=> $other_Billing['title'],
+                    'payment_type'=> $other_Billing['other_billing_payment_type'],
+                    'name'=> $other_Billing['other_billing_name'],
                     'amount'=> $other_Billing['amount'],
                     'description'=> $other_Billing['description'],
                     ]);
@@ -104,14 +75,14 @@ class BillingController extends Controller
 
         $items = SHS_Billing::where('id', $request->id)->first();
         $items->update([
-            'program_code'=> $request->program_code,
-            'year_level'=> $request->year_level,
-            'payment_type'=> $request->payment_type,
-            'cash'=> $request->cash,
-            'installment'=> $request->installment,
-            'voucher_amount'=> $request->voucher_amount,
-            'onetime_fee'=> $request->onetime_fee,
-            'down_payment_shs'=> $request->down_payment_shs,
+            'program_code' => $request->program_code,
+            'year_level' => $request->year_level,
+            'payment_type' => $request->payment_type,
+            'down_payment' => $request->down_payment,
+            'prelim' => $request->prelim,
+            'midterm' => $request->midterm,
+            'finals' => $request->finals,
+            'total_amount' => $request->total_amount
         ]);
     }
 
@@ -119,7 +90,8 @@ class BillingController extends Controller
 
         $items = Other_Billing::where('id', $request->id)->first();
         $items->update([
-            'title'=>$request->title,
+            'payment_type'=>$request->payment_type,
+            'name'=>$request->name,
             'amount'=>$request->amount,
             'description' => $request->description,
         ]);
@@ -129,16 +101,16 @@ class BillingController extends Controller
 
         $items = College_Billing::where('id', $request->id)->first();
         $items->update([
-            'program_code' =>$request->program_code,
-            'discount_title'=> $request->discount_title,
-            'discount_amount'=> $request->discount_amount,
-            'down_payment'=> $request->down_payment,
-            'prelim'=> $request->prelim,
-            'midterm'=> $request->midterm,
-            'finals'=> $request->finals,
-            'no_unit'=> $request->no_unit,
-            'per_unit'=> $request->per_unit,
-            'total_amount'=> $request->total_amount,
+            'program_code' => $request->program_code,
+            'year_level' => $request->year_level,
+            'payment_type' => $request->payment_type,
+            'down_payment' => $request->down_payment,
+            'prelim' => $request->prelim,
+            'midterm' => $request->midterm,
+            'finals' => $request->finals,
+            'no_unit' =>$request->no_unit,
+            'per_unit' =>$request->per_unit, 
+            'total_amount' => $request->total_amount
         ]);
     }
 

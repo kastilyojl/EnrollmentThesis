@@ -50,12 +50,7 @@ export default function Login() {
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
-                            {status && (
-                                <div className="mb-4 text-sm font-medium text-green-600">
-                                    {status}
-                                </div>
-                            )}
-                            <form onSubmit={submit}>
+                            <form onSubmit={submit} className="mt-4">
                                 <div className="grid gap-6">
                                     <div className="grid gap-6">
                                         <div className="grid gap-2">

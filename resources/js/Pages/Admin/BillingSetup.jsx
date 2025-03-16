@@ -60,59 +60,25 @@ export default function BillingSetup({
         program_code: "",
         year_level: "",
         payment_type: "",
-        cash: "",
-        installment: "",
-        voucher_amount: "",
-        onetime_fee: "",
-        down_payment_shs: "",
-        // College
-        discount_title: "",
-        discount_amount: "",
         down_payment: "",
         prelim: "",
         midterm: "",
         finals: "",
+        total_amount: "",
+        // College
         no_unit: "",
         per_unit: "",
-        total_amount: "",
+
         // Other
-        title: "",
+        other_billing_payment_type: "",
+        other_billing_name: "",
         amount: "",
         description: "",
-
-        // fee_type: "",
-        // program_name: "",
-        // no_unit: "",
-        // amount: "",
-        // misellaneous_name: "",
-        // misellaneous_description: "",
-        // discount_name: "",
-        // discount_amount: "",
-        // total_amount: "",
     });
-
-    const tableData = fee.map((fee) => ({
-        program_code: fee.program_code,
-        year_level: fee.year_level,
-        payment_type: fee.payment_type,
-        cash: fee.cash,
-        installment: fee.installment,
-        description_shs: fee.description_shs,
-        voucher_amount: fee.voucher_amount,
-        onetime_fee: fee.onetime_fee,
-        down_payment_shs: fee.down_payment_shs,
-    }));
 
     const [itemId, setItemId] = useState(null);
     const [add, setAdd] = useState(false);
     const [del, setDel] = useState(false);
-
-    const programs = program
-        .filter(
-            (program) =>
-                program.status === "Active" || program.status === "active"
-        )
-        .map((program) => [program.name]);
 
     const handleAdd = () => {
         setItemId(null);
@@ -122,24 +88,18 @@ export default function BillingSetup({
             program_code: "",
             year_level: "",
             payment_type: "",
-            cash: "",
-            installment: "",
-            description_shs: "",
-            voucher_amount: "",
-            onetime_fee: "",
-            down_payment_shs: "",
-            // College
-            discount_title: "",
-            discount_amount: "",
             down_payment: "",
             prelim: "",
             midterm: "",
             finals: "",
+            total_amount: "",
+            // College
             no_unit: "",
             per_unit: "",
-            total_amount: "",
+
             // Other
-            title: "",
+            other_billing_payment_type: "",
+            other_billing_name: "",
             amount: "",
             description: "",
         });
@@ -162,67 +122,103 @@ export default function BillingSetup({
         });
     };
 
-    const handleEdit = (subject) => {
-        setItemId(subject);
-        setAdd(true);
-        setData({
-            type: subject.type,
-            program_name: subject.program_name,
-            no_unit: subject.no_unit,
-            amount: subject.amount,
-            title: subject.title,
-            description: subject.description,
-            discount_title: subject.discount_title,
-            discount_amount: subject.discount_amount,
-            total_amount: subject.total_amount,
+    const handleSHSSubmit = () => {
+        post(route("admin.billing.storeSHS"), {
+            onSuccess: () => {
+                console.log("Success Trigger");
+                toast("Bill has been created", {
+                    description: "Sunday, December 03, 2023 at 9:00 AM",
+                });
+                setAdd(false);
+                setData({
+                    // SHS
+                    program_code: "",
+                    year_level: "",
+                    payment_type: "",
+                    down_payment: "",
+                    prelim: "",
+                    midterm: "",
+                    finals: "",
+                    total_amount: "",
+                    // College
+                    no_unit: "",
+                    per_unit: "",
+
+                    // Other
+                    other_billing_payment_type: "",
+                    other_billing_name: "",
+                    amount: "",
+                    description: "",
+                });
+            },
+        });
+    };
+
+    const handleCollegeSubmit = () => {
+        post(route("admin.billing.storeCollege"), {
+            onSuccess: () => {
+                console.log("Success Trigger");
+                toast("Bill has been created", {
+                    description: "Sunday, December 03, 2023 at 9:00 AM",
+                });
+                setAdd(false);
+                setData({
+                    // SHS
+                    program_code: "",
+                    year_level: "",
+                    payment_type: "",
+                    down_payment: "",
+                    prelim: "",
+                    midterm: "",
+                    finals: "",
+                    total_amount: "",
+                    // College
+                    no_unit: "",
+                    per_unit: "",
+
+                    // Other
+                    other_billing_payment_type: "",
+                    other_billing_name: "",
+                    amount: "",
+                    description: "",
+                });
+            },
         });
     };
 
     const handleSubmit = () => {
-        console.log("Data Being Saved", fees);
-        post(
-            route("admin.billing.store"),
-            // { fees: fees },
-            {
-                onSuccess: () => {
-                    console.log("Success Trigger");
-                    toast("Bill has been created", {
-                        description: "Sunday, December 03, 2023 at 9:00 AM",
-                    });
-                    setAdd(false);
-                    setData({
-                        // SHS
-                        program_code: "",
-                        year_level: "",
-                        payment_type: "",
-                        cash: "",
-                        installment: "",
-                        description_shs: "",
-                        voucher_amount: "",
-                        onetime_fee: "",
-                        down_payment_shs: "",
-                        // College
-                        discount_title: "",
-                        discount_amount: "",
-                        down_payment: "",
-                        prelim: "",
-                        midterm: "",
-                        finals: "",
-                        no_unit: "",
-                        per_unit: "",
-                        total_amount: "",
-                        // Other
-                        title: "",
-                        amount: "",
-                        description: "",
-                    });
-                },
-            }
-        );
+        post(route("admin.billing.storeOther"), {
+            onSuccess: () => {
+                console.log("Success Trigger");
+                toast("Bill has been created", {
+                    description: "Sunday, December 03, 2023 at 9:00 AM",
+                });
+                setAdd(false);
+                setData({
+                    // SHS
+                    program_code: "",
+                    year_level: "",
+                    payment_type: "",
+                    down_payment: "",
+                    prelim: "",
+                    midterm: "",
+                    finals: "",
+                    total_amount: "",
+                    // College
+                    no_unit: "",
+                    per_unit: "",
+
+                    // Other
+                    other_billing_payment_type: "",
+                    other_billing_name: "",
+                    amount: "",
+                    description: "",
+                });
+            },
+        });
     };
 
     const handleUpdateSubmit = () => {
-        // console.log("editing program:", itemId.id);
         post(route("admin.subject.update", { id: itemId }), {
             onSuccess: () => {
                 toast("Bill has been updated", {
@@ -234,24 +230,18 @@ export default function BillingSetup({
                     program_code: "",
                     year_level: "",
                     payment_type: "",
-                    cash: "",
-                    installment: "",
-                    description_shs: "",
-                    voucher_amount: "",
-                    onetime_fee: "",
-                    down_payment_shs: "",
-                    // College
-                    discount_title: "",
-                    discount_fee: "",
                     down_payment: "",
                     prelim: "",
                     midterm: "",
                     finals: "",
+                    total_amount: "",
+                    // College
                     no_unit: "",
                     per_unit: "",
-                    total_amount: "",
+
                     // Other
-                    title: "",
+                    other_billing_payment_type: "",
+                    other_billing_name: "",
                     amount: "",
                     description: "",
                 });
@@ -259,50 +249,20 @@ export default function BillingSetup({
         });
     };
 
-    const [shsFees, setSHSFees] = useState([]);
-    const [collegeFees, setCollegeFees] = useState([]);
     const [otherFees, setOtherFees] = useState([]);
 
     const handleFeeList = (e) => {
         e.preventDefault();
 
-        const newSHSFee = {
-            program_code: data.program_code,
-            year_level: data.year_level,
-            payment_type: data.payment_type,
-            cash: data.cash,
-            installment: data.installment,
-            description_shs: data.description_shs,
-            voucher_amount: data.voucher_amount,
-            onetime_fee: data.onetime_fee,
-            down_payment_shs: data.down_payment_shs,
-        };
-
-        const newCollegeFee = {
-            program_code: data.program_code,
-            discount_title: data.discount_title,
-            discount_amount: data.discount_amount,
-            down_payment: data.down_payment,
-            prelim: data.prelim,
-            midterm: data.midterm,
-            finals: data.finals,
-            no_unit: data.no_unit,
-            per_unit: data.per_unit,
-            total_amount: data.total_amount,
-        };
-
         const newOtherFee = {
-            title: data.title,
+            other_billing_payment_type: data.other_billing_payment_type,
+            other_billing_name: data.other_billing_name,
             amount: data.amount,
             description: data.description,
         };
 
-        setSHSFees([...shsFees, newSHSFee]);
-        setCollegeFees([...collegeFees, newCollegeFee]);
         setOtherFees([...otherFees, newOtherFee]);
-        setData("shsFees", [...shsFees, newSHSFee]);
-        setData("collegeFees", [...collegeFees, newCollegeFee]);
-        setData("fees", [...collegeFees, newCollegeFee]);
+        setData("fees", [...otherFees, newOtherFee]);
     };
 
     const payment = {
@@ -407,11 +367,7 @@ export default function BillingSetup({
                 </Tabs>
                 {add && (
                     <Dialog open={add} onOpenChange={(open) => setAdd(open)}>
-                        <DialogContent
-                            className={`${
-                                itemId === null ? "max-w-7xl" : "max-w-xl"
-                            }`}
-                        >
+                        <DialogContent className="max-w-xl h-[600px]">
                             <DialogHeader>
                                 <DialogTitle>
                                     {itemId === null ? "Add Fees" : "Edit Fees"}
@@ -434,9 +390,9 @@ export default function BillingSetup({
                                         </TabsList>
                                         <TabsContent value="shs">
                                             <div className="overflow-x-auto">
-                                                <div className="overflow-x-auto grid grid-cols-2">
+                                                <div className="overflow-x-auto">
                                                     <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
-                                                        <thead className="ltr:text-left rtl:text-right">
+                                                        <tbody className="divide-y divide-gray-200">
                                                             <tr>
                                                                 <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
                                                                     Strand
@@ -461,19 +417,19 @@ export default function BillingSetup({
                                                                             <SelectValue placeholder="Select" />
                                                                         </SelectTrigger>
                                                                         <SelectContent>
-                                                                            <SelectItem value="stem">
+                                                                            <SelectItem value="general">
+                                                                                General
+                                                                            </SelectItem>
+                                                                            <SelectItem value="STEM">
                                                                                 STEM
                                                                             </SelectItem>
-                                                                            <SelectItem value="abm">
+                                                                            <SelectItem value="ABM">
                                                                                 ABM
                                                                             </SelectItem>
                                                                         </SelectContent>
                                                                     </Select>
                                                                 </td>
                                                             </tr>
-                                                        </thead>
-
-                                                        <tbody className="divide-y divide-gray-200">
                                                             <tr>
                                                                 <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
                                                                     Year Level
@@ -534,8 +490,11 @@ export default function BillingSetup({
                                                                             <SelectValue placeholder="Select" />
                                                                         </SelectTrigger>
                                                                         <SelectContent>
-                                                                            <SelectItem value="payee">
-                                                                                Payee
+                                                                            <SelectItem value="cash">
+                                                                                Cash
+                                                                            </SelectItem>
+                                                                            <SelectItem value="installment">
+                                                                                Installment
                                                                             </SelectItem>
                                                                             <SelectItem value="voucher grantee">
                                                                                 Voucher
@@ -554,22 +513,21 @@ export default function BillingSetup({
 
                                                             <tr>
                                                                 <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
-                                                                    Cash
-                                                                    (Discounted)
+                                                                    Down Payment
                                                                 </th>
                                                                 <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                                                                     <Input
-                                                                        name="cash"
+                                                                        name="down_payment"
                                                                         type="number"
                                                                         className="text-black"
                                                                         value={
-                                                                            data.cash
+                                                                            data.down_payment
                                                                         }
                                                                         onChange={(
                                                                             e
                                                                         ) =>
                                                                             setData(
-                                                                                "cash",
+                                                                                "down_payment",
                                                                                 e
                                                                                     .target
                                                                                     .value
@@ -580,21 +538,21 @@ export default function BillingSetup({
                                                             </tr>
                                                             <tr>
                                                                 <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
-                                                                    Installment
+                                                                    Prelim
                                                                 </th>
                                                                 <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                                                                     <Input
-                                                                        name="installment"
+                                                                        name="prelim"
                                                                         type="number"
                                                                         className="text-black"
                                                                         value={
-                                                                            data.installment
+                                                                            data.prelim
                                                                         }
                                                                         onChange={(
                                                                             e
                                                                         ) =>
                                                                             setData(
-                                                                                "installment",
+                                                                                "prelim",
                                                                                 e
                                                                                     .target
                                                                                     .value
@@ -605,22 +563,21 @@ export default function BillingSetup({
                                                             </tr>
                                                             <tr>
                                                                 <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
-                                                                    Down payment
-                                                                    (Installment)
+                                                                    Midterm
                                                                 </th>
                                                                 <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                                                                     <Input
-                                                                        name="down_payment_shs"
+                                                                        name="midterm"
                                                                         type="number"
                                                                         className="text-black"
                                                                         value={
-                                                                            data.down_payment_shs
+                                                                            data.midterm
                                                                         }
                                                                         onChange={(
                                                                             e
                                                                         ) =>
                                                                             setData(
-                                                                                "down_payment_shs",
+                                                                                "midterm",
                                                                                 e
                                                                                     .target
                                                                                     .value
@@ -631,22 +588,21 @@ export default function BillingSetup({
                                                             </tr>
                                                             <tr>
                                                                 <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
-                                                                    Voucher
-                                                                    Amount
+                                                                    Finals
                                                                 </th>
                                                                 <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                                                                     <Input
-                                                                        name="voucher_amount"
+                                                                        name="finals"
                                                                         type="number"
                                                                         className="text-black"
                                                                         value={
-                                                                            data.voucher_amount
+                                                                            data.finals
                                                                         }
                                                                         onChange={(
                                                                             e
                                                                         ) =>
                                                                             setData(
-                                                                                "voucher_amount",
+                                                                                "finals",
                                                                                 e
                                                                                     .target
                                                                                     .value
@@ -657,21 +613,22 @@ export default function BillingSetup({
                                                             </tr>
                                                             <tr>
                                                                 <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
-                                                                    One-time Fee
+                                                                    Total
+                                                                    Ammount
                                                                 </th>
                                                                 <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                                                                     <Input
-                                                                        name="onetime_fee"
+                                                                        name="total_amount"
                                                                         type="number"
                                                                         className="text-black"
                                                                         value={
-                                                                            data.onetime_fee
+                                                                            data.total_amount
                                                                         }
                                                                         onChange={(
                                                                             e
                                                                         ) =>
                                                                             setData(
-                                                                                "onetime_fee",
+                                                                                "total_amount",
                                                                                 e
                                                                                     .target
                                                                                     .value
@@ -682,104 +639,17 @@ export default function BillingSetup({
                                                             </tr>
                                                         </tbody>
                                                     </table>
-
-                                                    <ScrollArea className="h-auto max-h-[400px] p-4">
-                                                        <div className="h-full">
-                                                            {itemId ===
-                                                                null && (
-                                                                <Table>
-                                                                    <TableCaption>
-                                                                        A list
-                                                                        of fees
-                                                                        added.
-                                                                    </TableCaption>
-
-                                                                    <TableBody>
-                                                                        {shsFees.map(
-                                                                            (
-                                                                                fee
-                                                                            ) => {
-                                                                                return (
-                                                                                    <TableRow className="odd:bg-gray-50 border-b-2 grid grid-cols-6">
-                                                                                        <TableCell className="font-medium ">
-                                                                                            Strand
-                                                                                        </TableCell>
-                                                                                        <TableCell className="font-medium text-gray-700">
-                                                                                            {
-                                                                                                fee.program_code
-                                                                                            }
-                                                                                        </TableCell>
-                                                                                        <TableCell className="font-medium ">
-                                                                                            Year
-                                                                                            Level
-                                                                                        </TableCell>
-                                                                                        <TableCell className="font-medium text-gray-700">
-                                                                                            {
-                                                                                                fee.year_level
-                                                                                            }
-                                                                                        </TableCell>
-                                                                                        <TableCell className="font-medium ">
-                                                                                            Type
-                                                                                        </TableCell>
-                                                                                        <TableCell className="font-medium text-gray-700">
-                                                                                            {
-                                                                                                fee.payment_type
-                                                                                            }
-                                                                                        </TableCell>
-                                                                                        <TableCell className="font-medium ">
-                                                                                            Cash
-                                                                                        </TableCell>
-                                                                                        <TableCell className="font-medium text-gray-700">
-                                                                                            {
-                                                                                                fee.cash
-                                                                                            }
-                                                                                        </TableCell>
-                                                                                        <TableCell className="font-medium ">
-                                                                                            Installment
-                                                                                        </TableCell>
-                                                                                        <TableCell className="font-medium text-gray-700">
-                                                                                            {
-                                                                                                fee.installment
-                                                                                            }
-                                                                                        </TableCell>
-                                                                                        <TableCell className="font-medium ">
-                                                                                            Downpayment
-                                                                                            (installment)
-                                                                                        </TableCell>
-                                                                                        <TableCell className="font-medium text-gray-700">
-                                                                                            {
-                                                                                                fee.down_payment_shs
-                                                                                            }
-                                                                                        </TableCell>
-                                                                                        <TableCell className="font-medium ">
-                                                                                            Voucher
-                                                                                            Amount
-                                                                                        </TableCell>
-                                                                                        <TableCell className="font-medium text-gray-700">
-                                                                                            {
-                                                                                                fee.voucher_amount
-                                                                                            }
-                                                                                        </TableCell>
-                                                                                        <TableCell className="font-medium">
-                                                                                            One-time
-                                                                                            Fee
-                                                                                        </TableCell>
-                                                                                        <TableCell className="font-medium text-gray-700">
-                                                                                            {
-                                                                                                fee.onetime_fee
-                                                                                            }
-                                                                                        </TableCell>
-                                                                                    </TableRow>
-                                                                                );
-                                                                            }
-                                                                        )}
-                                                                    </TableBody>
-                                                                </Table>
-                                                            )}
-                                                        </div>
-                                                    </ScrollArea>
                                                 </div>
                                             </div>
+                                            <Button
+                                                onClick={
+                                                    itemId === null
+                                                        ? handleSHSSubmit
+                                                        : handleUpdateSubmit
+                                                }
+                                            >
+                                                Save
+                                            </Button>
                                         </TabsContent>
                                         <TabsContent value="college">
                                             <Tabs defaultValue="program">
@@ -793,334 +663,261 @@ export default function BillingSetup({
                                                 </TabsList>
                                                 <TabsContent value="program">
                                                     <div className="overflow-x-auto">
-                                                        <div className="overflow-x-auto grid grid-cols-2">
-                                                            <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
-                                                                <thead className="ltr:text-left rtl:text-right">
-                                                                    <tr>
-                                                                        <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
-                                                                            Program
-                                                                        </th>
-                                                                        <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                                                                            <Select
-                                                                                className="h-auto"
-                                                                                name="program_code"
-                                                                                value={
-                                                                                    data.program_code
-                                                                                }
-                                                                                onValueChange={(
+                                                        <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
+                                                            <tbody className="divide-y divide-gray-200">
+                                                                <tr>
+                                                                    <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                                                                        Program
+                                                                    </th>
+                                                                    <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                                                                        <Select
+                                                                            className="h-auto"
+                                                                            name="program_code"
+                                                                            value={
+                                                                                data.program_code
+                                                                            }
+                                                                            onValueChange={(
+                                                                                value
+                                                                            ) =>
+                                                                                setData(
+                                                                                    "program_code",
                                                                                     value
-                                                                                ) =>
-                                                                                    setData(
-                                                                                        "program_code",
-                                                                                        value
-                                                                                    )
-                                                                                }
-                                                                            >
-                                                                                <SelectTrigger>
-                                                                                    <SelectValue placeholder="Select" />
-                                                                                </SelectTrigger>
-                                                                                <SelectContent>
-                                                                                    <SelectItem value="stem">
-                                                                                        STEM
-                                                                                    </SelectItem>
-                                                                                    <SelectItem value="abm">
-                                                                                        ABM
-                                                                                    </SelectItem>
-                                                                                </SelectContent>
-                                                                            </Select>
-                                                                        </td>
-                                                                    </tr>
-                                                                </thead>
-
-                                                                <tbody className="divide-y divide-gray-200">
-                                                                    <tr>
-                                                                        <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
-                                                                            Discount
-                                                                            Name
-                                                                        </th>
-                                                                        <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                                                                            <Input
-                                                                                name="discount_title"
-                                                                                type="text"
-                                                                                className="text-black"
-                                                                                value={
-                                                                                    data.discount_title
-                                                                                }
-                                                                                onChange={(
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            <SelectTrigger>
+                                                                                <SelectValue placeholder="Select" />
+                                                                            </SelectTrigger>
+                                                                            <SelectContent>
+                                                                                <SelectItem value="general">
+                                                                                    General
+                                                                                </SelectItem>
+                                                                                <SelectItem value="stem">
+                                                                                    STEM
+                                                                                </SelectItem>
+                                                                                <SelectItem value="abm">
+                                                                                    ABM
+                                                                                </SelectItem>
+                                                                            </SelectContent>
+                                                                        </Select>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                                                                        Year
+                                                                        Level
+                                                                    </th>
+                                                                    <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                                                                        <Select
+                                                                            className="h-auto"
+                                                                            name="year_level"
+                                                                            value={
+                                                                                data.year_level
+                                                                            }
+                                                                            onValueChange={(
+                                                                                value
+                                                                            ) =>
+                                                                                setData(
+                                                                                    "year_level",
+                                                                                    value
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            <SelectTrigger>
+                                                                                <SelectValue placeholder="Select" />
+                                                                            </SelectTrigger>
+                                                                            <SelectContent>
+                                                                                <SelectItem value="grade 11">
+                                                                                    Grade
+                                                                                    11
+                                                                                </SelectItem>
+                                                                                <SelectItem value="grade 12">
+                                                                                    Grade
+                                                                                    12
+                                                                                </SelectItem>
+                                                                            </SelectContent>
+                                                                        </Select>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                                                                        Type
+                                                                    </th>
+                                                                    <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                                                                        <Select
+                                                                            className="h-auto"
+                                                                            name="payment_type"
+                                                                            value={
+                                                                                data.payment_type
+                                                                            }
+                                                                            onValueChange={(
+                                                                                value
+                                                                            ) =>
+                                                                                setData(
+                                                                                    "payment_type",
+                                                                                    value
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            <SelectTrigger>
+                                                                                <SelectValue placeholder="Select" />
+                                                                            </SelectTrigger>
+                                                                            <SelectContent>
+                                                                                <SelectItem value="cash">
+                                                                                    Cash
+                                                                                </SelectItem>
+                                                                                <SelectItem value="installment">
+                                                                                    Installment
+                                                                                </SelectItem>
+                                                                            </SelectContent>
+                                                                        </Select>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                                                                        Down
+                                                                        Payment
+                                                                    </th>
+                                                                    <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                                                                        <Input
+                                                                            name="down_payment"
+                                                                            type="number"
+                                                                            className="text-black"
+                                                                            value={
+                                                                                data.down_payment
+                                                                            }
+                                                                            onChange={(
+                                                                                e
+                                                                            ) =>
+                                                                                setData(
+                                                                                    "down_payment",
                                                                                     e
-                                                                                ) =>
-                                                                                    setData(
-                                                                                        "discount_title",
-                                                                                        e
-                                                                                            .target
-                                                                                            .value
-                                                                                    )
-                                                                                }
-                                                                            />
-                                                                        </td>
-                                                                    </tr>
-
-                                                                    <tr>
-                                                                        <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
-                                                                            Discount
-                                                                            Amount
-                                                                        </th>
-                                                                        <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                                                                            <Input
-                                                                                name="discount_amount"
-                                                                                type="number"
-                                                                                className="text-black"
-                                                                                value={
-                                                                                    data.discount_amount
-                                                                                }
-                                                                                onChange={(
+                                                                                        .target
+                                                                                        .value
+                                                                                )
+                                                                            }
+                                                                        />
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                                                                        Prelim
+                                                                    </th>
+                                                                    <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                                                                        <Input
+                                                                            name="prelim"
+                                                                            type="number"
+                                                                            className="text-black"
+                                                                            value={
+                                                                                data.prelim
+                                                                            }
+                                                                            onChange={(
+                                                                                e
+                                                                            ) =>
+                                                                                setData(
+                                                                                    "prelim",
                                                                                     e
-                                                                                ) =>
-                                                                                    setData(
-                                                                                        "discount_amount",
-                                                                                        e
-                                                                                            .target
-                                                                                            .value
-                                                                                    )
-                                                                                }
-                                                                            />
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
-                                                                            Down
-                                                                            Payment
-                                                                        </th>
-                                                                        <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                                                                            <Input
-                                                                                name="down_payment"
-                                                                                type="number"
-                                                                                className="text-black"
-                                                                                value={
-                                                                                    data.down_payment
-                                                                                }
-                                                                                onChange={(
+                                                                                        .target
+                                                                                        .value
+                                                                                )
+                                                                            }
+                                                                        />
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                                                                        Midterm
+                                                                    </th>
+                                                                    <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                                                                        <Input
+                                                                            name="midterm"
+                                                                            type="number"
+                                                                            className="text-black"
+                                                                            value={
+                                                                                data.midterm
+                                                                            }
+                                                                            onChange={(
+                                                                                e
+                                                                            ) =>
+                                                                                setData(
+                                                                                    "midterm",
                                                                                     e
-                                                                                ) =>
-                                                                                    setData(
-                                                                                        "down_payment",
-                                                                                        e
-                                                                                            .target
-                                                                                            .value
-                                                                                    )
-                                                                                }
-                                                                            />
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
-                                                                            Prelim
-                                                                        </th>
-                                                                        <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                                                                            <Input
-                                                                                name="prelim"
-                                                                                type="number"
-                                                                                className="text-black"
-                                                                                value={
-                                                                                    data.prelim
-                                                                                }
-                                                                                onChange={(
+                                                                                        .target
+                                                                                        .value
+                                                                                )
+                                                                            }
+                                                                        />
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                                                                        Finals
+                                                                    </th>
+                                                                    <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                                                                        <Input
+                                                                            name="finals"
+                                                                            type="number"
+                                                                            className="text-black"
+                                                                            value={
+                                                                                data.finals
+                                                                            }
+                                                                            onChange={(
+                                                                                e
+                                                                            ) =>
+                                                                                setData(
+                                                                                    "finals",
                                                                                     e
-                                                                                ) =>
-                                                                                    setData(
-                                                                                        "prelim",
-                                                                                        e
-                                                                                            .target
-                                                                                            .value
-                                                                                    )
-                                                                                }
-                                                                            />
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
-                                                                            Midterm
-                                                                        </th>
-                                                                        <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                                                                            <Input
-                                                                                name="midterm"
-                                                                                type="number"
-                                                                                className="text-black"
-                                                                                value={
-                                                                                    data.midterm
-                                                                                }
-                                                                                onChange={(
+                                                                                        .target
+                                                                                        .value
+                                                                                )
+                                                                            }
+                                                                        />
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                                                                        Total
+                                                                        Amount
+                                                                    </th>
+                                                                    <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                                                                        <Input
+                                                                            name="total_amount"
+                                                                            type="number"
+                                                                            className="text-black"
+                                                                            value={
+                                                                                data.total_amount
+                                                                            }
+                                                                            onChange={(
+                                                                                e
+                                                                            ) =>
+                                                                                setData(
+                                                                                    "total_amount",
                                                                                     e
-                                                                                ) =>
-                                                                                    setData(
-                                                                                        "midterm",
-                                                                                        e
-                                                                                            .target
-                                                                                            .value
-                                                                                    )
-                                                                                }
-                                                                            />
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
-                                                                            Finals
-                                                                        </th>
-                                                                        <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                                                                            <Input
-                                                                                name="finals"
-                                                                                type="number"
-                                                                                className="text-black"
-                                                                                value={
-                                                                                    data.finals
-                                                                                }
-                                                                                onChange={(
-                                                                                    e
-                                                                                ) =>
-                                                                                    setData(
-                                                                                        "finals",
-                                                                                        e
-                                                                                            .target
-                                                                                            .value
-                                                                                    )
-                                                                                }
-                                                                            />
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
-                                                                            Total
-                                                                            Ammount
-                                                                        </th>
-                                                                        <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                                                                            <Input
-                                                                                name="total_amount"
-                                                                                type="number"
-                                                                                className="text-black"
-                                                                                value={
-                                                                                    data.total_amount
-                                                                                }
-                                                                                onChange={(
-                                                                                    e
-                                                                                ) =>
-                                                                                    setData(
-                                                                                        "total_amount",
-                                                                                        e
-                                                                                            .target
-                                                                                            .value
-                                                                                    )
-                                                                                }
-                                                                            />
-                                                                        </td>
-                                                                    </tr>
-                                                                </tbody>
-                                                            </table>
-
-                                                            <ScrollArea className="h-auto max-h-[400px] p-4">
-                                                                <div className="h-full">
-                                                                    {itemId ===
-                                                                        null && (
-                                                                        <Table>
-                                                                            <TableCaption>
-                                                                                A
-                                                                                list
-                                                                                of
-                                                                                fees
-                                                                                added.
-                                                                            </TableCaption>
-
-                                                                            <TableBody>
-                                                                                {collegeFees.map(
-                                                                                    (
-                                                                                        fee
-                                                                                    ) => {
-                                                                                        return (
-                                                                                            <TableRow className="odd:bg-gray-50 border-b-2 grid grid-cols-6">
-                                                                                                <TableCell className="font-medium ">
-                                                                                                    Program
-                                                                                                </TableCell>
-                                                                                                <TableCell className="font-medium text-gray-700">
-                                                                                                    {
-                                                                                                        fee.program_code
-                                                                                                    }
-                                                                                                </TableCell>
-                                                                                                <TableCell className="font-medium ">
-                                                                                                    Discount
-                                                                                                    Name
-                                                                                                </TableCell>
-                                                                                                <TableCell className="font-medium text-gray-700">
-                                                                                                    {
-                                                                                                        fee.discount_title
-                                                                                                    }
-                                                                                                </TableCell>
-                                                                                                <TableCell className="font-medium ">
-                                                                                                    Discount
-                                                                                                    Amount
-                                                                                                </TableCell>
-                                                                                                <TableCell className="font-medium text-gray-700">
-                                                                                                    {
-                                                                                                        fee.discount_amount
-                                                                                                    }
-                                                                                                </TableCell>
-                                                                                                <TableCell className="font-medium ">
-                                                                                                    Down
-                                                                                                    Payment
-                                                                                                </TableCell>
-                                                                                                <TableCell className="font-medium text-gray-700">
-                                                                                                    {
-                                                                                                        fee.down_payment
-                                                                                                    }
-                                                                                                </TableCell>
-                                                                                                <TableCell className="font-medium ">
-                                                                                                    Prelim
-                                                                                                </TableCell>
-                                                                                                <TableCell className="font-medium text-gray-700">
-                                                                                                    {
-                                                                                                        fee.prelim
-                                                                                                    }
-                                                                                                </TableCell>
-                                                                                                <TableCell className="font-medium ">
-                                                                                                    Midterm
-                                                                                                </TableCell>
-                                                                                                <TableCell className="font-medium text-gray-700">
-                                                                                                    {
-                                                                                                        fee.midterm
-                                                                                                    }
-                                                                                                </TableCell>
-                                                                                                <TableCell className="font-medium ">
-                                                                                                    Finals
-                                                                                                </TableCell>
-                                                                                                <TableCell className="font-medium text-gray-700">
-                                                                                                    {
-                                                                                                        fee.finals
-                                                                                                    }
-                                                                                                </TableCell>
-                                                                                                <TableCell className="font-medium">
-                                                                                                    Total
-                                                                                                    Amount
-                                                                                                </TableCell>
-                                                                                                <TableCell className="font-medium text-gray-700">
-                                                                                                    {
-                                                                                                        fee.total_amount
-                                                                                                    }
-                                                                                                </TableCell>
-                                                                                            </TableRow>
-                                                                                        );
-                                                                                    }
-                                                                                )}
-                                                                            </TableBody>
-                                                                        </Table>
-                                                                    )}
-                                                                </div>
-                                                            </ScrollArea>
-                                                        </div>
+                                                                                        .target
+                                                                                        .value
+                                                                                )
+                                                                            }
+                                                                        />
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
                                                     </div>
+                                                    <Button
+                                                        onClick={
+                                                            itemId === null
+                                                                ? handleCollegeSubmit
+                                                                : handleUpdateSubmit
+                                                        }
+                                                    >
+                                                        Save
+                                                    </Button>
                                                 </TabsContent>
                                                 <TabsContent value="unit">
                                                     <div className="overflow-x-auto">
-                                                        <div className="overflow-x-auto grid grid-cols-2">
+                                                        <div className="overflow-x-auto">
                                                             <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
-                                                                <thead className="ltr:text-left rtl:text-right">
+                                                                <tbody className="divide-y divide-gray-200">
                                                                     <tr>
                                                                         <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
                                                                             Program
@@ -1145,6 +942,9 @@ export default function BillingSetup({
                                                                                     <SelectValue placeholder="Select" />
                                                                                 </SelectTrigger>
                                                                                 <SelectContent>
+                                                                                    <SelectItem value="general">
+                                                                                        General
+                                                                                    </SelectItem>
                                                                                     <SelectItem value="stem">
                                                                                         STEM
                                                                                     </SelectItem>
@@ -1155,9 +955,6 @@ export default function BillingSetup({
                                                                             </Select>
                                                                         </td>
                                                                     </tr>
-                                                                </thead>
-
-                                                                <tbody className="divide-y divide-gray-200">
                                                                     <tr>
                                                                         <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
                                                                             No
@@ -1240,100 +1037,76 @@ export default function BillingSetup({
                                                                     </tr>
                                                                 </tbody>
                                                             </table>
-
-                                                            <ScrollArea className="h-auto max-h-[400px] p-4">
-                                                                <div className="h-full">
-                                                                    {itemId ===
-                                                                        null && (
-                                                                        <Table>
-                                                                            <TableCaption>
-                                                                                A
-                                                                                list
-                                                                                of
-                                                                                fees
-                                                                                added.
-                                                                            </TableCaption>
-
-                                                                            <TableBody>
-                                                                                {collegeFees.map(
-                                                                                    (
-                                                                                        fee
-                                                                                    ) => {
-                                                                                        return (
-                                                                                            <TableRow className="odd:bg-gray-50 border-b-2 grid grid-cols-6">
-                                                                                                <TableCell className="font-medium ">
-                                                                                                    Program
-                                                                                                </TableCell>
-                                                                                                <TableCell className="font-medium text-gray-700">
-                                                                                                    {
-                                                                                                        fee.program_code
-                                                                                                    }
-                                                                                                </TableCell>
-
-                                                                                                <TableCell className="font-medium ">
-                                                                                                    No
-                                                                                                    of
-                                                                                                    Unit
-                                                                                                </TableCell>
-                                                                                                <TableCell className="font-medium text-gray-700">
-                                                                                                    {
-                                                                                                        fee.no_unit
-                                                                                                    }
-                                                                                                </TableCell>
-                                                                                                <TableCell className="font-medium ">
-                                                                                                    Per
-                                                                                                    Unit
-                                                                                                </TableCell>
-                                                                                                <TableCell className="font-medium text-gray-700">
-                                                                                                    {
-                                                                                                        fee.per_unit
-                                                                                                    }
-                                                                                                </TableCell>
-                                                                                                <TableCell className="font-medium ">
-                                                                                                    Total
-                                                                                                    Amount
-                                                                                                </TableCell>
-                                                                                                <TableCell className="font-medium text-gray-700">
-                                                                                                    {
-                                                                                                        fee.total_amount
-                                                                                                    }
-                                                                                                </TableCell>
-                                                                                            </TableRow>
-                                                                                        );
-                                                                                    }
-                                                                                )}
-                                                                            </TableBody>
-                                                                        </Table>
-                                                                    )}
-                                                                </div>
-                                                            </ScrollArea>
                                                         </div>
                                                     </div>
+                                                    <Button
+                                                        onClick={
+                                                            itemId === null
+                                                                ? handleCollegeSubmit
+                                                                : handleUpdateSubmit
+                                                        }
+                                                    >
+                                                        Save
+                                                    </Button>
                                                 </TabsContent>
                                             </Tabs>
                                         </TabsContent>
                                         <TabsContent value="others">
                                             <div className="overflow-x-auto">
-                                                <div className="overflow-x-auto grid grid-cols-2">
+                                                <div className="overflow-x-auto">
                                                     <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
-                                                        <thead className="ltr:text-left rtl:text-right">
+                                                        <tbody className="divide-y divide-gray-200">
+                                                            <tr>
+                                                                <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                                                                    Type
+                                                                </th>
+                                                                <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                                                                    <Select
+                                                                        className="h-auto"
+                                                                        name="other_billing_payment_type"
+                                                                        value={
+                                                                            data.other_billing_payment_type
+                                                                        }
+                                                                        onValueChange={(
+                                                                            value
+                                                                        ) =>
+                                                                            setData(
+                                                                                "other_billing_payment_type",
+                                                                                value
+                                                                            )
+                                                                        }
+                                                                    >
+                                                                        <SelectTrigger>
+                                                                            <SelectValue placeholder="Select" />
+                                                                        </SelectTrigger>
+                                                                        <SelectContent>
+                                                                            <SelectItem value="fee">
+                                                                                Fee
+                                                                            </SelectItem>
+                                                                            <SelectItem value="discount">
+                                                                                Discount
+                                                                            </SelectItem>
+                                                                        </SelectContent>
+                                                                    </Select>
+                                                                </td>
+                                                            </tr>
                                                             <tr>
                                                                 <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
                                                                     Name
                                                                 </th>
                                                                 <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                                                                     <Input
-                                                                        name="title"
+                                                                        name="other_billing_name"
                                                                         type="text"
                                                                         className="text-black"
                                                                         value={
-                                                                            data.title
+                                                                            data.other_billing_name
                                                                         }
                                                                         onChange={(
                                                                             e
                                                                         ) =>
                                                                             setData(
-                                                                                "title",
+                                                                                "other_billing_name",
                                                                                 e
                                                                                     .target
                                                                                     .value
@@ -1342,9 +1115,6 @@ export default function BillingSetup({
                                                                     />
                                                                 </td>
                                                             </tr>
-                                                        </thead>
-
-                                                        <tbody className="divide-y divide-gray-200">
                                                             <tr>
                                                                 <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
                                                                     Amount
@@ -1372,7 +1142,7 @@ export default function BillingSetup({
                                                             </tr>
                                                             <tr>
                                                                 <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
-                                                                    Descrition
+                                                                    Description
                                                                 </th>
                                                                 <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                                                                     <Input
@@ -1398,7 +1168,7 @@ export default function BillingSetup({
                                                         </tbody>
                                                     </table>
 
-                                                    <ScrollArea className="h-auto max-h-[400px] p-4">
+                                                    <ScrollArea className="h-[220px] p-4">
                                                         <div className="h-full">
                                                             {itemId ===
                                                                 null && (
@@ -1410,33 +1180,42 @@ export default function BillingSetup({
                                                                     </TableCaption>
 
                                                                     <TableBody>
+                                                                        <TableRow className="table-fixed odd:bg-gray-50 border-b-2">
+                                                                            <TableCell className="font-medium text-center w-1/12">
+                                                                                Type
+                                                                            </TableCell>
+                                                                            <TableCell className="font-medium text-center w-1/12">
+                                                                                Name
+                                                                            </TableCell>
+                                                                            <TableCell className="font-medium text-center w-1/12">
+                                                                                Amount
+                                                                            </TableCell>
+                                                                            <TableCell className="font-medium text-center w-1/12">
+                                                                                Description
+                                                                            </TableCell>
+                                                                        </TableRow>
                                                                         {otherFees.map(
                                                                             (
                                                                                 fee
                                                                             ) => {
                                                                                 return (
-                                                                                    <TableRow className="odd:bg-gray-50 border-b-2 grid grid-cols-6">
-                                                                                        <TableCell className="font-medium ">
-                                                                                            Name
-                                                                                        </TableCell>
-                                                                                        <TableCell className="font-medium text-gray-700">
+                                                                                    <TableRow className="table-fixed odd:bg-gray-50 border-b-2">
+                                                                                        <TableCell className="font-medium text-center w-1/12 text-gray-700">
                                                                                             {
-                                                                                                fee.title
+                                                                                                fee.other_billing_payment_type
                                                                                             }
                                                                                         </TableCell>
-
-                                                                                        <TableCell className="font-medium ">
-                                                                                            Amount
+                                                                                        <TableCell className="font-medium text-center w-1/12 text-gray-700">
+                                                                                            {
+                                                                                                fee.other_billing_name
+                                                                                            }
                                                                                         </TableCell>
-                                                                                        <TableCell className="font-medium text-gray-700">
+                                                                                        <TableCell className="font-medium text-center w-1/12 text-gray-700">
                                                                                             {
                                                                                                 fee.amount
                                                                                             }
                                                                                         </TableCell>
-                                                                                        <TableCell className="font-medium ">
-                                                                                            Description
-                                                                                        </TableCell>
-                                                                                        <TableCell className="font-medium text-gray-700">
+                                                                                        <TableCell className="font-medium text-center w-1/12 text-gray-700">
                                                                                             {
                                                                                                 fee.description
                                                                                             }
@@ -1452,41 +1231,23 @@ export default function BillingSetup({
                                                     </ScrollArea>
                                                 </div>
                                             </div>
+                                            <div className="flex gap-4">
+                                                <Button
+                                                    onClick={
+                                                        itemId === null
+                                                            ? handleSubmit
+                                                            : handleUpdateSubmit
+                                                    }
+                                                >
+                                                    Save
+                                                </Button>
+                                                <Button onClick={handleFeeList}>
+                                                    Add
+                                                </Button>
+                                            </div>
                                         </TabsContent>
                                     </Tabs>
                                 </div>
-                                <DialogDescription
-                                    className={`grid gap-4 ${
-                                        itemId === null ? "lg:grid-cols" : ""
-                                    }`}
-                                >
-                                    <div
-                                        className={`flex gap-4 ${
-                                            itemId === null
-                                                ? "justify-center"
-                                                : ""
-                                        }`}
-                                    >
-                                        <Button
-                                            className="mt-3"
-                                            onClick={
-                                                itemId === null
-                                                    ? handleSubmit
-                                                    : handleUpdateSubmit
-                                            }
-                                        >
-                                            Save
-                                        </Button>
-                                        {itemId === null && (
-                                            <Button
-                                                className="mt-3"
-                                                onClick={handleFeeList}
-                                            >
-                                                Add
-                                            </Button>
-                                        )}
-                                    </div>
-                                </DialogDescription>
                             </DialogHeader>
                         </DialogContent>
                     </Dialog>

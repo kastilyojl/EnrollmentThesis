@@ -39,15 +39,29 @@ Route::get('/dashboard', function () {
 Route::get('/', function () {
     return Inertia::render('Public/LandingPage');
 })->name('home');
+
+Route::prefix('dashboard')->group(function () {
+    Route::get('/enrollment', function () {
+        return Inertia::render('Dashboard/Admin/Enrollment');
+    })->name('admin.dashboard.enrollment');
+    Route::get('/audit-trail', function () {
+        return Inertia::render('Dashboard/Admin/AuditTrail');
+    })->name('admin.dashboard.audit-trail');
+});
+
+Route::get('/profile',function () {
+    return Inertia::render('Profile/Partials/Edit');
+})->name('profile');
+
 Route::get('/mail-send/{id}/approved', [EmailController::class, 'sendEmailSuccess'])->name('send.email');
 Route::get('/mail-send/{id}/rejected', [EmailController::class, 'sendEmailRejected'])->name('send.email.rejected');
 Route::get('/mail-send/{id}/onhold', [EmailController::class, 'sendEmailOnHold'])->name('send.email.onhold');
 
 Route::group([], function () {
-    Route::get('/404', function () {
+    Route::get('/Error', function () {
         return Inertia::render('Error404');
     })->name('404');
-    Route::get('/200', function () {
+    Route::get('/Success', function () {
         return Inertia::render('Success');
     })->name('200');
 });
@@ -106,7 +120,9 @@ Route::get('/user-management', [UserManagement::class, 'index'])->name('admin.us
 
 Route::prefix('billing')->group(function () {
     Route::get('/', [BillingController::class, 'index'])->name('admin.billing');
-    Route::post('/store', [BillingController::class, 'store'])->name("admin.billing.store");
+    Route::post('/store/other-billing', [BillingController::class, 'storeOtherBilling'])->name("admin.billing.storeOther");
+    Route::post('/store/shs-billing', [BillingController::class, 'storeSHSBilling'])->name("admin.billing.storeSHS");
+    Route::post('/store/college-billing', [BillingController::class, 'storeCollegeBilling'])->name("admin.billing.storeCollege");
     Route::get('/payment', [PaymentController::class, 'indexPayment'])->name("admin.payment");
     
     Route::post('/shs-fee/{id}/update', [BillingController::class, 'editSHSFee'])->name("admin.shsfee.update");

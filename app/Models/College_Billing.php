@@ -12,19 +12,20 @@ class College_Billing extends Model
     protected $table  = 'college_billing';
     protected $fillable = [
         'program_code',
-        'discount_title',
-       'discount_amount',
+        'year_level',
+        'payment_type',
         'down_payment',
-       'prelim',
-       'midterm',
+        'prelim',
+        'midterm',
         'finals',
         'no_unit',
-       'per_unit',
+        'per_unit',
         'total_amount',
     ];
 
+
     public function programs()
     {
-        return $this->belongsTo(User::class, 'program_code', 'code');
+        return $this->belongsTo(Programs::class, 'program_code', 'code');
     }
 }

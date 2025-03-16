@@ -142,9 +142,9 @@ export default function Component() {
         <Card className="bg-gray-50">
             <CardHeader className="flex flex-col  items-stretch space-y-0 border-b p-0 sm:flex-row">
                 <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
-                    <CardTitle>Line Chart - Interactive</CardTitle>
+                    <CardTitle>Student Enrolled</CardTitle>
                     <CardDescription>
-                        Showing total students registered
+                        Showing total students enrolled
                     </CardDescription>
                 </div>
                 <div className="flex">
