@@ -33,7 +33,8 @@ export default {
                     foreground: "hsl(var(--popover-foreground))",
                 },
                 primary: {
-                    DEFAULT: "#225559",
+                    DEFAULT: "#1A488E",
+                    //  "#225559",
                     foreground: "hsl(var(--primary-foreground))",
                 },
                 secondary: {
@@ -63,8 +64,8 @@ export default {
                     5: "hsl(var(--chart-5))",
                 },
                 sidebar: {
-                    DEFAULT: "#EEEEEE",
-                    foreground: "hsl(var(--sidebar-foreground))",
+                    DEFAULT: "#092147",
+                    foreground: "#ffffff",
                     primary: "hsl(var(--sidebar-primary))",
                     "primary-foreground":
                         "hsl(var(--sidebar-primary-foreground))",
@@ -74,6 +75,8 @@ export default {
                     border: "hsl(var(--sidebar-border))",
                     ring: "hsl(var(--sidebar-ring))",
                 },
+
+                customBlue: "#97B2DE",
             },
         },
     },

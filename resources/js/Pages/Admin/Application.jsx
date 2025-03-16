@@ -239,11 +239,11 @@ export default function Application({ student = [] }) {
                                 <DialogDescription>
                                     <ScrollArea className="h-[500px] p-4">
                                         <div>
-                                            <h1 className="text-black font-bold text-md">
+                                            <h1 className="text-black font-bold text-md bg-customBlue px-2 py-1">
                                                 Student Profile
                                             </h1>
                                             <div className="flow-root rounded-lg border border-gray-100 py-3 shadow-xs">
-                                                <dl className="-my-3 grid md:grid-cols-2 gap-x-4 divide-y divide-gray-100 text-sm">
+                                                <dl className="-my-3 grid md:grid-cols-2 gap-x-4 divide-y divide-customBlue text-sm">
                                                     <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
                                                         <dt className=" text-gray-700">
                                                             Email
@@ -339,11 +339,11 @@ export default function Application({ student = [] }) {
                                             </div>
                                         </div>
                                         <div className="mt-3">
-                                            <h1 className="text-black font-bold text-md">
+                                            <h1 className="text-black font-bold text-md bg-customBlue px-2 py-1">
                                                 Personal Profile
                                             </h1>
                                             <div className="flow-root rounded-lg border border-gray-100 py-3 shadow-xs">
-                                                <dl className="-my-3 grid md:grid-cols-2 gap-x-4 divide-y divide-gray-100 text-sm">
+                                                <dl className="-my-3 grid md:grid-cols-2 gap-x-4 divide-y divide-customBlue text-sm">
                                                     <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
                                                         <dt className=" text-gray-700">
                                                             Name
@@ -409,12 +409,12 @@ export default function Application({ student = [] }) {
                                             </div>
                                         </div>
                                         <div className="mt-3">
-                                            <h1 className="text-black font-bold text-md">
+                                            <h1 className="text-black font-bold text-md bg-customBlue px-2 py-1">
                                                 Parents Profile
                                             </h1>
                                             <div className="flow-root rounded-lg border border-gray-100 py-3 shadow-xs">
-                                                <dl className="-my-3 grid md:grid-cols-2 gap-x-4 divide-y divide-gray-100 text-sm">
-                                                    <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
+                                                <dl className="-my-3 grid md:grid-cols-2 gap-x-4 divide-y divide-customBlue text-sm">
+                                                    <div className="grid grid-cols-1 gap-1 p-3 sm:grid-cols-3 sm:gap-4">
                                                         <dt className=" text-gray-700">
                                                             Father's Name
                                                         </dt>
@@ -516,7 +516,7 @@ export default function Application({ student = [] }) {
                                             <SelectTrigger>
                                                 Status
                                             </SelectTrigger>
-                                            <SelectContent>
+                                            <SelectContent className="bg-customBlue">
                                                 <SelectItem value="pending">
                                                     Pending
                                                 </SelectItem>

@@ -61,7 +61,13 @@ export default function Section({ program = [], section = [] }) {
     const [sched, setSched] = useState(false);
     const [selectedRow, setSelectedRow] = useState(null);
     const [rotatedRows, setRotatedRows] = useState({});
-    const { data, setData, errors, post } = useForm({
+    const {
+        data,
+        setData,
+        errors,
+        post,
+        delete: onDelete,
+    } = useForm({
         name: "",
         program_code: "",
         semester: "",
@@ -88,6 +94,23 @@ export default function Section({ program = [], section = [] }) {
         });
     };
 
+    const handleEdit = (section) => {
+        setItemId(section);
+        setAdd(true);
+        setData({
+            id: section.id,
+            name: section.name,
+            program_code: section.program_code,
+            semester: section.semester,
+            year_level: section.year_level,
+            department:
+                section.year_level === "Grade 11" ||
+                section.year_level === "Grade 12"
+                    ? "SHS"
+                    : "College",
+        });
+    };
+
     const handleSubmit = () => {
         console.log(data);
         post(route("admin.section.store"), {
@@ -106,6 +129,42 @@ export default function Section({ program = [], section = [] }) {
             },
         });
     };
+
+    const handleUpdateSubmit = () => {
+        post(route("admin.section.update", { id: itemId }), {
+            onSuccess: () => {
+                toast("Section has been updated", {
+                    description: "Sunday, December 03, 2023 at 9:00 AM",
+                });
+                setAdd(false);
+                setData({
+                    name: "",
+                    program_code: "",
+                    semester: "",
+                    year_level: "",
+                    department: "",
+                });
+            },
+        });
+    };
+
+    const handleDel = (section) => {
+        setItemId(section);
+        setDel(true);
+    };
+
+    const handleSubmitDel = () => {
+        console.log("Delete id", itemId.id);
+        onDelete(route("admin.section.destroy", { id: itemId }), {
+            onSuccess: () => {
+                toast("Section has been deleted", {
+                    description: "Sunday, December 03, 2023 at 9:00 AM",
+                });
+                setDel(false);
+            },
+        });
+    };
+
     const handleShowSubject = (index) => {
         if (selectedRow === index) {
             setSelectedRow(null);
@@ -151,7 +210,7 @@ export default function Section({ program = [], section = [] }) {
                                 Filter
                                 <Filter className="h-5 ml-2" />
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent>
+                            <DropdownMenuContent className="bg-customBlue text-white">
                                 <DropdownMenuItem>
                                     Computer Science
                                 </DropdownMenuItem>
@@ -236,8 +295,14 @@ export default function Section({ program = [], section = [] }) {
                                             )}
                                     </TableCell>
                                     <TableCell className="flex">
-                                        <Edit className="h-5 text-blue-600" />
-                                        <Trash className="h-5 text-red-600" />
+                                        <Edit
+                                            className="h-5 text-blue-600"
+                                            onClick={() => handleEdit(section)}
+                                        />
+                                        <Trash
+                                            className="h-5 text-red-600"
+                                            onClick={() => handleDel(section)}
+                                        />
                                     </TableCell>
                                 </TableRow>
                                 {selectedRow === index && show && (
@@ -289,7 +354,6 @@ export default function Section({ program = [], section = [] }) {
                                             <Input
                                                 name="name"
                                                 type="text"
-                                                placeholder="Program name"
                                                 value={data.name}
                                                 onChange={(e) =>
                                                     setData(
@@ -432,7 +496,11 @@ export default function Section({ program = [], section = [] }) {
                                     </div>
                                     <Button
                                         className="mt-3"
-                                        onClick={handleSubmit}
+                                        onClick={
+                                            itemId === null
+                                                ? handleSubmit
+                                                : handleUpdateSubmit
+                                        }
                                     >
                                         Save
                                     </Button>
@@ -461,6 +529,35 @@ export default function Section({ program = [], section = [] }) {
                                         section={sectionItem}
                                         initialData={sectionItem.schedule}
                                     />
+                                </DialogDescription>
+                            </DialogHeader>
+                        </DialogContent>
+                    </Dialog>
+                )}
+
+                {del && (
+                    <Dialog open={del} onOpenChange={(open) => setDel(open)}>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Delete Program</DialogTitle>
+                                <DialogDescription>
+                                    <div className="my-3">
+                                        Are you sure to delete this section?
+                                    </div>
+                                    <div className="flex justify-end gap-2">
+                                        <Button
+                                            variant="outline"
+                                            onClick={handleSubmitDel}
+                                        >
+                                            Yes
+                                        </Button>
+                                        <Button
+                                            className="bg-red-600"
+                                            onClick={() => setDel(false)}
+                                        >
+                                            No
+                                        </Button>
+                                    </div>
                                 </DialogDescription>
                             </DialogHeader>
                         </DialogContent>

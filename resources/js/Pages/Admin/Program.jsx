@@ -82,7 +82,6 @@ export default function Program({ program = [] }) {
     };
 
     const handleSubmitDel = () => {
-        console.log("Delete id", itemId.id);
         onDelete(route("admin.program.destroy", { id: itemId }), {
             onSuccess: () => {
                 toast("Program has been deleted", {
@@ -388,7 +387,6 @@ export default function Program({ program = [] }) {
                                     >
                                         Save
                                     </Button>
-                                    ;
                                 </DialogDescription>
                             </DialogHeader>
                         </DialogContent>

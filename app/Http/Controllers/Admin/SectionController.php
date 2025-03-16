@@ -62,8 +62,19 @@ class SectionController extends Controller
             $scheduleData['saturday'] = $request->saturday_start . ' - ' . $request->saturday_end;
         }
     
-        // Create the new schedule record
         Schedule::create($scheduleData);
+    }
+
+    public function updateSection(Request $request) {
+
+        $items = Section::where('id', $request->id)->first();
+        $items->update([
+            'name'=>$request->name,
+            'program_code' => $request->program_code,
+            'semester' => $request->semester,
+            'year_level' => $request->year_level,
+           
+        ]);
     }
 
     public function editSchedule(Request $request, $id) {
@@ -111,6 +122,10 @@ class SectionController extends Controller
         }
     
         $schedule->update($scheduleData);
+    }
+
+    public function destroy($id) {
+        Section::findOrFail($id)->delete();
     }
     
 }

@@ -362,7 +362,9 @@ export default function BillingSetup({
                             <div className="w-full">
                                 <Separator />
                             </div>
-                            <div className="w-full">Senior High School</div>
+                            <div className="w-full text-primary">
+                                Senior High School
+                            </div>
                             <div className="w-full">
                                 {" "}
                                 <Separator />
@@ -374,7 +376,7 @@ export default function BillingSetup({
                             <div className="w-full">
                                 <Separator />
                             </div>
-                            <div className="w-full">College</div>
+                            <div className="w-full text-primary">College</div>
                             <div className="w-full">
                                 {" "}
                                 <Separator />
@@ -385,7 +387,7 @@ export default function BillingSetup({
                             <div className="w-full">
                                 <Separator />
                             </div>
-                            <div className="w-full">Other</div>
+                            <div className="w-full text-primary">Other</div>
                             <div className="w-full">
                                 {" "}
                                 <Separator />

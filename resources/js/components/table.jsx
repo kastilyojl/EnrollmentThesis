@@ -15,6 +15,8 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Download, Edit, MoreHorizontal, Trash } from "lucide-react";
+import BadgeSuccess from "./BadgeSuccess";
+import BadgeWarning from "./BadgeWarning";
 
 export default function TableData({
     tablerow,
@@ -42,7 +44,13 @@ export default function TableData({
                                         className="font-medium"
                                         key={idx}
                                     >
-                                        {col}
+                                        {col === "approved" ? (
+                                            <BadgeSuccess>{col}</BadgeSuccess>
+                                        ) : col === "pending" ? (
+                                            <BadgeWarning>{col}</BadgeWarning>
+                                        ) : (
+                                            col
+                                        )}
                                     </TableCell>
                                 );
                             })}

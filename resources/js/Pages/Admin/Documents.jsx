@@ -24,6 +24,8 @@ import {
     SelectItem,
     SelectTrigger,
 } from "@/components/ui/select";
+import { Check } from "lucide-react";
+import BadgeSuccess from "@/components/BadgeSuccess";
 
 export default function Documents({ student = [] }) {
     const tableHeader = [
@@ -222,7 +224,7 @@ export default function Documents({ student = [] }) {
                                 <DialogDescription>
                                     <ScrollArea className="p-4">
                                         <div>
-                                            <div className="grid rounded-lg grid-cols-2 border py-4 px-2">
+                                            <div className="grid grid-cols-2 border border-customBlue py-4 px-2">
                                                 <div className="flex">
                                                     <InputLabel>
                                                         Name:
@@ -252,16 +254,26 @@ export default function Documents({ student = [] }) {
                                                     <InputLabel>
                                                         Application Status:
                                                     </InputLabel>
-                                                    <p className="text-center pl-4 font-medium text-gray-900">
-                                                        {data.status}
+                                                    <p
+                                                        className="
+                                                        text-center pl-4 font-medium text-gray-900"
+                                                    >
+                                                        {data.status ===
+                                                        "approved" ? (
+                                                            <BadgeSuccess>
+                                                                {data.status}
+                                                            </BadgeSuccess>
+                                                        ) : (
+                                                            data.status
+                                                        )}
                                                     </p>
                                                 </div>
                                             </div>
-                                            <h1 className="text-black font-bold text-md mt-3">
+                                            <h1 className="text-black font-bold text-md mt-3 bg-customBlue px-2 py-1">
                                                 Basic Requirements
                                             </h1>
-                                            <div className="flow-root rounded-lg border  py-3 shadow-xs">
-                                                <dl className="-my-3 grid md:grid-cols-2 gap-x-4 divide-y divide-gray-100 text-sm">
+                                            <div className="flow-root border border-customBlue py-3 shadow-xs">
+                                                <dl className="-my-3 grid md:grid-cols-2 gap-x-4 divide-y divide-customBlue text-sm">
                                                     <div className="grid grid-cols-1 gap-1 p-3  sm:grid-cols-[60%_20%_20%] sm:gap-4">
                                                         <dt className="font-medium text-gray-900">
                                                             Form 138A / Report
@@ -618,12 +630,12 @@ export default function Documents({ student = [] }) {
                                             </div>
                                         </div>
                                         <div className="mt-3">
-                                            <h1 className="text-black font-bold text-md">
+                                            <h1 className="text-black font-bold text-md bg-customBlue px-2 py-1">
                                                 Additional Requirements for
                                                 Transferee
                                             </h1>
-                                            <div className="flow-root rounded-lg border py-3 shadow-xs">
-                                                <dl className="-my-3 grid md:grid-cols-2 gap-x-4 divide-y divide-gray-100 text-sm">
+                                            <div className="flow-root border border-customBlue py-3 shadow-xs">
+                                                <dl className="-my-3 grid md:grid-cols-2 gap-x-4 divide-y divide-customBlue text-sm">
                                                     <div className="grid grid-cols-1 gap-1 p-3  sm:grid-cols-[60%_20%_20%] sm:gap-4">
                                                         <dt className="font-medium text-gray-900">
                                                             Honorabol Dismissal
@@ -851,7 +863,7 @@ export default function Documents({ student = [] }) {
                                             <SelectTrigger>
                                                 Status
                                             </SelectTrigger>
-                                            <SelectContent>
+                                            <SelectContent className="bg-customBlue">
                                                 <SelectItem value="pending">
                                                     Pending
                                                 </SelectItem>

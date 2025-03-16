@@ -8,7 +8,7 @@ export default function BadgeWarning({ children }) {
                     xmlns="http://www.w3.org/2000/svg"
                     fill="currentColor"
                     viewBox="0 0 24 24"
-                    className="-ms-1 me-1.5 size-6"
+                    className="-ms-1 me-1.5 size-4"
                 >
                     <path d="M8 7h3v10H8zm5 0h3v10h-3z"></path>
                 </svg>

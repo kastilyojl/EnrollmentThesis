@@ -118,7 +118,7 @@ export default function SHSBilling({ shs_fee = [] }) {
                 {shs_fee.map((shs_fee) => (
                     <Card
                         key={shs_fee.id}
-                        className="w-full text-sm odd:bg-gray-100 space-y-2"
+                        className="w-full text-sm odd:bg-customBlue even:bg-red-300 space-y-2 "
                     >
                         <CardHeader className="w-full">
                             <CardTitle className="text-md text-primary flex justify-between">

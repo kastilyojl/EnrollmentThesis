@@ -166,7 +166,7 @@ export default function CollegeBilling({ college_fee = [] }) {
                             .map((college_fee) => (
                                 <Card
                                     key={college_fee.id}
-                                    className="w-full text-sm odd:bg-gray-100 space-y-2"
+                                    className="w-full text-sm odd:bg-customBlue even:bg-green-300 space-y-2"
                                 >
                                     <CardHeader className="w-full">
                                         <CardTitle className="text-md text-primary flex justify-between">
@@ -310,7 +310,7 @@ export default function CollegeBilling({ college_fee = [] }) {
                             .map((college_fee) => (
                                 <Card
                                     key={college_fee.id}
-                                    className="w-full text-sm odd:bg-gray-100 space-y-2"
+                                    className="w-full text-sm odd:bg-customBlue even:bg-yellow-300 space-y-2"
                                 >
                                     <CardHeader className="w-full">
                                         <CardTitle className="text-md text-primary flex justify-between">

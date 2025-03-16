@@ -149,6 +149,10 @@ export function AppSidebar({ ...props }) {
                     },
                     {
                         title: "User Management",
+                        url: route("admin.user.management"),
+                    },
+                    {
+                        title: "Help",
                         url: "#",
                     },
                 ],

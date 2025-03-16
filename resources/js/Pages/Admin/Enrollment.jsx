@@ -26,6 +26,10 @@ import {
 } from "@/components/ui/select";
 import ApplicationForm from "../Public/Section/Application";
 import { Label } from "@/components/ui/label";
+import PaymentDetails from "./Admission/PaymentDetails";
+import DocumentDetails from "./Admission/DocumentDetails";
+import BadgeSuccess from "@/components/BadgeSuccess";
+import BadgeWarning from "@/components/BadgeWarning";
 
 export default function Application({ student = [], college_fee = [] }) {
     const tableHeader = [
@@ -86,11 +90,27 @@ export default function Application({ student = [], college_fee = [] }) {
 
         // documents
         doc_status: students.documents.status,
+        form_138A: students.documents.form_138A,
+        form_137: students.documents.form_137,
+        good_moral: students.documents.good_moral,
+        psa: students.documents.psa,
+        pic_2x2: students.documents.pic_2x2,
+        ctc_transferee: students.documents.ctc_transferee,
+        grade_transferee: students.documents.grade_transferee,
+        f137_transferee: students.documents.f137_transferee,
+
         // payment
         payment_status: students.payment_verification.status,
+        payment_verification_name: students.payment_verification.name,
+        payment_verification_email: students.payment_verification.email,
+        payment_purpose: students.payment_verification.purpose,
+        payment_semester: students.payment_verification.semester,
+        payment_reference: students.payment_verification.reference,
+        payment_amount: students.payment_verification.amount,
+        payment_receipt: students.payment_verification.payment_receipt,
+        payment_created_at: students.payment_verification.created_at,
     }));
 
-    // Filtered data with only the required columns
     const tableData = studentData.map((student) => ({
         id: student.id,
         name:
@@ -186,6 +206,26 @@ export default function Application({ student = [], college_fee = [] }) {
             guardian_name: student.guardian_name,
             guardian_relationship: student.guardian_relationship,
             guardian_phone: student.guardian_phone,
+
+            doc_status: student.doc_status,
+            form_138A: student.form_138A,
+            form_137: student.form_137,
+            good_moral: student.good_moral,
+            psa: student.psa,
+            pic_2x2: student.pic_2x2,
+            ctc_transferee: student.ctc_transferee,
+            grade_transferee: student.grade_transferee,
+            form137_transferee: student.form137_transferee,
+
+            payment_status: student.payment_status,
+            payment_verification_name: student.payment_verification_name,
+            payment_verification_email: student.payment_verification_email,
+            payment_purpose: student.payment_purpose,
+            payment_semester: student.payment_semester,
+            payment_reference: student.payment_reference,
+            payment_amount: student.payment_amount,
+            payment_receipt: student.payment_receipt,
+            payment_created_at: student.payment_created_at,
         });
 
         setAdd(true);
@@ -267,31 +307,44 @@ export default function Application({ student = [], college_fee = [] }) {
                                         </TabsList>
                                     </div>
                                     <TabsContent value="details">
-                                        <DialogTitle>
-                                            Application Details
-                                        </DialogTitle>
                                         <DialogDescription>
                                             <ScrollArea className="h-[500px] p-4">
                                                 <div>
-                                                    <h1 className="text-black font-bold text-md">
+                                                    <div className="rounded-lg  shadow-xs flex justify-end">
+                                                        {data.status ===
+                                                        "approved" ? (
+                                                            <BadgeSuccess>
+                                                                {data.status}
+                                                            </BadgeSuccess>
+                                                        ) : data.status ===
+                                                          "pending" ? (
+                                                            <BadgeWarning>
+                                                                {" "}
+                                                                {data.status}
+                                                            </BadgeWarning>
+                                                        ) : (
+                                                            data.status
+                                                        )}
+                                                    </div>
+                                                    <h1 className="text-black font-bold text-md mt-3 bg-customBlue px-2 py-1">
                                                         Student Profile
                                                     </h1>
                                                     <div className="flow-root rounded-lg border border-gray-100 py-3 shadow-xs">
-                                                        <dl className="-my-3 grid md:grid-cols-2 gap-x-4 divide-y divide-gray-100 text-sm">
+                                                        <dl className="-my-3 grid md:grid-cols-2 gap-x-4 divide-y divide-customBlue text-sm">
                                                             <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                                <dt className="font-medium text-gray-900">
+                                                                <dt className="text-gray-700">
                                                                     Email
                                                                 </dt>
-                                                                <dd className="text-gray-700 sm:col-span-2">
+                                                                <dd className="font-medium text-gray-900 sm:col-span-2">
                                                                     {data.email}
                                                                 </dd>
                                                             </div>
 
                                                             <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                                <dt className="font-medium text-gray-900">
+                                                                <dt className="text-gray-700">
                                                                     Branch
                                                                 </dt>
-                                                                <dd className="text-gray-700 sm:col-span-2">
+                                                                <dd className="font-medium text-gray-900 sm:col-span-2">
                                                                     {
                                                                         data.branch
                                                                     }
@@ -299,10 +352,10 @@ export default function Application({ student = [], college_fee = [] }) {
                                                             </div>
 
                                                             <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                                <dt className="font-medium text-gray-900">
+                                                                <dt className="text-gray-700">
                                                                     Department
                                                                 </dt>
-                                                                <dd className="text-gray-700 sm:col-span-2">
+                                                                <dd className="font-medium text-gray-900 sm:col-span-2">
                                                                     {
                                                                         data.department
                                                                     }
@@ -310,10 +363,10 @@ export default function Application({ student = [], college_fee = [] }) {
                                                             </div>
 
                                                             <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                                <dt className="font-medium text-gray-900">
+                                                                <dt className="text-gray-700">
                                                                     Program
                                                                 </dt>
-                                                                <dd className="text-gray-700 sm:col-span-2">
+                                                                <dd className="font-medium text-gray-900 sm:col-span-2">
                                                                     {
                                                                         data.program
                                                                     }
@@ -321,10 +374,10 @@ export default function Application({ student = [], college_fee = [] }) {
                                                             </div>
 
                                                             <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                                <dt className="font-medium text-gray-900">
+                                                                <dt className="text-gray-700">
                                                                     Year Level
                                                                 </dt>
-                                                                <dd className="text-gray-700 sm:col-span-2">
+                                                                <dd className="font-medium text-gray-900 sm:col-span-2">
                                                                     {
                                                                         data.year_level
                                                                     }
@@ -332,20 +385,20 @@ export default function Application({ student = [], college_fee = [] }) {
                                                             </div>
 
                                                             <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                                <dt className="font-medium text-gray-900">
+                                                                <dt className="text-gray-700">
                                                                     Semester
                                                                 </dt>
-                                                                <dd className="text-gray-700 sm:col-span-2">
+                                                                <dd className="font-medium text-gray-900 sm:col-span-2">
                                                                     {
                                                                         data.semester
                                                                     }
                                                                 </dd>
                                                             </div>
                                                             <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                                <dt className="font-medium text-gray-900">
+                                                                <dt className="text-gray-700">
                                                                     School Year
                                                                 </dt>
-                                                                <dd className="text-gray-700 sm:col-span-2">
+                                                                <dd className="font-medium text-gray-900 sm:col-span-2">
                                                                     {
                                                                         data.school_year
                                                                     }
@@ -353,22 +406,22 @@ export default function Application({ student = [], college_fee = [] }) {
                                                             </div>
 
                                                             <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                                <dt className="font-medium text-gray-900">
+                                                                <dt className="text-gray-700">
                                                                     Classified
                                                                     As
                                                                 </dt>
-                                                                <dd className="text-gray-700 sm:col-span-2">
+                                                                <dd className="font-medium text-gray-900 sm:col-span-2">
                                                                     {
                                                                         data.classified_as
                                                                     }
                                                                 </dd>
                                                             </div>
                                                             <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                                <dt className="font-medium text-gray-900">
+                                                                <dt className="text-gray-700">
                                                                     Last School
                                                                     Attended
                                                                 </dt>
-                                                                <dd className="text-gray-700 sm:col-span-2">
+                                                                <dd className="font-medium text-gray-900 sm:col-span-2">
                                                                     {
                                                                         data.last_school_attended
                                                                     }
@@ -376,11 +429,11 @@ export default function Application({ student = [], college_fee = [] }) {
                                                             </div>
 
                                                             <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                                <dt className="font-medium text-gray-900">
+                                                                <dt className="text-gray-700">
                                                                     Last School
                                                                     Address
                                                                 </dt>
-                                                                <dd className="text-gray-700 sm:col-span-2">
+                                                                <dd className="font-medium text-gray-900 sm:col-span-2">
                                                                     {
                                                                         data.last_school_address
                                                                     }
@@ -390,25 +443,25 @@ export default function Application({ student = [], college_fee = [] }) {
                                                     </div>
                                                 </div>
                                                 <div className="mt-3">
-                                                    <h1 className="text-black font-bold text-md">
+                                                    <h1 className="text-black font-bold text-md bg-customBlue px-2 py-1">
                                                         Personal Profile
                                                     </h1>
                                                     <div className="flow-root rounded-lg border border-gray-100 py-3 shadow-xs">
-                                                        <dl className="-my-3 grid md:grid-cols-2 gap-x-4 divide-y divide-gray-100 text-sm">
+                                                        <dl className="-my-3 grid md:grid-cols-2 gap-x-4 divide-y divide-customBlue text-sm">
                                                             <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                                <dt className="font-medium text-gray-900">
+                                                                <dt className="text-gray-700">
                                                                     Name
                                                                 </dt>
-                                                                <dd className="text-gray-700 sm:col-span-2">
+                                                                <dd className="font-medium text-gray-900 sm:col-span-2">
                                                                     {data.name}
                                                                 </dd>
                                                             </div>
 
                                                             <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                                <dt className="font-medium text-gray-900">
+                                                                <dt className="text-gray-700">
                                                                     Address
                                                                 </dt>
-                                                                <dd className="text-gray-700 sm:col-span-2">
+                                                                <dd className="font-medium text-gray-900 sm:col-span-2">
                                                                     {
                                                                         data.address
                                                                     }
@@ -416,11 +469,11 @@ export default function Application({ student = [], college_fee = [] }) {
                                                             </div>
 
                                                             <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                                <dt className="font-medium text-gray-900">
+                                                                <dt className="text-gray-700">
                                                                     Date of
                                                                     Birth
                                                                 </dt>
-                                                                <dd className="text-gray-700 sm:col-span-2">
+                                                                <dd className="font-medium text-gray-900 sm:col-span-2">
                                                                     {
                                                                         data.birth_date
                                                                     }
@@ -428,11 +481,11 @@ export default function Application({ student = [], college_fee = [] }) {
                                                             </div>
 
                                                             <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                                <dt className="font-medium text-gray-900">
+                                                                <dt className="text-gray-700">
                                                                     Place of
                                                                     Birth
                                                                 </dt>
-                                                                <dd className="text-gray-700 sm:col-span-2">
+                                                                <dd className="font-medium text-gray-900 sm:col-span-2">
                                                                     {
                                                                         data.birth_place
                                                                     }
@@ -440,20 +493,20 @@ export default function Application({ student = [], college_fee = [] }) {
                                                             </div>
 
                                                             <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                                <dt className="font-medium text-gray-900">
+                                                                <dt className="text-gray-700">
                                                                     Civil Status
                                                                 </dt>
-                                                                <dd className="text-gray-700 sm:col-span-2">
+                                                                <dd className="font-medium text-gray-900 sm:col-span-2">
                                                                     {
                                                                         data.civil_status
                                                                     }
                                                                 </dd>
                                                             </div>
                                                             <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                                <dt className="font-medium text-gray-900">
+                                                                <dt className="text-gray-700">
                                                                     Gender
                                                                 </dt>
-                                                                <dd className="text-gray-700 sm:col-span-2">
+                                                                <dd className="font-medium text-gray-900 sm:col-span-2">
                                                                     {
                                                                         data.gender
                                                                     }
@@ -461,10 +514,10 @@ export default function Application({ student = [], college_fee = [] }) {
                                                             </div>
 
                                                             <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                                <dt className="font-medium text-gray-900">
+                                                                <dt className="text-gray-700">
                                                                     Religion
                                                                 </dt>
-                                                                <dd className="text-gray-700 sm:col-span-2">
+                                                                <dd className="font-medium text-gray-900 sm:col-span-2">
                                                                     {
                                                                         data.religion
                                                                     }
@@ -474,17 +527,17 @@ export default function Application({ student = [], college_fee = [] }) {
                                                     </div>
                                                 </div>
                                                 <div className="mt-3">
-                                                    <h1 className="text-black font-bold text-md">
+                                                    <h1 className="text-black font-bold text-md bg-customBlue px-2 py-1">
                                                         Parents Profile
                                                     </h1>
                                                     <div className="flow-root rounded-lg border border-gray-100 py-3 shadow-xs">
-                                                        <dl className="-my-3 grid md:grid-cols-2 gap-x-4 divide-y divide-gray-100 text-sm">
+                                                        <dl className="-my-3 grid md:grid-cols-2 gap-x-4 divide-y divide-customBlue text-sm">
                                                             <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                                <dt className="font-medium text-gray-900">
+                                                                <dt className="text-gray-700">
                                                                     Father's
                                                                     Name
                                                                 </dt>
-                                                                <dd className="text-gray-700 sm:col-span-2">
+                                                                <dd className="font-medium text-gray-900 sm:col-span-2">
                                                                     {
                                                                         data.father_name
                                                                     }
@@ -492,10 +545,10 @@ export default function Application({ student = [], college_fee = [] }) {
                                                             </div>
 
                                                             <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                                <dt className="font-medium text-gray-900">
+                                                                <dt className="text-gray-700">
                                                                     Occupation
                                                                 </dt>
-                                                                <dd className="text-gray-700 sm:col-span-2">
+                                                                <dd className="font-medium text-gray-900 sm:col-span-2">
                                                                     {
                                                                         data.father_occupation
                                                                     }
@@ -503,10 +556,10 @@ export default function Application({ student = [], college_fee = [] }) {
                                                             </div>
 
                                                             <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                                <dt className="font-medium text-gray-900">
+                                                                <dt className="text-gray-700">
                                                                     Phone #
                                                                 </dt>
-                                                                <dd className="text-gray-700 sm:col-span-2">
+                                                                <dd className="font-medium text-gray-900 sm:col-span-2">
                                                                     {
                                                                         data.father_phone
                                                                     }
@@ -514,11 +567,11 @@ export default function Application({ student = [], college_fee = [] }) {
                                                             </div>
                                                             <div></div>
                                                             <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                                <dt className="font-medium text-gray-900">
+                                                                <dt className="text-gray-700">
                                                                     Mother's
                                                                     Name
                                                                 </dt>
-                                                                <dd className="text-gray-700 sm:col-span-2">
+                                                                <dd className="font-medium text-gray-900 sm:col-span-2">
                                                                     {
                                                                         data.mother_name
                                                                     }
@@ -526,10 +579,10 @@ export default function Application({ student = [], college_fee = [] }) {
                                                             </div>
 
                                                             <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                                <dt className="font-medium text-gray-900">
+                                                                <dt className="text-gray-700">
                                                                     Occupation
                                                                 </dt>
-                                                                <dd className="text-gray-700 sm:col-span-2">
+                                                                <dd className="font-medium text-gray-900 sm:col-span-2">
                                                                     {
                                                                         data.mother_occupation
                                                                     }
@@ -537,10 +590,10 @@ export default function Application({ student = [], college_fee = [] }) {
                                                             </div>
 
                                                             <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                                <dt className="font-medium text-gray-900">
+                                                                <dt className="text-gray-700">
                                                                     Phone #
                                                                 </dt>
-                                                                <dd className="text-gray-700 sm:col-span-2">
+                                                                <dd className="font-medium text-gray-900 sm:col-span-2">
                                                                     {
                                                                         data.mother_phone
                                                                     }
@@ -548,11 +601,11 @@ export default function Application({ student = [], college_fee = [] }) {
                                                             </div>
                                                             <br />
                                                             <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                                <dt className="font-medium text-gray-900">
+                                                                <dt className="text-gray-700">
                                                                     Guardian's
                                                                     Name
                                                                 </dt>
-                                                                <dd className="text-gray-700 sm:col-span-2">
+                                                                <dd className="font-medium text-gray-900 sm:col-span-2">
                                                                     {
                                                                         data.guardian_name
                                                                     }
@@ -560,20 +613,20 @@ export default function Application({ student = [], college_fee = [] }) {
                                                             </div>
 
                                                             <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                                <dt className="font-medium text-gray-900">
+                                                                <dt className="text-gray-700">
                                                                     Relationship
                                                                 </dt>
-                                                                <dd className="text-gray-700 sm:col-span-2">
+                                                                <dd className="font-medium text-gray-900 sm:col-span-2">
                                                                     {
                                                                         data.guardian_relationship
                                                                     }
                                                                 </dd>
                                                             </div>
                                                             <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                                                                <dt className="font-medium text-gray-900">
+                                                                <dt className="text-gray-700">
                                                                     Phone #
                                                                 </dt>
-                                                                <dd className="text-gray-700 sm:col-span-2">
+                                                                <dd className="font-medium text-gray-900 sm:col-span-2">
                                                                     {
                                                                         data.guardian_phone
                                                                     }
@@ -586,10 +639,14 @@ export default function Application({ student = [], college_fee = [] }) {
                                         </DialogDescription>
                                     </TabsContent>
                                     <TabsContent value="documents">
-                                        Display Student Documents Here
+                                        <ScrollArea className="h-[500px] p-4">
+                                            <DocumentDetails data={data} />
+                                        </ScrollArea>
                                     </TabsContent>
                                     <TabsContent value="payment">
-                                        Display Student Payment Here
+                                        <ScrollArea className="h-[500px] p-4">
+                                            <PaymentDetails data={data} />
+                                        </ScrollArea>
                                     </TabsContent>
                                     <TabsContent value="school_fee">
                                         <div>
@@ -787,7 +844,7 @@ export default function Application({ student = [], college_fee = [] }) {
                             </DialogHeader>
                         </DialogContent>
                     </Dialog>
-                )}{" "}
+                )}
                 {create && <ApplicationForm />}
                 {del && (
                     <Dialog open={del} onOpenChange={(open) => setDel(open)}>

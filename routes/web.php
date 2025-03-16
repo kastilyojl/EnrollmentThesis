@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\ProgramController;
 use App\Http\Controllers\Admin\SectionController;
 use App\Http\Controllers\Admin\SubjectController;
+use App\Http\Controllers\Admin\UserManagement;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\Student\ApplicationController;
@@ -97,7 +98,11 @@ Route::delete('/subject/{id}/delete', [SubjectController::class, 'destroy'])->na
 Route::get('/section', [SectionController::class, 'index'])->name("admin.section");
 Route::post('/section/store', [SectionController::class, 'store'])->name("admin.section.store");
 Route::post('/section/schedule/store', [SectionController::class, 'storeSchedule'])->name("admin.schedule.store");
-Route::post('/section/{id}/update', [SectionController::class, 'editSchedule'])->name("admin.schedule.update");
+Route::post('/section/{id}/update', [SectionController::class, 'updateSection'])->name("admin.section.update");
+Route::post('/schedule/{id}/update', [SectionController::class, 'editSchedule'])->name("admin.schedule.update");
+Route::delete('/section/{id}/delete', [SectionController::class, 'destroy'])->name("admin.section.destroy");
+
+Route::get('/user-management', [UserManagement::class, 'index'])->name('admin.user.management');
 
 Route::prefix('billing')->group(function () {
     Route::get('/', [BillingController::class, 'index'])->name('admin.billing');

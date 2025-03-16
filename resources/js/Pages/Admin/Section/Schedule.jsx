@@ -77,19 +77,13 @@ export default function Schedule({ subject, setSched, section, initialData }) {
                     <div className="flex justify-between">
                         <Label htmlFor="name">Subject</Label>
                         <p className="font-medium text-gray-900 underline">
-                            {subject.name}
+                            {subject.code}: {subject.name}
                         </p>
                     </div>
                     <div className="flex justify-between">
                         <Label>Section:</Label>
                         <p className="font-medium text-gray-900 underline">
                             {section.name}
-                        </p>
-                    </div>
-                    <div className="flex justify-between">
-                        <Label>Subject:</Label>
-                        <p className="font-medium text-gray-900 underline">
-                            {subject.code}
                         </p>
                     </div>
                 </div>

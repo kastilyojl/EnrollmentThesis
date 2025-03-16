@@ -84,6 +84,7 @@ export default function Payment({ program = [], payment = [] }) {
     const [itemId, setItemId] = useState(null);
     const [add, setAdd] = useState(false);
     const [del, setDel] = useState(false);
+    const enrollmentUrl = import.meta.env.VITE_ENROLLMENT_URL;
 
     const handleAdd = () => {
         setItemId(null);
@@ -428,6 +429,40 @@ export default function Payment({ program = [], payment = [] }) {
                                                 ))}
                                         </div>
                                         <div>
+                                            <Label htmlFor="reference">
+                                                Reference
+                                            </Label>
+                                            <Input
+                                                name="reference"
+                                                type="text"
+                                                className="text-black"
+                                                value={data.reference}
+                                                onChange={(e) =>
+                                                    setData(
+                                                        "reference",
+                                                        e.target.value
+                                                    )
+                                                }
+                                            />
+                                            {(errors.reference &&
+                                                !data.reference && (
+                                                    <InputError
+                                                        message={
+                                                            errors.reference
+                                                        }
+                                                        className="text-red-500"
+                                                    />
+                                                )) ||
+                                                (errors.reference && (
+                                                    <InputError
+                                                        message={
+                                                            errors.reference
+                                                        }
+                                                        className="text-red-500"
+                                                    />
+                                                ))}
+                                        </div>
+                                        <div>
                                             <Label
                                                 htmlFor="payment_receipt"
                                                 className="block"
@@ -444,7 +479,7 @@ export default function Payment({ program = [], payment = [] }) {
                                             >
                                                 {data.payment_receipt && (
                                                     <img
-                                                        src={`http://127.0.0.1:8000/private-files/${data.payment_receipt
+                                                        src={`${enrollmentUrl}/private-files/${data.payment_receipt
                                                             .split("/")
                                                             .pop()}`}
                                                         alt="Payment Receipt"
@@ -497,7 +532,7 @@ export default function Payment({ program = [], payment = [] }) {
                                             <SelectTrigger>
                                                 Status
                                             </SelectTrigger>
-                                            <SelectContent>
+                                            <SelectContent className="bg-customBlue">
                                                 <SelectItem value="pending">
                                                     Pending
                                                 </SelectItem>

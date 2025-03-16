@@ -331,10 +331,9 @@ export default function TuitionFee() {
                                 Are you absolutely sure?
                             </AlertDialogTitle>
                             <AlertDialogDescription>
-                                Before finalizing your registration, please
-                                ensure that all details are accurate. Are you
-                                sure you want to continue with the provided
-                                information?"
+                                Before finalizing your payment, please ensure
+                                that all details are accurate. Are you sure you
+                                want to continue with the provided information?"
                             </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
