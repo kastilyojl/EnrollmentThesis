@@ -37,6 +37,7 @@ import SchoolFeeDetails from "./Admission/SchoolFeeDetails";
 export default function Application({
     student = [],
     college_fee = [],
+    other_fee = [],
     subjects = [],
 }) {
     const tableHeader = [
@@ -342,7 +343,9 @@ export default function Application({
                                     <TabsContent value="school_fee">
                                         <ScrollArea className="h-[500px] p-4">
                                             <SchoolFeeDetails
+                                                student={student}
                                                 college_fee={college_fee}
+                                                other_fee={other_fee}
                                             />
                                         </ScrollArea>
                                     </TabsContent>

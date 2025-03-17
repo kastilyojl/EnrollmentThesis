@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('programs', function (Blueprint $table) {
             $table->id();
-            $table->string('code',50)->index();
+            $table->string('code',50)->unique();
             $table->string('name',255);
             $table->string('status',255);
             $table->text('campus');
@@ -26,7 +26,7 @@ return new class extends Migration
         Schema::create('subjects', function (Blueprint $table) {
             $table->id();
             $table->string('program_code');
-            $table->string('code', 50);
+            $table->string('code', 50)->unique();
             $table->string('name', 255);
             $table->string('prerequisites', 255)->nullable();
             $table->string('period', 255);
@@ -41,6 +41,7 @@ return new class extends Migration
             $table->softDeletes();
             $table->timestamps();
         });
+
     }
 
     /**

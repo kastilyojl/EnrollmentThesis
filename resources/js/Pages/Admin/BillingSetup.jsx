@@ -265,40 +265,6 @@ export default function BillingSetup({
         setData("fees", [...otherFees, newOtherFee]);
     };
 
-    const payment = {
-        SHS: [
-            <>
-                Cash <br /> (Discounted)
-            </>,
-            <>
-                Down Payment <br /> (Installment){" "}
-            </>,
-            <>Voucher Amount</>,
-            <>One-Time Fee</>,
-            <>Voucher Amount</>,
-            <>Down Payment</>,
-        ],
-        College: {
-            program: [
-                <>
-                    Discount <br /> Title
-                </>,
-                <>
-                    Discounted <br /> Fee
-                </>,
-                <>
-                    Down <br /> Payment
-                </>,
-                <>Prelim</>,
-                <>Midterm</>,
-                <>Finals</>,
-                <>Total</>,
-            ],
-            unit: [<>Program</>, <>No. of Units</>, <>Per Units</>, <>Total</>],
-        },
-        Others: [<>Title</>, <>Amount</>, <>Description</>],
-    };
-
     return (
         <Layout>
             <div className="flex items-end justify-between mb-7">
@@ -416,17 +382,36 @@ export default function BillingSetup({
                                                                         <SelectTrigger>
                                                                             <SelectValue placeholder="Select" />
                                                                         </SelectTrigger>
-                                                                        <SelectContent>
-                                                                            <SelectItem value="general">
-                                                                                General
-                                                                            </SelectItem>
-                                                                            <SelectItem value="STEM">
-                                                                                STEM
-                                                                            </SelectItem>
-                                                                            <SelectItem value="ABM">
-                                                                                ABM
-                                                                            </SelectItem>
-                                                                        </SelectContent>
+                                                                        {program
+                                                                            .filter(
+                                                                                (
+                                                                                    program
+                                                                                ) =>
+                                                                                    program.department ===
+                                                                                    "SHS"
+                                                                            )
+                                                                            .map(
+                                                                                (
+                                                                                    program
+                                                                                ) => {
+                                                                                    return (
+                                                                                        <SelectContent>
+                                                                                            <SelectItem value="general">
+                                                                                                General
+                                                                                            </SelectItem>
+                                                                                            <SelectItem
+                                                                                                value={
+                                                                                                    program.code
+                                                                                                }
+                                                                                            >
+                                                                                                {
+                                                                                                    program.name
+                                                                                                }
+                                                                                            </SelectItem>
+                                                                                        </SelectContent>
+                                                                                    );
+                                                                                }
+                                                                            )}
                                                                     </Select>
                                                                 </td>
                                                             </tr>
@@ -688,17 +673,36 @@ export default function BillingSetup({
                                                                             <SelectTrigger>
                                                                                 <SelectValue placeholder="Select" />
                                                                             </SelectTrigger>
-                                                                            <SelectContent>
-                                                                                <SelectItem value="general">
-                                                                                    General
-                                                                                </SelectItem>
-                                                                                <SelectItem value="stem">
-                                                                                    STEM
-                                                                                </SelectItem>
-                                                                                <SelectItem value="abm">
-                                                                                    ABM
-                                                                                </SelectItem>
-                                                                            </SelectContent>
+                                                                            {program
+                                                                                .filter(
+                                                                                    (
+                                                                                        program
+                                                                                    ) =>
+                                                                                        program.department ===
+                                                                                        "College"
+                                                                                )
+                                                                                .map(
+                                                                                    (
+                                                                                        program
+                                                                                    ) => {
+                                                                                        return (
+                                                                                            <SelectContent>
+                                                                                                <SelectItem value="general">
+                                                                                                    General
+                                                                                                </SelectItem>
+                                                                                                <SelectItem
+                                                                                                    value={
+                                                                                                        program.code
+                                                                                                    }
+                                                                                                >
+                                                                                                    {
+                                                                                                        program.name
+                                                                                                    }
+                                                                                                </SelectItem>
+                                                                                            </SelectContent>
+                                                                                        );
+                                                                                    }
+                                                                                )}
                                                                         </Select>
                                                                     </td>
                                                                 </tr>
@@ -727,13 +731,21 @@ export default function BillingSetup({
                                                                                 <SelectValue placeholder="Select" />
                                                                             </SelectTrigger>
                                                                             <SelectContent>
-                                                                                <SelectItem value="grade 11">
-                                                                                    Grade
-                                                                                    11
+                                                                                <SelectItem value="1st Year">
+                                                                                    1st
+                                                                                    Year
                                                                                 </SelectItem>
-                                                                                <SelectItem value="grade 12">
-                                                                                    Grade
-                                                                                    12
+                                                                                <SelectItem value="2nd Year">
+                                                                                    2nd
+                                                                                    Year
+                                                                                </SelectItem>
+                                                                                <SelectItem value="3rd Year">
+                                                                                    3rd
+                                                                                    Year
+                                                                                </SelectItem>
+                                                                                <SelectItem value="4th Year">
+                                                                                    4th
+                                                                                    Year
                                                                                 </SelectItem>
                                                                             </SelectContent>
                                                                         </Select>
@@ -941,17 +953,37 @@ export default function BillingSetup({
                                                                                 <SelectTrigger>
                                                                                     <SelectValue placeholder="Select" />
                                                                                 </SelectTrigger>
-                                                                                <SelectContent>
-                                                                                    <SelectItem value="general">
-                                                                                        General
-                                                                                    </SelectItem>
-                                                                                    <SelectItem value="stem">
-                                                                                        STEM
-                                                                                    </SelectItem>
-                                                                                    <SelectItem value="abm">
-                                                                                        ABM
-                                                                                    </SelectItem>
-                                                                                </SelectContent>
+
+                                                                                {program
+                                                                                    .filter(
+                                                                                        (
+                                                                                            program
+                                                                                        ) =>
+                                                                                            program.department ===
+                                                                                            "College"
+                                                                                    )
+                                                                                    .map(
+                                                                                        (
+                                                                                            program
+                                                                                        ) => {
+                                                                                            return (
+                                                                                                <SelectContent>
+                                                                                                    <SelectItem value="general">
+                                                                                                        General
+                                                                                                    </SelectItem>
+                                                                                                    <SelectItem
+                                                                                                        value={
+                                                                                                            program.code
+                                                                                                        }
+                                                                                                    >
+                                                                                                        {
+                                                                                                            program.name
+                                                                                                        }
+                                                                                                    </SelectItem>
+                                                                                                </SelectContent>
+                                                                                            );
+                                                                                        }
+                                                                                    )}
                                                                             </Select>
                                                                         </td>
                                                                     </tr>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\College_Billing;
+use App\Models\Other_Billing;
 use App\Models\Programs;
 use App\Models\Student_Info;
 use App\Models\Subjects;
@@ -16,6 +17,7 @@ class EnrollmentController extends Controller
         $student = Student_Info::with('users','personalInfo', 'documents', 'guardian', 'paymentVerification')->get();
         $college_fee = College_Billing::all();
         $subjects = Subjects::all();
-        return Inertia::render('Admin/Enrollment', ['student'=>$student, 'college_fee'=>$college_fee, 'subjects'=>$subjects]);
+        $other_fee = Other_Billing::all();
+        return Inertia::render('Admin/Enrollment', ['student'=>$student, 'college_fee'=>$college_fee, 'subjects'=>$subjects, 'other_fee' => $other_fee]);
     }
 }

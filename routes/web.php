@@ -124,7 +124,8 @@ Route::prefix('billing')->group(function () {
     Route::post('/store/shs-billing', [BillingController::class, 'storeSHSBilling'])->name("admin.billing.storeSHS");
     Route::post('/store/college-billing', [BillingController::class, 'storeCollegeBilling'])->name("admin.billing.storeCollege");
     Route::get('/payment', [PaymentController::class, 'indexPayment'])->name("admin.payment");
-    
+    Route::post('/store/payment-details', [PaymentController::class, 'storePaymentDetails'])->name('admin.payment.storeDetails');
+
     Route::post('/shs-fee/{id}/update', [BillingController::class, 'editSHSFee'])->name("admin.shsfee.update");
     Route::delete('/shs-fee/{id}/delete', [BillingController::class, 'destroySHSFee'])->name("admin.shsfee.destroy");
     Route::post('/college-fee/{id}/update', [BillingController::class, 'editCollegeFee'])->name("admin.collegefee.update");

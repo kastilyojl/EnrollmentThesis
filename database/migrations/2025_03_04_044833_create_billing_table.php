@@ -64,8 +64,8 @@ return new class extends Migration
         Schema::create('college_billing', function (Blueprint $table) {
             $table->id();
             $table->string('program_code');
-            $table->string('year_level');
-            $table->string('payment_type');
+            $table->string('year_level')->nullable();
+            $table->string('payment_type')->nullable();
             $table->double('down_payment')->nullable();
             $table->double('prelim')->nullable();
             $table->double('midterm')->nullable();

@@ -6,10 +6,12 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Student\PaymentVerification;
 use App\Models\Billing_Type;
+use App\Models\Payment_Details;
 use App\Models\Payment_Verification;
 use App\Models\Student_Info;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class PaymentController extends Controller
@@ -85,5 +87,23 @@ class PaymentController extends Controller
         public function destroy($id) {
             Payment_Verification::findOrFail($id)->delete();
         }
+
+        public function storePaymentDetails(Request $request) {
+            Log::info($request->paymentDetails);
+        
+            foreach ($request->paymentDetails as $paymentDetail) {
+                Payment_Details::create([
+                    'student_info_id' => $paymentDetail['student_info_id'],
+                    'fee_type' => $paymentDetail['fee_type'],
+                    'fee_id' => $paymentDetail['fee_id'],
+                    'amount_paid' => $paymentDetail['amount'], // Save the amount (either positive or negative)
+                ]);
+            }
+        
+            return response()->json(['message' => 'Payment details saved successfully.'], 200);
+        }
+        
+
+        
            
 }
