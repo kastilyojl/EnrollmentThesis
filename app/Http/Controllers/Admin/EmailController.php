@@ -21,12 +21,6 @@ class EmailController extends Controller
 
     public function sendEmailSuccess(Request $request) {
 
-        // $to = "ljohn0148@gmail.com";
-        // $msg = "TEST";
-        // $subject = "TEST";
-
-        // Mail::to($to)->send(new GreetingEmail($msg, $subject));
-
         $email = Student_Info::findOrFail($request->id);
         $user = $email->users;
 
@@ -101,6 +95,32 @@ class EmailController extends Controller
 
                     $subject = "Application On Hold";
 
+
+        Email_Logs::create([
+            'users_id' => $user->id,
+            'application' => 'sent'
+        ]);
+
+        Mail::raw($message, function ($message) use ($to, $subject) {
+            $message->to($to)
+                    ->subject($subject);
+        });
+
+    }
+
+    public function sendEmailOfficiallyEnrolled(Request $request) {
+
+        $email = Student_Info::findOrFail($request->id);
+        $user = $email->users;
+
+        $to = $user->email;
+        $message = "Greetings,
+                    We are happy to inform you that your now Officially Enrolled. You can now login to your student portal using this credential: 
+                        email: ". $user->email . 
+                        " password: WITI@123. 
+                    
+                    Thank you.";
+        $subject = "Application Approved";
 
         Email_Logs::create([
             'users_id' => $user->id,

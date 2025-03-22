@@ -4,11 +4,20 @@ export default function NavLink({
     active = false,
     className = "",
     children,
+    onClick,
     ...props
 }) {
+    const handleClick = (e) => {
+        e.preventDefault();
+        if (onClick) {
+            onClick();
+        }
+    };
+
     return (
         <Link
             {...props}
+            onClick={handleClick}
             className={
                 "inline-flex text-gray-900 items-center border-b-2 px-1 pt-1 text-sm font-medium leading-5 transition duration-150 ease-in-out focus:outline-none " +
                 (active

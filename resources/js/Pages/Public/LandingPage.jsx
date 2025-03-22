@@ -6,10 +6,11 @@ import Footer from "@/components/Footer";
 import ApplicationLogo from "@/components/ApplicationLogo";
 import Branch from "@/components/Branch";
 import Banner from "@/components/Banner";
+import ChatBubbles from "@/components/ChatBubbles";
 
 export default function LandingPage() {
     return (
-        <div>
+        <div className="bg-gray-200">
             <Topbar />
             <CarouselCard />
             <Banner />
@@ -18,6 +19,7 @@ export default function LandingPage() {
             <Footer className="">
                 <ApplicationLogo className="h-20" />
             </Footer>
+            <ChatBubbles className="fixed bottom-0 right-0 m-10" />
         </div>
     );
 }

@@ -15,7 +15,7 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 
-import { useForm } from "@inertiajs/react";
+import { Link, useForm } from "@inertiajs/react";
 import {
     Select,
     SelectContent,
@@ -127,9 +127,9 @@ export default function Application({ student = [] }) {
 
     const handleSubmitDel = () => {
         console.log("Delete id", itemId.id);
-        onDelete(route("admin.program.destroy", { id: itemId }), {
+        onDelete(route("admin.student.destroy", { id: itemId }), {
             onSuccess: () => {
-                toast("Program has been deleted", {
+                toast("Student has been deleted", {
                     description: "Sunday, December 03, 2023 at 9:00 AM",
                 });
                 setDel(false);
@@ -182,25 +182,6 @@ export default function Application({ student = [] }) {
         setAdd(true);
     };
 
-    const handleSubmit = () => {
-        post(route("admin.program.store"), {
-            onSuccess: () => {
-                toast("Program has been created", {
-                    description: "Sunday, December 03, 2023 at 9:00 AM",
-                });
-                setAdd(false);
-                setData({
-                    code: "",
-                    name: "",
-                    department: "",
-                    duration: "",
-                    campus: "",
-                    status: "",
-                });
-            },
-        });
-    };
-
     const handleUpdateSubmit = () => {
         post(route("admin.application.update", { id: itemId }), {
             onSuccess: () => {
@@ -222,7 +203,9 @@ export default function Application({ student = [] }) {
             </div>
             <div className="flex justify-between mb-3">
                 <Input type="text" placeholder="Search" className="w-[300px]" />
-                <Button onClick={handleCreate}>Create</Button>
+                <Link href={route("admin.application.create")}>
+                    <Button>Create</Button>
+                </Link>
             </div>
             <div className="border rounded-sm px-4">
                 <TableData
@@ -231,6 +214,25 @@ export default function Application({ student = [] }) {
                     handleEdit={handleEdit}
                     handleDel={handleDel}
                 />
+                {create && (
+                    <Dialog
+                        open={create}
+                        onOpenChange={(open) => setCreate(open)}
+                    >
+                        <DialogContent className="max-w-5xl">
+                            <DialogHeader>
+                                <DialogTitle>Add Student</DialogTitle>
+                                <DialogDescription>
+                                    <ScrollArea className="h-[500px]">
+                                        <ApplicationForm
+                                            setCreate={setCreate}
+                                        />
+                                    </ScrollArea>
+                                </DialogDescription>
+                            </DialogHeader>
+                        </DialogContent>
+                    </Dialog>
+                )}
                 {add && (
                     <Dialog open={add} onOpenChange={(open) => setAdd(open)}>
                         <DialogContent className="max-w-4xl">
@@ -531,13 +533,7 @@ export default function Application({ student = [] }) {
                                                 </SelectItem>
                                             </SelectContent>
                                         </Select>
-                                        <Button
-                                            onClick={
-                                                itemId === null
-                                                    ? handleSubmit
-                                                    : handleUpdateSubmit
-                                            }
-                                        >
+                                        <Button onClick={handleUpdateSubmit}>
                                             Save
                                         </Button>
                                     </div>
@@ -546,15 +542,14 @@ export default function Application({ student = [] }) {
                         </DialogContent>
                     </Dialog>
                 )}{" "}
-                {create && <ApplicationForm />}
                 {del && (
                     <Dialog open={del} onOpenChange={(open) => setDel(open)}>
                         <DialogContent>
                             <DialogHeader>
-                                <DialogTitle>Delete Program</DialogTitle>
+                                <DialogTitle>Delete Student</DialogTitle>
                                 <DialogDescription>
                                     <div className="my-3">
-                                        Are you sure to delete this program?
+                                        Are you sure to delete this student?
                                     </div>
                                     <div className="flex justify-end gap-2">
                                         <Button

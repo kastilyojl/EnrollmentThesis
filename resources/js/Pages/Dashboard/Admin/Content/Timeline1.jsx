@@ -9,11 +9,11 @@ import {
 } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-export default function Timeline({ className = "" }) {
+export default function Timeline1({ className = "" }) {
     return (
         <Card className={`${className} w-full bg-gray-50 space-y-6`}>
             <CardHeader>
-                <CardTitle className="text-gray-900">Recent Enrolled</CardTitle>
+                <CardTitle className="text-gray-900">Recent Payment</CardTitle>
             </CardHeader>
 
             <CardContent>
@@ -62,7 +62,7 @@ export default function Timeline({ className = "" }) {
                                         02 March 2025 / 1:12 PM
                                     </span>
                                     <h3 class="text-sm font-medium text-primary">
-                                        C25-001 Enrolled - 1st Year BSCS
+                                        C25-001 Paid 2000 - 1st Year BSCS
                                     </h3>
                                 </li>
                                 <li class="mb-2 ms-6">
@@ -106,7 +106,7 @@ export default function Timeline({ className = "" }) {
                                         02 March 2025 / 1:30 PM
                                     </span>
                                     <h3 class="text-sm font-medium text-primary">
-                                        C25-002 Enrolled - 2nd Year BSTM
+                                        C25-002 Paid 1000 - 2nd Year BSTM
                                     </h3>
                                 </li>
                                 <li class="mb-2 ms-6">
@@ -150,7 +150,7 @@ export default function Timeline({ className = "" }) {
                                         03 March 2025 / 10:32 AM
                                     </span>
                                     <h3 class="text-sm font-medium text-primary">
-                                        lrn-10293823 Enrolled - Grade 11 STEM
+                                        lrn-10293823 Paid 1000 - Grade 11 STEM
                                     </h3>
                                 </li>
                                 <li class="mb-2 ms-6">
@@ -194,7 +194,7 @@ export default function Timeline({ className = "" }) {
                                         03 March 2025 / 11:40 AM
                                     </span>
                                     <h3 class="text-sm font-medium text-primary">
-                                        lrn-102973423 Enrolled - Grade 11 ICT
+                                        lrn-102973423 Paid 2500 - Grade 11 ICT
                                     </h3>
                                 </li>
                                 <li class="mb-2 ms-6">
@@ -238,7 +238,7 @@ export default function Timeline({ className = "" }) {
                                         03 March 2025 / 10:32 AM
                                     </span>
                                     <h3 class="text-sm font-medium text-primary">
-                                        C25-059 Enrolled - 4th Year BSIS
+                                        C25-059 Paid 2000 - 4th Year BSIS
                                     </h3>
                                 </li>
                             </ol>

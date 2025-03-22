@@ -3,6 +3,7 @@ import {
     AudioWaveform,
     BookOpen,
     Bot,
+    Coins,
     Command,
     DollarSign,
     Frame,
@@ -10,6 +11,8 @@ import {
     Grid2x2,
     Map,
     Notebook,
+    Pen,
+    PhilippinePeso,
     PieChart,
     School,
     Settings2,
@@ -48,116 +51,186 @@ export function AppSidebar({ ...props }) {
             },
         ],
         navMain: [
-            {
-                title: "Dashboard",
-                url: "#",
-                icon: Grid2x2,
-                isActive: true,
-                items: [
-                    {
-                        title: "Home",
-                        url: route("dashboard"),
-                    },
-                    {
-                        title: "Enrollment",
-                        url: route("admin.dashboard.enrollment"),
-                    },
-                    {
-                        title: "Billing",
-                        url: "#",
-                    },
-                    {
-                        title: "Audit Trail",
-                        url: route("admin.dashboard.audit-trail"),
-                    },
-                ],
-            },
-            {
-                title: "Enrollment",
-                url: "#",
-                icon: Notebook,
-                items: [
-                    {
-                        title: "Application",
-                        url: route("admin.application"),
-                    },
-                    {
-                        title: "Documents",
-                        url: route("admin.documents"),
-                    },
+            ...(user.role === "student"
+                ? [
+                      {
+                          title: "Student Dashboard",
+                          url: route("admin.billing"),
+                          icon: Grid2x2,
+                          isActive: true,
+                          items: [
+                              {
+                                  title: "Personal Information",
+                                  url: route("dashboard"),
+                              },
+                              {
+                                  title: "Schedule",
+                                  url: route("admin.dashboard.enrollment"),
+                              },
+                              {
+                                  title: "Subjects",
+                                  url: route("admin.dashboard.billing"),
+                              },
+                              {
+                                  title: "Documents",
+                                  url: route("admin.dashboard.audit-trail"),
+                              },
+                              {
+                                  title: "Payment",
+                                  url: route("admin.dashboard.audit-trail"),
+                              },
+                          ],
+                      },
+                      {
+                          title: "Payment",
+                          url: route("admin.billing"),
+                          icon: PhilippinePeso,
+                          items: [
+                              {
+                                  title: "Payment History",
+                                  url: route("admin.dashboard.audit-trail"),
+                              },
+                              {
+                                  title: "Payment History",
+                                  url: route("admin.dashboard.audit-trail"),
+                              },
+                          ],
+                      },
+                  ]
+                : []),
+            ...(user.role === "super admin"
+                ? [
+                      {
+                          title: "Dashboard",
+                          url: "#",
+                          icon: Grid2x2,
+                          isActive: true,
+                          items: [
+                              {
+                                  title: "Home",
+                                  url: route("dashboard"),
+                              },
+                              {
+                                  title: "Enrollment",
+                                  url: route("admin.dashboard.enrollment"),
+                              },
+                              {
+                                  title: "Billing",
+                                  url: route("admin.dashboard.billing"),
+                              },
+                              {
+                                  title: "Audit Trail",
+                                  url: route("admin.dashboard.audit-trail"),
+                              },
+                          ],
+                      },
 
-                    {
-                        title: "Course Selection",
-                        url: "",
-                    },
-                    {
-                        title: "Evaluation",
-                        url: "",
-                    },
-                    {
-                        title: "Enrollment Processing",
-                        url: route("admin.enrollment"),
-                    },
-                ],
-            },
-            {
-                title: "Curriculum Management",
-                url: "#",
-                icon: BookOpen,
-                items: [
-                    {
-                        title: "Program",
-                        url: route("admin.program"),
-                    },
-                    {
-                        title: "Subject",
-                        url: route("admin.subject"),
-                    },
-                    {
-                        title: "Curriculum",
-                        url: route("admin.curriculum"),
-                    },
-                    {
-                        title: "Section",
-                        url: route("admin.section"),
-                    },
-                ],
-            },
+                      {
+                          title: "Enrollment",
+                          url: "#",
+                          icon: Notebook,
+                          items: [
+                              {
+                                  title: "Application",
+                                  url: route("admin.application"),
+                              },
+                              {
+                                  title: "Documents",
+                                  url: route("admin.documents"),
+                              },
 
-            {
-                title: "Billing",
-                url: "#",
-                icon: DollarSign,
-                items: [
-                    {
-                        title: "Setup",
-                        url: route("admin.billing"),
-                    },
-                    {
-                        title: "Payment",
-                        url: route("admin.payment"),
-                    },
-                ],
-            },
-            {
-                title: "Settings",
-                url: "#",
-                icon: Settings2,
-                items: [
-                    {
-                        title: "General",
-                        url: "#",
-                    },
-                    {
-                        title: "User Management",
-                        url: route("admin.user.management"),
-                    },
-                    {
-                        title: "Help",
-                        url: "#",
-                    },
-                ],
-            },
+                              {
+                                  title: "Course Selection",
+                                  url: route("admin.course.selection"),
+                              },
+                              {
+                                  title: "Evaluation",
+                                  url: "",
+                              },
+                              {
+                                  title: "Enrollment Processing",
+                                  url: route("admin.enrollment"),
+                              },
+                          ],
+                      },
+                      {
+                          title: "Curriculum Management",
+                          url: "#",
+                          icon: BookOpen,
+                          items: [
+                              {
+                                  title: "Program",
+                                  url: route("admin.program"),
+                              },
+                              {
+                                  title: "Subject",
+                                  url: route("admin.subject"),
+                              },
+                              {
+                                  title: "Curriculum",
+                                  url: route("admin.curriculum"),
+                              },
+                              {
+                                  title: "Section",
+                                  url: route("admin.section"),
+                              },
+                          ],
+                      },
+                      {
+                          title: "Billing",
+                          url: "#",
+                          icon: PhilippinePeso,
+                          items: [
+                              {
+                                  title: "Setup",
+                                  url: route("admin.billing"),
+                              },
+                              {
+                                  title: "Fee Selection",
+                                  url: route("admin.assign-fee.index"),
+                              },
+                              {
+                                  title: "Payment",
+                                  url: route("admin.payment"),
+                              },
+                          ],
+                      },
+                      {
+                          title: "Grades",
+                          url: "#",
+                          icon: Pen,
+                          items: [
+                              {
+                                  title: "Setup",
+                                  url: route("admin.billing"),
+                              },
+                              {
+                                  title: "Payment",
+                                  url: route("admin.payment"),
+                              },
+                          ],
+                      },
+                      {
+                          title: "Settings",
+                          url: "#",
+                          icon: Settings2,
+                          items: [
+                              {
+                                  title: "General",
+                                  url: route("admin.setting.general"),
+                              },
+                              {
+                                  title: "User Management",
+                                  url: route("admin.user.management"),
+                              },
+                              {
+                                  title: "Help",
+                                  url: "#",
+                              },
+                          ],
+                      },
+                  ]
+                : []),
         ],
         // projects: [
         //     // {

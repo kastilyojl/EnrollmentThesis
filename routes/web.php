@@ -2,9 +2,11 @@
 
 use App\Http\Controllers\Admin\AdminApplicationController;
 use App\Http\Controllers\Admin\BillingController;
+use App\Http\Controllers\Admin\CourseSelectionController;
 use App\Http\Controllers\Admin\CurriculumController;
 use App\Http\Controllers\Admin\EmailController;
 use App\Http\Controllers\Admin\EnrollmentController;
+use App\Http\Controllers\Admin\GeneralSettingController;
 use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\ProgramController;
 use App\Http\Controllers\Admin\SectionController;
@@ -13,6 +15,7 @@ use App\Http\Controllers\Admin\UserManagement;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\Student\ApplicationController;
+use App\Http\Middleware\VerifyAdminIp;
 use App\Models\Programs;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -29,7 +32,14 @@ use Inertia\Inertia;
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth', 'verified', VerifyAdminIp::class ])->name('dashboard');
+
+// use App\Http\Middleware\VerifyAdminIp;
+
+// Route::middleware(['auth', 'verified', VerifyAdminIp::class])->group(function () {
+//     Route::get('/admin/dashboard', [AdminController::class, 'index']);
+// });
+
 
 // Route::get('/', function () {
 //     return Inertia::render('Dashboard', ['program'=>Programs::all()]);
@@ -47,6 +57,9 @@ Route::prefix('dashboard')->group(function () {
     Route::get('/audit-trail', function () {
         return Inertia::render('Dashboard/Admin/AuditTrail');
     })->name('admin.dashboard.audit-trail');
+    Route::get('/billing', function () {
+        return Inertia::render('Dashboard/Admin/Billing');
+    })->name('admin.dashboard.billing');
 });
 
 Route::get('/profile',function () {
@@ -56,6 +69,9 @@ Route::get('/profile',function () {
 Route::get('/mail-send/{id}/approved', [EmailController::class, 'sendEmailSuccess'])->name('send.email');
 Route::get('/mail-send/{id}/rejected', [EmailController::class, 'sendEmailRejected'])->name('send.email.rejected');
 Route::get('/mail-send/{id}/onhold', [EmailController::class, 'sendEmailOnHold'])->name('send.email.onhold');
+
+Route::get('/mail-send/{id}/officialy-enrolled', [EmailController::class, 'sendEmailOfficiallyEnrolled'])->name('send.email.official-enroll');
+
 
 Route::group([], function () {
     Route::get('/Error', function () {
@@ -78,18 +94,33 @@ Route::group([], function () {
     Route::delete('/private-files/{id}/delete', [PaymentController::class, 'destroy'])->name("admin.payment.destroy");
     
 });
+Route::middleware('auth')->group(function () {
 
+Route::prefix('/setting')->group(function () {
+    Route::get('/', [GeneralSettingController::class, 'index'])->name('admin.setting.general');
+    Route::prefix('general')->group(function ()  {
+        Route::get('/academic-year', [GeneralSettingController::class, 'academicYear'])->name("admin.setting.general.academicYear");
+        Route::post('/faq', [GeneralSettingController::class, 'faqStore'])->name("admin.setting.general.faq");
+        Route::delete('/faq/{id}/delete', [GeneralSettingController::class, 'faqDestroy'])->name("admin.setting.general.faq-destroy");
+        Route::post('/faq/{id}/update', [GeneralSettingController::class, 'faqEdit'])->name("admin.setting.general.faq-update");
+    });
+});
+    
 Route::prefix('/enrollment')->group(function () {
     Route::get('/', [EnrollmentController::class, 'index'])->name('admin.enrollment');
 });
 
 Route::prefix('admin/application')->group(function () {
     Route::get('/', [AdminApplicationController::class, 'index'])->name("admin.application");
+    Route::get('/create', [AdminApplicationController::class, 'add'])->name("admin.application.create");
+    Route::post('/create-student', [AdminApplicationController::class, 'createStudent'])->name("admin.application.createStudent");
+    Route::delete('/student/{id}/delete', [AdminApplicationController::class, 'destroyStudent'])->name("admin.student.destroy");
     Route::post('/{id}/update', [AdminApplicationController::class, 'edit'])->name("admin.application.update");
     Route::get('/documents', [AdminApplicationController::class, 'indexDocuments'])->name("admin.documents");
     Route::post('/document/{id}/update', [AdminApplicationController::class, 'updateDocuments'])->name("admin.documents.update");
     Route::delete('/document/{id}/delete', [AdminApplicationController::class, 'destroyDocuments'])->name("admin.documents.destroy");
     });
+    Route::get('/course-selection', [CourseSelectionController::class, 'index'])->name('admin.course.selection');
 
 Route::prefix('email')->group( function () {
     Route::get('/', [EmailController::class, 'index'])->name('admin.email');
@@ -108,6 +139,8 @@ Route::get('/subject', [SubjectController::class, 'index'])->name("admin.subject
 Route::post('/subject/store', [SubjectController::class, 'store'])->name("admin.subject.store");
 Route::post('/subject/{id}/update', [SubjectController::class, 'edit'])->name("admin.subject.update");
 Route::delete('/subject/{id}/delete', [SubjectController::class, 'destroy'])->name("admin.subject.destroy");
+Route::post('/subject/assigned', [CourseSelectionController::class, 'store'])->name('admin.course-section.add');
+
 
 Route::get('/section', [SectionController::class, 'index'])->name("admin.section");
 Route::post('/section/store', [SectionController::class, 'store'])->name("admin.section.store");
@@ -125,6 +158,8 @@ Route::prefix('billing')->group(function () {
     Route::post('/store/college-billing', [BillingController::class, 'storeCollegeBilling'])->name("admin.billing.storeCollege");
     Route::get('/payment', [PaymentController::class, 'indexPayment'])->name("admin.payment");
     Route::post('/store/payment-details', [PaymentController::class, 'storePaymentDetails'])->name('admin.payment.storeDetails');
+    Route::get('/assign-payment', [PaymentController::class, 'indexAssignFee'])->name('admin.assign-fee.index');
+
 
     Route::post('/shs-fee/{id}/update', [BillingController::class, 'editSHSFee'])->name("admin.shsfee.update");
     Route::delete('/shs-fee/{id}/delete', [BillingController::class, 'destroySHSFee'])->name("admin.shsfee.destroy");
@@ -134,7 +169,7 @@ Route::prefix('billing')->group(function () {
     Route::delete('/other-fee/{id}/delete', [BillingController::class, 'destroyOtherFee'])->name("admin.otherfee.destroy");
 });
 
-Route::middleware('auth')->group(function () {
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

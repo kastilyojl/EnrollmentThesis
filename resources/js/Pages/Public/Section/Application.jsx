@@ -53,6 +53,9 @@ export default function ApplicationForm({ program = [], school_year = [] }) {
         e.preventDefault();
         setLoading(true);
         post(route("public.application.submit"), {
+            onSuccess: () => {
+                setCreate(false);
+            },
             onError: () => {
                 setLoading(false);
             },

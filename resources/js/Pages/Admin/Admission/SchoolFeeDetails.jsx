@@ -11,15 +11,23 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { useForm } from "@inertiajs/react";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
-export default function SchoolFeeDetails({ student, college_fee, other_fee }) {
+export default function SchoolFeeDetails({
+    student,
+    college_fee,
+    other_fee,
+    setAdd,
+}) {
     const [selectedCollegeFees, setSelectedCollegeFees] = useState([]);
     const [selectedOtherFees, setSelectedOtherFees] = useState([]);
     const { data, setData, post } = useForm({
+        id: student[0].id,
         student_info_id: "1",
         fee_type: "",
         fee_id: "",
         amount: "",
+        paymentDetails: [],
     });
 
     const handleSubmit = () => {
@@ -45,10 +53,17 @@ export default function SchoolFeeDetails({ student, college_fee, other_fee }) {
             });
         });
 
-        console.log("Payment Detail", paymentDetails);
-
-        // Submit the payment details to the backend
-        post(route("admin.payment.storeDetails"), { paymentDetails });
+        post(
+            route("admin.payment.storeDetails"),
+            // {
+            //    paymentDetails: paymentDetails,
+            // },
+            {
+                onSuccess: () => {
+                    setAdd(false);
+                },
+            }
+        );
     };
 
     const handleCollegeFeeToggle = (fee) => {
