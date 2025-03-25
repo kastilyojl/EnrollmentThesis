@@ -14,25 +14,25 @@ import Autoplay from "embla-carousel-autoplay";
 
 const images = [announcement, westbridgeBanner];
 
-export default function CarouselCard() {
+export default function CarouselCard({ className = "" }) {
     const plugin = React.useRef(
-        Autoplay({ delay: 5000, stopOnInteraction: true }) // Autoplay with loop
+        Autoplay({ delay: 5000, stopOnInteraction: true })
     );
 
     return (
-        <div className="flex justify-center">
+        <div className={`${className} flex justify-center`}>
             <Carousel
                 className="w-full max-w-6xl"
                 plugins={[plugin.current]}
-                onMouseEnter={plugin.current.stop} // Stops autoplay on hover
-                onMouseLeave={plugin.current.reset} // Resets autoplay when mouse leaves
+                onMouseEnter={plugin.current.stop}
+                onMouseLeave={plugin.current.reset}
             >
                 <CarouselContent>
                     {images.map((img, index) => (
                         <CarouselItem key={index}>
                             <div className="p-1">
                                 <Card>
-                                    <CardContent className="flex aspect-[16/9] items-center justify-center p-6">
+                                    <CardContent className="flex aspect-[16/9] items-center justify-center lg:p-6">
                                         <div className="w-full h-full flex items-center justify-center">
                                             <img
                                                 key={index}

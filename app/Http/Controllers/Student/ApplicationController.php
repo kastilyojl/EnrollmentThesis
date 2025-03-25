@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Student\ApplicationRequest;
+use App\Models\Academic_Year;
 use App\Models\Guardian;
 use App\Models\Personal_Info;
 use App\Models\Programs;
@@ -21,10 +22,9 @@ class ApplicationController extends Controller
 
     public function index() {
         $program = Programs::all();
-        // $school_year = SchoolYear::all();
+        $academic_year = Academic_Year::all();
         return Inertia::render('Public/Section/Application', 
-        ['program'=>$program] 
-        // 'school_year'=>$school_year
+        ['program'=>$program,'academic_year'=>$academic_year] 
     );
     }
 

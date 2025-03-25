@@ -15,6 +15,9 @@
         @viteReactRefresh
         @vite(['resources/js/app.jsx', "resources/js/Pages/{$page['component']}.jsx"])
         @inertiaHead
+        
+        <!-- Daisy Calendar -->
+        <script type="module" src="https://unpkg.com/cally"></script> 
     </head>
     <body class="font-sans antialiased">
         @inertia

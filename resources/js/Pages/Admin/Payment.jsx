@@ -530,7 +530,7 @@ export default function Payment({ program = [], payment = [] }) {
                                             }
                                         >
                                             <SelectTrigger>
-                                                Status
+                                                <SelectValue placeholder="Select..." />
                                             </SelectTrigger>
                                             <SelectContent className="bg-customBlue">
                                                 <SelectItem value="pending">

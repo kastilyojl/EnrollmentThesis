@@ -15,7 +15,10 @@ use App\Http\Controllers\Admin\UserManagement;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\Student\ApplicationController;
+use App\Http\Controllers\Student\GeneralController;
 use App\Http\Middleware\VerifyAdminIp;
+use App\Models\Campus;
+use App\Models\FAQ;
 use App\Models\Programs;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -47,7 +50,9 @@ Route::get('/dashboard', function () {
 // });
 
 Route::get('/', function () {
-    return Inertia::render('Public/LandingPage');
+    $FAQ = FAQ::all();
+    $campus = Campus::all();
+    return Inertia::render('Public/LandingPage', ['FAQ'=>$FAQ, 'campus'=>$campus]);
 })->name('home');
 
 Route::prefix('dashboard')->group(function () {
@@ -84,6 +89,7 @@ Route::group([], function () {
 
 // public section / landing page
 Route::group([], function () {
+    Route::get('/FAQ', [PublicController::class, 'FAQ'])->name('landing-page.section.FAQ');
     Route::get('/application', [ApplicationController::class, 'index'])->name('landing-page.section.application');
     Route::post('/application', [ApplicationController::class, 'create'])->name('public.application.submit');
     Route::get('/application/payment', [PaymentController::class, 'index'])->name('public.payment.submit');
@@ -92,17 +98,41 @@ Route::group([], function () {
     Route::post('/private-file/{id}/update', [PaymentController::class, 'edit'])->name("admin.payment.update");
     Route::get('/private-files/{filename}', [PaymentController::class, 'showImage'])->name("admin.payment.showImage");
     Route::delete('/private-files/{id}/delete', [PaymentController::class, 'destroy'])->name("admin.payment.destroy");
-    
+    Route::get('/program/shs', [PublicController::class, 'shs'])->name('landing-page.section.SHS');
+    Route::get('/program/college', [PublicController::class, 'college'])->name('landing-page.section.College');
+    Route::get('/requirements', [PublicController::class, 'requirements'])->name('landing-page.section.Requirements');
+
 });
 Route::middleware('auth')->group(function () {
 
+    // Student
+    Route::get('/dashboard/personal-information', [GeneralController::class, 'personalInfo'])->name('student.personal.info');
+    Route::get('/dashboard/documents', [GeneralController::class, 'documents'])->name('student.documents');
+    Route::get('/dashboard/grades', [GeneralController::class, 'grades'])->name('student.grades');
+    Route::get('/dashboard/payment', [GeneralController::class, 'payment'])->name('student.payment.transaction');
+
+
+    //Admin
 Route::prefix('/setting')->group(function () {
     Route::get('/', [GeneralSettingController::class, 'index'])->name('admin.setting.general');
     Route::prefix('general')->group(function ()  {
         Route::get('/academic-year', [GeneralSettingController::class, 'academicYear'])->name("admin.setting.general.academicYear");
+        Route::post('/academic-year/store', [GeneralSettingController::class, 'academicYearStore'])->name("admin.setting.general.academicYear-store");
+        Route::post('/academic-year/{id}/update', [GeneralSettingController::class, 'academicYearEdit'])->name("admin.setting.general.academicYear-update");
+        Route::delete('/academic-year/{id}/delete', [GeneralSettingController::class, 'academicYearDestroy'])->name("admin.setting.general.academicYear-destroy");
+       
+        
         Route::post('/faq', [GeneralSettingController::class, 'faqStore'])->name("admin.setting.general.faq");
         Route::delete('/faq/{id}/delete', [GeneralSettingController::class, 'faqDestroy'])->name("admin.setting.general.faq-destroy");
         Route::post('/faq/{id}/update', [GeneralSettingController::class, 'faqEdit'])->name("admin.setting.general.faq-update");
+    
+        Route::post('/campus', [GeneralSettingController::class, 'campusStore'])->name("admin.setting.general.campus");
+        Route::delete('/campus/{id}/delete', [GeneralSettingController::class, 'campusDestroy'])->name("admin.setting.general.campus-destroy");
+        Route::post('/campus/{id}/update', [GeneralSettingController::class, 'campusEdit'])->name("admin.setting.general.campus-update");
+    
+        Route::post('/id-setup', [GeneralSettingController::class, 'idFormatStore'])->name("admin.setting.general.id-setup");
+        Route::delete('/id-setup/{id}/delete', [GeneralSettingController::class, 'idFormatDestroy'])->name("admin.setting.general.id-destroy");
+        Route::post('/id-setup/{id}/update', [GeneralSettingController::class, 'idFormatEdit'])->name("admin.setting.general.id-update");
     });
 });
     
@@ -169,10 +199,11 @@ Route::prefix('billing')->group(function () {
     Route::delete('/other-fee/{id}/delete', [BillingController::class, 'destroyOtherFee'])->name("admin.otherfee.destroy");
 });
 
-
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    
 });
 
 require __DIR__.'/auth.php';

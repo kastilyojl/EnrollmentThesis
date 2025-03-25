@@ -8,18 +8,18 @@ import Branch from "@/components/Branch";
 import Banner from "@/components/Banner";
 import ChatBubbles from "@/components/ChatBubbles";
 
-export default function LandingPage() {
+export default function LandingPage({ FAQ = [], campus = [] }) {
     return (
         <div className="bg-gray-200">
             <Topbar />
-            <CarouselCard />
+            <CarouselCard className="pt-20" />
             <Banner />
             <ProgramOffer />
-            <Branch />
+            <Branch campus={campus} />
             <Footer className="">
                 <ApplicationLogo className="h-20" />
             </Footer>
-            <ChatBubbles className="fixed bottom-0 right-0 m-10" />
+            <ChatBubbles FAQ={FAQ} className="fixed bottom-0 right-0 m-10" />
         </div>
     );
 }

@@ -100,7 +100,7 @@ export default function FAQ({ faq = [] }) {
                         />
                     </div>
 
-                    <div className="space-x-4">
+                    <div className="flex justify-end space-x-4">
                         <Button
                             disabled={
                                 data.question.length <= 0 ||
@@ -128,14 +128,14 @@ export default function FAQ({ faq = [] }) {
                 <div className="overflow-x-auto">
                     <table className="min-w-full divide-y-2 divide-gray-200">
                         <thead className="ltr:text-left rtl:text-right bg-slate-50 ">
-                            <tr className="*:font-medium table-fixed *:text-gray-900">
-                                <th className="w-1/12 py-1 text-wrap">
+                            <tr className="*:font-medium table-fixed *:text-gray-700">
+                                <th className="w-1/12 text-sm py-1 text-wrap">
                                     Question
                                 </th>
-                                <th className="w-1/12 py-1 text-wrap">
+                                <th className="w-1/12 text-sm py-1 text-wrap">
                                     Answer
                                 </th>
-                                <th className="w-1/12 py-1 text-wrap">
+                                <th className="w-1/12 text-sm py-1 text-wrap">
                                     Action
                                 </th>
                             </tr>
@@ -145,10 +145,10 @@ export default function FAQ({ faq = [] }) {
                             {faq.map((faqItem) => (
                                 <React.Fragment key={faqItem.id}>
                                     <tr className="*:text-gray-900 table-fixed *:first:font-medium">
-                                        <td className="w-1/12 py-1 text-center text-wrap">
+                                        <td className="w-1/12 text-sm py-1 text-center text-wrap">
                                             {faqItem.question}
                                         </td>
-                                        <td className="w-1/12 py-1 text-center text-wrap">
+                                        <td className="w-1/12 text-sm py-1 text-center text-wrap">
                                             {faqItem.answer}
                                         </td>
 

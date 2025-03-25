@@ -25,8 +25,8 @@ class Payment_Verification extends Model
         'status',
     ];
 
-    public function users()
+    public function studentInfo()
     {
-        return $this->belongsTo(User::class, 'users_id', 'id');
+        return $this->belongsTo(Student_Info::class, 'student_info_id', 'student_id');
     }
 }

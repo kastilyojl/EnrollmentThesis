@@ -516,7 +516,7 @@ export default function Application({ student = [] }) {
                                             }
                                         >
                                             <SelectTrigger>
-                                                Status
+                                                <SelectValue placeholder="Select..." />
                                             </SelectTrigger>
                                             <SelectContent className="bg-customBlue">
                                                 <SelectItem value="pending">

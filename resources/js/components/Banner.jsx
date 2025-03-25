@@ -3,9 +3,9 @@ import React from "react";
 
 function Banner() {
     return (
-        <div className="h-auto mt-24 p-4 bg-[#00004C] flex flex-col items-center gap-5 justify-center">
+        <div className="h-auto mt-4 lg:mt-24 p-4 bg-[#00004C] flex flex-col items-center gap-5 justify-center">
             <div>
-                <h1 className="text-white text-[32px] text-center">
+                <h1 className="text-white text-2xl lg:text-[32px] text-center">
                     Start your journey today and unlock endless possibilities in
                     your education at
                     <span
@@ -19,7 +19,7 @@ function Banner() {
             </div>
             <div className="flex gap-5">
                 <Link
-                    // href={route("public.application")}
+                    href={route("landing-page.section.application")}
                     className="group cursor-pointer relative bg-white inline-block overflow-hidden border border-indigo-600 px-8 py-3 focus:outline-none focus:ring"
                 >
                     <span className="absolute inset-y-0 left-0 w-[2px] bg-indigo-600 transition-all group-hover:w-full group-active:bg-indigo-500"></span>

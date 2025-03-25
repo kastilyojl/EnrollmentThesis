@@ -23,6 +23,7 @@ import {
     SelectContent,
     SelectItem,
     SelectTrigger,
+    SelectValue,
 } from "@/components/ui/select";
 import { Check } from "lucide-react";
 import BadgeSuccess from "@/components/BadgeSuccess";
@@ -861,7 +862,7 @@ export default function Documents({ student = [] }) {
                                             }
                                         >
                                             <SelectTrigger>
-                                                Status
+                                                <SelectValue placeholder="Select..." />
                                             </SelectTrigger>
                                             <SelectContent className="bg-customBlue">
                                                 <SelectItem value="pending">

@@ -54,30 +54,49 @@ export function AppSidebar({ ...props }) {
             ...(user.role === "student"
                 ? [
                       {
-                          title: "Student Dashboard",
+                          title: "General",
                           url: route("admin.billing"),
                           icon: Grid2x2,
                           isActive: true,
                           items: [
                               {
-                                  title: "Personal Information",
+                                  title: "Home",
                                   url: route("dashboard"),
                               },
                               {
                                   title: "Schedule",
-                                  url: route("admin.dashboard.enrollment"),
+                                  url: "#",
                               },
                               {
                                   title: "Subjects",
-                                  url: route("admin.dashboard.billing"),
+                                  url: "#",
+                              },
+                              {
+                                  title: "Personal Information",
+                                  url: route("student.personal.info"),
+                              },
+                          ],
+                      },
+                      {
+                          title: "Enrollment",
+                          url: route("admin.billing"),
+                          icon: BookOpen,
+                          items: [
+                              {
+                                  title: "Application",
+                                  url: "#",
                               },
                               {
                                   title: "Documents",
-                                  url: route("admin.dashboard.audit-trail"),
+                                  url: route("student.documents"),
                               },
                               {
-                                  title: "Payment",
-                                  url: route("admin.dashboard.audit-trail"),
+                                  title: "Grades",
+                                  url: route("student.grades"),
+                              },
+                              {
+                                  title: "Evaluation",
+                                  url: "#",
                               },
                           ],
                       },
@@ -87,12 +106,12 @@ export function AppSidebar({ ...props }) {
                           icon: PhilippinePeso,
                           items: [
                               {
-                                  title: "Payment History",
+                                  title: "Payment Plan",
                                   url: route("admin.dashboard.audit-trail"),
                               },
                               {
                                   title: "Payment History",
-                                  url: route("admin.dashboard.audit-trail"),
+                                  url: route("student.payment.transaction"),
                               },
                           ],
                       },
@@ -219,9 +238,14 @@ export function AppSidebar({ ...props }) {
                                   title: "General",
                                   url: route("admin.setting.general"),
                               },
+
                               {
                                   title: "User Management",
                                   url: route("admin.user.management"),
+                              },
+                              {
+                                  title: "Account",
+                                  url: route("profile.edit"),
                               },
                               {
                                   title: "Help",

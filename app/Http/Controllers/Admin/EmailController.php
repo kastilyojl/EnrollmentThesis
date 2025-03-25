@@ -115,7 +115,7 @@ class EmailController extends Controller
 
         $to = $user->email;
         $message = "Greetings,
-                    We are happy to inform you that your now Officially Enrolled. You can now login to your student portal using this credential: 
+                    We are happy to inform you that you're now Officially Enrolled. You can now login to your student portal using this credential: 
                         email: ". $user->email . 
                         " password: WITI@123. 
                     

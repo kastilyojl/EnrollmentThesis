@@ -3,6 +3,7 @@ import { Label } from "@/components/ui/Label";
 import { Link, useForm } from "@inertiajs/react";
 import InputError from "@/components/InputError";
 import { Button } from "@/components/ui/button";
+import { format } from "date-fns";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -15,7 +16,7 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-export default function ApplicationForm({ program = [], school_year = [] }) {
+export default function ApplicationForm({ program = [], academic_year = [] }) {
     const [isOpen, setIsOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const { data, setData, post, errors } = useForm({
@@ -77,12 +78,6 @@ export default function ApplicationForm({ program = [], school_year = [] }) {
         civil_status: ["Single", "Married", "Legally Seperated", "Widowed"],
     };
 
-    const school_years = school_year.map((sy) => {
-        const startYear = new Date(sy.startDate_1st).getFullYear();
-        const endYear = new Date(sy.endDate_2nd).getFullYear();
-        return `${startYear} - ${endYear}`;
-    });
-
     return (
         <form className="max-w-6xl p-6 mx-auto">
             <div className="space-y-12 ">
@@ -141,7 +136,7 @@ export default function ApplicationForm({ program = [], school_year = [] }) {
                                 <span className="pl-1 text-red-500">*</span>
                             </Label>
                             <div className="mt-2">
-                                {/* <select
+                                <select
                                     name="school_year"
                                     id="school_year"
                                     value={data.school_year}
@@ -151,20 +146,26 @@ export default function ApplicationForm({ program = [], school_year = [] }) {
                                     className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-1 focus:-outline-offset-1 focus:outline-indigo-600 sm:text-sm/6"
                                 >
                                     <option hidden>Select</option>
-                                    {applicationFields.school_year.map(
-                                        (school_year, index) => {
-                                            return (
-                                                <option
-                                                    key={index}
-                                                    value={school_year}
-                                                >
-                                                    {school_year}
-                                                </option>
-                                            );
-                                        }
-                                    )}
-                                </select> */}
-                                <select
+                                    {academic_year.map((acad_year, index) => {
+                                        return (
+                                            <option
+                                                key={index}
+                                                value={acad_year.id}
+                                            >
+                                                {format(
+                                                    new Date(acad_year.start),
+                                                    "yyyy"
+                                                )}{" "}
+                                                {" - "}
+                                                {format(
+                                                    new Date(acad_year.end),
+                                                    "yyyy"
+                                                )}
+                                            </option>
+                                        );
+                                    })}
+                                </select>
+                                {/* <select
                                     name="school_year"
                                     id="school_year"
                                     value={data.school_year}
@@ -177,7 +178,7 @@ export default function ApplicationForm({ program = [], school_year = [] }) {
                                     <option value="2024-2025">2024-2025</option>
                                     <option value="2025-2026">2025-2026</option>
                                     <option value="2026-2027">2026-2027</option>
-                                </select>
+                                </select> */}
                                 {errors.school_year && !data.school_year && (
                                     <InputError message={errors.school_year} />
                                 )}
@@ -510,9 +511,6 @@ export default function ApplicationForm({ program = [], school_year = [] }) {
                     <h2 className="text-base/7 font-semibold text-gray-900">
                         Personal Information
                     </h2>
-                    <p className="mt-1 text-sm/6 text-gray-600">
-                        Use a permanent address where you can receive mail.
-                    </p>
 
                     <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                         <div className="sm:col-span-2">
@@ -758,9 +756,6 @@ export default function ApplicationForm({ program = [], school_year = [] }) {
                     <h2 className="text-base/7 font-semibold text-gray-900">
                         Parent Information
                     </h2>
-                    <p className="mt-1 text-sm/6 text-gray-600">
-                        Use a permanent address where you can receive mail.
-                    </p>
 
                     <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                         <div className="sm:col-span-2">

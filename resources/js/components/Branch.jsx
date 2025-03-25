@@ -1,55 +1,13 @@
 import React from "react";
 
-export default function Branch() {
-    const Branches = [
-        {
-            Name: "Cabuyao Laguna - Main Banlic Branch",
-            Location:
-                "#1 National Highway, Brgy. Banlic (Beside Puregold San Isidro)",
-            Map: "https://maps.app.goo.gl/dZodVH6Du3WJsvj6A",
-        },
-        {
-            Name: "Cabuyao Laguna - Uno Branch",
-            Location: "JP Rizal St, Brgy. Uno (In front of NST Carage)",
-            Map: "https://maps.app.goo.gl/KWsKvyA7KbRZzaHB8",
-        },
-        {
-            Name: "San Jose, Occ. Mindoro - Pag-Asa Branch",
-            Location: "G. Lopez Jaena St. Brgy. Pag-Asa (Near Narra House)",
-            Map: "https://maps.app.goo.gl/Z4nu7tHt2Nt6oU7TA",
-        },
-        {
-            Name: "San Mateo, Rizal - Sta. Ana Branch",
-            Location: "#8 P. Burgos St. Brgy. Sta. Ana (Old SSS Bldg.)",
-            Map: "https://maps.app.goo.gl/taFUH2af9MopqcxG9",
-        },
-        {
-            Name: "San Mateo, Rizal - Sta. Ana Branch",
-            Location:
-                "254 Gen. Luna Ave, Brgy. Sta. Ana (Beside Desmark Corp.)",
-            Map: "https://maps.app.goo.gl/taFUH2af9MopqcxG9",
-        },
-        {
-            Name: "San Mateo, Rizal - Ampid Branch",
-            Location:
-                "Gen. Luna Ave,Brgy. Ampid (in front of SM City San Mateo)",
-            Map: "https://maps.app.goo.gl/2iaWpFWwGuophCF4A",
-        },
-        {
-            Name: "Montalban, Rizal - Balite Branch",
-            Location:
-                "417 Cruz-San Subd., Daang Hari Balite (Beside Peña Bldg.)",
-            Map: "https://maps.app.goo.gl/WK3jpjYZ27wue34Y8",
-        },
-    ];
-
+export default function Branch({ campus }) {
     return (
         <div className="py-10 px-6 lg:p-20 bg-slate-50">
-            <p className="text-[32px] text-center py-4 text-[#00004C] font-bold">
+            <p className="text-2xl lg:text-[32px] text-center py-4 text-[#00004C] font-bold">
                 Visit any of our WITI Branches
             </p>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-2">
-                {Branches.map((branch, index) => {
+                {campus.map((branch, index) => {
                     return (
                         <article
                             key={index}
@@ -79,16 +37,16 @@ export default function Branch() {
 
                             <a href="#">
                                 <h3 className="mt-0.5 text-lg font-medium text-gray-900">
-                                    {branch.Name}
+                                    {branch.name}
                                 </h3>
                             </a>
 
                             <p className="mt-2 line-clamp-3 text-sm/relaxed text-gray-500">
-                                {branch.Location}
+                                {branch.location}
                             </p>
 
                             <a
-                                href={branch.Map}
+                                href={branch.url}
                                 target="_blank"
                                 className="group mt-4 inline-flex items-center gap-1 text-sm font-medium text-[#00004C]"
                             >

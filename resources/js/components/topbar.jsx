@@ -27,10 +27,38 @@ import { Link } from "@inertiajs/react";
 import { Button } from "./ui/button";
 
 const navigation = [
-    { name: "Dashboard", href: "#", current: true },
-    { name: "Team", href: "#", current: false },
-    { name: "Projects", href: "#", current: false },
-    { name: "Calendar", href: "#", current: false },
+    { name: "Login", href: route("login"), current: false },
+    {
+        name: "Apply Now",
+        href: route("landing-page.section.application"),
+        current: false,
+    },
+    { name: "FAQ", href: route("landing-page.section.FAQ"), current: false },
+    {
+        name: "Requirements",
+        href: route("landing-page.section.Requirements"),
+        current: false,
+    },
+    {
+        name: "Tuition Fee",
+        href: route("public.payment.submit"),
+        current: false,
+    },
+    {
+        name: "Admission Guide",
+        href: route("public.admission.guide"),
+        current: false,
+    },
+    {
+        name: "Senior High School",
+        href: route("landing-page.section.SHS"),
+        current: false,
+    },
+    {
+        name: "College",
+        href: route("landing-page.section.College"),
+        current: false,
+    },
 ];
 
 function classNames(...classes) {
@@ -41,14 +69,14 @@ export default function Topbar() {
     const about = [
         {
             title: "FAQ",
-            href: "/docs/primitives/alert-dialog",
+            href: route("landing-page.section.FAQ"),
         },
     ];
 
     const admission = [
         {
             title: "Requirements",
-            href: "/docs/primitives/alert-dialog",
+            href: route("landing-page.section.Requirements"),
         },
         {
             title: "Tuition Fee",
@@ -63,16 +91,19 @@ export default function Topbar() {
     const program = [
         {
             title: "Senior High School",
-            href: "/docs/primitives/alert-dialog",
+            href: route("landing-page.section.SHS"),
         },
         {
             title: "College",
-            href: "/docs/primitives/hover-card",
+            href: route("landing-page.section.College"),
         },
     ];
 
     return (
-        <Disclosure as="nav" className="bg-white border-b shadow-sm">
+        <Disclosure
+            as="nav"
+            className="bg-white border-b shadow-sm fixed top-0 right-0 left-0 z-50"
+        >
             <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
                 <div className="relative flex h-16 items-center justify-end">
                     <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
@@ -174,13 +205,13 @@ export default function Topbar() {
                     {navigation.map((item) => (
                         <DisclosureButton
                             key={item.name}
-                            as="a"
+                            as={Link}
                             href={item.href}
                             aria-current={item.current ? "page" : undefined}
                             className={classNames(
                                 item.current
                                     ? "bg-gray-900 text-white"
-                                    : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                                    : "text-gray-900 hover:bg-primary hover:text-white",
                                 "block rounded-md px-3 py-2 text-base font-medium"
                             )}
                         >
