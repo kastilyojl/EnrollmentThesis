@@ -5,9 +5,9 @@ import ACT from "../../../../assets/College2.png";
 
 export default function ProgramOffer() {
     return (
-        <div className="bg-gray-50 pt-24 sm:pt-32">
+        <div className="bg-gray-50 pt-24">
             <div className="mx-auto max-w-2xl px-6 lg:max-w-7xl lg:px-8">
-                <h2 className="text-center text-base/7 font-semibold text-indigo-600">
+                <h2 className="text-center text-lg font-semibold text-indigo-600">
                     Program Offer
                 </h2>
                 <p className="mx-auto mt-2 max-w-lg text-center text-2xl lg:text-4xl font-semibold tracking-tight text-balance text-gray-950 sm:text-5xl">
@@ -22,15 +22,19 @@ export default function ProgramOffer() {
                                     Senior High School
                                 </p>
                                 <p className="mt-2 max-w-lg text-sm/6 text-gray-600 max-lg:text-center">
-                                    Lorem ipsum, dolor sit amet consectetur
-                                    adipisicing elit maiores impedit.
+                                    Prepare for your future with our
+                                    comprehensive Senior High School program,
+                                    offering specialized tracks that equip
+                                    students with the skills and knowledge
+                                    needed for higher education or the
+                                    workforce.
                                 </p>
                             </div>
                             <div className="flex flex-1 items-center justify-center px-8 max-lg:pt-10 max-lg:pb-12 sm:px-10 lg:pb-2">
                                 <img
-                                    className="w-full max-lg:max-w-xs"
+                                    className="w-full h-40 max-lg:max-w-xs"
                                     src={SHS}
-                                    alt=""
+                                    alt="senior high school"
                                 />
                             </div>
                         </div>
@@ -44,15 +48,18 @@ export default function ProgramOffer() {
                                     College
                                 </p>
                                 <p className="mt-2 max-w-lg text-sm/6 text-gray-600 max-lg:text-center">
-                                    Lorem ipsum, dolor sit amet consectetur
-                                    adipisicing elit maiores impedit.
+                                    Advance your education with our diverse
+                                    College programs, designed to provide
+                                    in-depth knowledge and practical experience
+                                    to prepare you for a successful career in
+                                    your chosen field.
                                 </p>
                             </div>
                             <div className="flex flex-1 items-center justify-center px-8 max-lg:pt-10 max-lg:pb-12 sm:px-10 lg:pb-2">
                                 <img
-                                    className="w-full max-lg:max-w-xs"
+                                    className="w-full h-40 max-lg:max-w-xs"
                                     src={COLLEGE}
-                                    alt=""
+                                    alt="college"
                                 />
                             </div>
                         </div>
@@ -67,15 +74,18 @@ export default function ProgramOffer() {
                                     ACT
                                 </p>
                                 <p className="mt-2 max-w-lg text-sm/6 text-gray-600 max-lg:text-center">
-                                    Lorem ipsum, dolor sit amet consectetur
-                                    adipisicing elit maiores impedit.
+                                    Gain hands-on skills in computer hardware,
+                                    software, and network systems with our
+                                    Associate in Computer Technology program,
+                                    preparing you for a career in the
+                                    fast-growing tech industry.
                                 </p>
                             </div>
                             <div className="flex flex-1 items-center justify-center px-8 max-lg:pt-10 max-lg:pb-12 sm:px-10 lg:pb-2">
                                 <img
-                                    className="w-full max-lg:max-w-xs"
+                                    className="w-full h-40 max-lg:max-w-xs"
                                     src={ACT}
-                                    alt=""
+                                    alt="associate in computer technology"
                                 />
                             </div>
                         </div>

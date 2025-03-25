@@ -11,12 +11,12 @@ export default function SeniorHighSchool() {
     return (
         <div>
             <Topbar />
-            <div className="bg-gray-50 pb-10 pt-24 sm:pt-32">
+            <div className="bg-gray-50 pb-10 pt-20">
                 <div className="mx-auto max-w-2xl px-6 lg:px-8 lg:max-w-7xl">
-                    <p className="mx-auto mt-2 mb-6 max-w-lg text-center text-primary text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
+                    <p className="mx-auto mt-2 mb-6 w-full text-primary text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
                         Overview
                     </p>
-                    <p className="h-auto p-8 bg-[#00004C] text-white items-center gap-5 justify-center">
+                    <p className="h-auto p-8 bg-[#00004C] rounded-lg text-white items-center gap-5 justify-center">
                         Westbridge Institute of Technology Inc. offers a dynamic
                         and enriching{" "}
                         <span className="inline text-[#ED1C24] font-bold">
@@ -33,7 +33,10 @@ export default function SeniorHighSchool() {
                         academically while preparing them for their future
                         careers.
                     </p>
-                    <div className="mt-10 grid gap-4 sm:mt-16 lg:grid-cols-3">
+                    <h2 className="text-center text-lg py-10 font-semibold text-indigo-600">
+                        Program Offer
+                    </h2>
+                    <div className="grid gap-4 lg:grid-cols-3">
                         <div className="relative lg:row-span-1">
                             <div className="absolute inset-px rounded-lg bg-white lg:rounded-l-[2rem]"></div>
                             <div className="relative flex h-full flex-col overflow-hidden rounded-[calc(var(--radius-lg)+1px)] max-lg:rounded-t-[calc(2rem+1px)]">

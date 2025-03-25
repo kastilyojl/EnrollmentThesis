@@ -14,12 +14,12 @@ export default function CollegeProgram() {
     return (
         <div>
             <Topbar />
-            <div className="bg-gray-50 pb-10 pt-24 sm:pt-32">
+            <div className="bg-gray-50 pb-10 pt-20">
                 <div className="mx-auto max-w-2xl px-6 lg:px-8 lg:max-w-7xl">
-                    <p className="mx-auto mt-2 mb-6 max-w-lg text-center text-primary text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
+                    <p className="mx-auto mt-2 mb-6 w-full text-primary text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
                         Overview
                     </p>
-                    <p className="h-auto p-8 bg-[#00004C] text-white items-center gap-5 justify-center">
+                    <p className="h-auto p-8 rounded-lg bg-[#00004C] text-white items-center gap-5 justify-center">
                         Westbridge Institute of Technology Inc. offers a dynamic
                         and enriching{" "}
                         <span className="inline text-[#ED1C24] font-bold">
@@ -36,7 +36,7 @@ export default function CollegeProgram() {
                         our students to excel academically while preparing them
                         for their future careers.
                     </p>
-                    <div className="mt-10 sm:mt-16">
+                    <div className="mt-10">
                         <h2 className="text-center text-lg mb-10 font-semibold text-indigo-600">
                             4 Years College
                         </h2>
@@ -212,7 +212,7 @@ export default function CollegeProgram() {
                             </div>
                         </div>
                     </div>
-                    <div className="mt-10 sm:mt-16">
+                    <div className="mt-10">
                         <h2 className="text-center text-lg mb-10 font-semibold text-indigo-600">
                             2 Years College
                         </h2>

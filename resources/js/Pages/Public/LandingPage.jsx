@@ -19,7 +19,7 @@ export default function LandingPage({ FAQ = [], campus = [] }) {
             <Footer className="">
                 <ApplicationLogo className="h-20" />
             </Footer>
-            <ChatBubbles FAQ={FAQ} className="fixed bottom-0 right-0 m-10" />
+            <ChatBubbles FAQ={FAQ} className="fixed bottom-0 right-0 m-4" />
         </div>
     );
 }

@@ -15,6 +15,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import ApplicationLogo from "@/components/ApplicationLogo";
 
 export default function ApplicationForm({ program = [], academic_year = [] }) {
     const [isOpen, setIsOpen] = useState(false);
@@ -80,16 +81,65 @@ export default function ApplicationForm({ program = [], academic_year = [] }) {
 
     return (
         <form className="max-w-6xl p-6 mx-auto">
-            <div className="space-y-12 ">
-                <div className="border-b border-gray-900/10 pb-12">
+            <div className="flex items-center">
+                <ApplicationLogo className="h-16" />{" "}
+                <span className="text-2xl font-bold">WITI</span>
+            </div>
+            <div className="space-y-4">
+                <p className="text-center font-semibold border border-t-primary border-b-primary text-primary p-4 rounded-lg">
+                    Application Form
+                </p>
+
+                <div className="space-y-4">
+                    <details
+                        className="group [&_summary::-webkit-details-marker]:hidden"
+                        open
+                    >
+                        <summary className="flex cursor-pointer items-center justify-between gap-1.5 rounded-lg bg-gray-50 p-2 text-gray-900">
+                            <h2 className="font-semibold text-primary">
+                                Reminders
+                            </h2>
+
+                            <svg
+                                className="size-5 shrink-0 shadow-sm transition duration-300 group-open:-rotate-180"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M19 9l-7 7-7-7"
+                                />
+                            </svg>
+                        </summary>
+
+                        <p className="px-4 text-md leading-relaxed text-gray-700">
+                            <span className="px-2">⮫</span>Fields with asterisk
+                            (*) are required.
+                        </p>
+                        <p className="px-4 text-md leading-relaxed text-gray-700">
+                            <span className="px-2">⮫</span>Please provide a
+                            valid and active email address where you can receive
+                            important updates and correspondence.
+                        </p>
+                        <p className=" px-4 text-md leading-relaxed text-gray-700">
+                            <span className="px-2">⮫</span>Any information
+                            you've entered will be lost if you close or refresh
+                            this page. We recommend completing the form to
+                            ensure your progress is saved.
+                        </p>
+                    </details>
+                </div>
+
+                <div className="pt-4 border-b border-gray-900/10 pb-12">
                     <h2 className="text-base/7 font-semibold text-gray-900">
                         Student Information
                     </h2>
-                    <p className="mt-1 text-sm/6 text-gray-600">
-                        Use a permanent address where you can receive mail.
-                    </p>
 
-                    <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                    <div className="mt-4 grid gap-x-6 gap-y-2 md:gap-y-4 lg:gap-y-8 sm:grid-cols-6">
                         <div className="sm:col-span-2">
                             <Label
                                 htmlFor="last-name"
@@ -165,20 +215,7 @@ export default function ApplicationForm({ program = [], academic_year = [] }) {
                                         );
                                     })}
                                 </select>
-                                {/* <select
-                                    name="school_year"
-                                    id="school_year"
-                                    value={data.school_year}
-                                    onChange={(e) =>
-                                        setData("school_year", e.target.value)
-                                    }
-                                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-1 focus:-outline-offset-1 focus:outline-indigo-600 sm:text-sm/6"
-                                >
-                                    <option hidden>Select</option>
-                                    <option value="2024-2025">2024-2025</option>
-                                    <option value="2025-2026">2025-2026</option>
-                                    <option value="2026-2027">2026-2027</option>
-                                </select> */}
+
                                 {errors.school_year && !data.school_year && (
                                     <InputError message={errors.school_year} />
                                 )}
@@ -507,12 +544,12 @@ export default function ApplicationForm({ program = [], academic_year = [] }) {
                 </div>
             </div>
             <div className="space-y-12">
-                <div className="border-b border-gray-900/10 pb-12">
+                <div className="pt-4 border-b border-gray-900/10 pb-12">
                     <h2 className="text-base/7 font-semibold text-gray-900">
                         Personal Information
                     </h2>
 
-                    <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                    <div className="mt-4 grid gap-x-6 gap-y-2 md:gap-y-4 lg:gap-y-8 sm:grid-cols-6">
                         <div className="sm:col-span-2">
                             <Label
                                 htmlFor="first-name"
@@ -753,11 +790,11 @@ export default function ApplicationForm({ program = [], academic_year = [] }) {
             </div>
             <div className="space-y-12">
                 <div className="border-b border-gray-900/10 pb-12">
-                    <h2 className="text-base/7 font-semibold text-gray-900">
+                    <h2 className="pt-4 text-base/7 font-semibold text-gray-900">
                         Parent Information
                     </h2>
 
-                    <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                    <div className="mt-4 grid gap-x-6 gap-y-2 md:gap-y-4 lg:gap-y-8 sm:grid-cols-6">
                         <div className="sm:col-span-2">
                             <Label
                                 htmlFor="father_name"
@@ -970,7 +1007,6 @@ export default function ApplicationForm({ program = [], academic_year = [] }) {
                     </div>
                 </div>
             </div>
-
             <div className="mt-6 flex items-center justify-end gap-x-6">
                 <Link
                     href={route("home")}

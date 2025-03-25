@@ -47,8 +47,8 @@ export default function CarouselCard({ className = "" }) {
                         </CarouselItem>
                     ))}
                 </CarouselContent>
-                <CarouselPrevious />
-                <CarouselNext />
+                <CarouselPrevious className="hidden lg:block" />
+                <CarouselNext className="hidden lg:block" />
             </Carousel>
         </div>
     );
