@@ -14,11 +14,11 @@ export default function WelcomeCard({ className = "" }) {
     const user = usePage().props.auth.user;
     return (
         <Card
-            className={`${className} w-full bg-gray-50 grid grid-cols-[70%_30%] shadow-md justify-center items-center`}
+            className={`${className} sm:auto lg:w-full bg-gray-50 grid grid-cols-1 md:grid-cols-[70%_30%] shadow-md justify-center items-center`}
         >
             <div>
                 <CardHeader>
-                    <CardTitle className="text-gray-900 text-lg">
+                    <CardTitle className="text-gray-900 lg:text-lg">
                         Welcome back, {user.name} 👋
                     </CardTitle>
                     <p className="text-sm ">
@@ -34,8 +34,12 @@ export default function WelcomeCard({ className = "" }) {
                 </CardFooter>
             </div>
             <div>
-                <CardContent className="text-4xl font-medium text-end">
-                    <img src={educator} alt="educator" />
+                <CardContent className="flex justify-center w-full text-4xl font-medium md:text-end">
+                    <img
+                        src={educator}
+                        alt="educator"
+                        className="max-h-40 pt-4 md:pt-0"
+                    />
                 </CardContent>
             </div>
         </Card>

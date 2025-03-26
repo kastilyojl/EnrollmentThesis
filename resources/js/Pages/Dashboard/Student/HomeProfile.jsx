@@ -7,7 +7,7 @@ import Announcement from "./Content/Announcement";
 export default function HomeProfile() {
     return (
         <Layout>
-            <div className="grid grid-cols-[70%_30%] gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-[70%_30%] gap-4">
                 <div>
                     <WelcomeCard />
                 </div>

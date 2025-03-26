@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 
 export default function Announcement({ className = "" }) {
     return (
-        <Card className={`${className} h-36 bg-gray-50 shadow-md items-center`}>
+        <Card className={`${className} w-full h-36 bg-gray-50 shadow-md items-center`}>
             <CardHeader>
                 <CardTitle className="text-gray-900">Announcement</CardTitle>
             </CardHeader>

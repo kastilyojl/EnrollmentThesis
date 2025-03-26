@@ -22,18 +22,19 @@ export default function SchoolFeeDetails({
     const [selectedCollegeFees, setSelectedCollegeFees] = useState([]);
     const [selectedOtherFees, setSelectedOtherFees] = useState([]);
     const { data, setData, post } = useForm({
-        id: student[0].id,
-        student_info_id: "1",
+        id: student[0].users_id,
+        student_info_id: student[0].users_id,
         fee_type: "",
         fee_id: "",
         amount: "",
         paymentDetails: [],
     });
 
+    // console.log("Student", data.id);
+    // console.log("Student ID", data.student_info_id);
+
     const handleSubmit = () => {
         const paymentDetails = [];
-
-        // Add selected college fees
         selectedCollegeFees.forEach((fee) => {
             paymentDetails.push({
                 student_info_id: data.student_info_id,
@@ -56,7 +57,7 @@ export default function SchoolFeeDetails({
         post(
             route("admin.payment.storeDetails"),
             // {
-            //    paymentDetails: paymentDetails,
+            //     paymentDetails: paymentDetails,
             // },
             {
                 onSuccess: () => {
@@ -64,6 +65,7 @@ export default function SchoolFeeDetails({
                 },
             }
         );
+        // console.log("Payment Details", paymentDetails);
     };
 
     const handleCollegeFeeToggle = (fee) => {

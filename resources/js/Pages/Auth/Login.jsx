@@ -112,12 +112,14 @@ export default function Login() {
                                     </div>
                                     <div className="text-center text-sm">
                                         Don&apos;t have an account?{" "}
-                                        <a
-                                            href="#"
+                                        <Link
+                                            href={route(
+                                                "landing-page.section.application"
+                                            )}
                                             className="underline underline-offset-4"
                                         >
                                             Register
-                                        </a>
+                                        </Link>
                                     </div>
                                 </div>
                             </form>

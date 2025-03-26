@@ -44,6 +44,10 @@ class GeneralController extends Controller
         ]);
     }
 
+    public function enrollment() {
+        return Inertia::render('Dashboard/Student/Enrollment');
+    }
+
     public function payment()
     {
         $user = Auth::user();
@@ -52,6 +56,18 @@ class GeneralController extends Controller
 
         return Inertia::render('Dashboard/Student/Payment', [
             'student' => $payment,
+        ]);
+    }
+
+    public function subjects()
+    {
+        $user = Auth::user();
+    
+        $subjects = $user->studentInfo()->with('studentSubjects')->first();
+        // dd($subjects->studentSubjects);
+
+        return Inertia::render('Dashboard/Student/Subject', [
+            'student' => $subjects,
         ]);
     }
     

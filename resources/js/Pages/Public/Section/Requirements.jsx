@@ -8,14 +8,14 @@ export default function Requirements() {
     return (
         <div>
             <Topbar />
-            <section class="bg-white pt-10">
-                <div class="py-8 px-4 mx-auto max-w-screen-xl sm:py-16 lg:px-6">
-                    <h2 class="mb-8 text-4xl tracking-tight font-extrabold text-primary">
+            <section className="bg-gray-50 pb-10 pt-20">
+                <div className="mx-auto max-w-2xl px-6 lg:px-8 lg:max-w-7xl">
+                    <h2 className="mx-auto mt-2 mb-6 w-full text-4xl tracking-tight font-extrabold text-primary ">
                         Requirements
                     </h2>
                     <div class="grid pt-8 text-left border-t border-gray-200 md:gap-6 ">
                         <div className="border rounded-lg shadow-sm">
-                            <div class="p-10">
+                            <div class="p-4 md:p-6 lg:p-10">
                                 <h3 class="flex items-center mb-4 text-lg font-medium text-primary ">
                                     <svg
                                         class="flex-shrink-0 mr-2 w-5 h-5 text-gray-500 "
@@ -50,7 +50,7 @@ export default function Requirements() {
                             </div>
                         </div>
                         <div className="border rounded-lg shadow-sm">
-                            <div class="p-10">
+                            <div class="p-4 md:p-6 lg:p-10">
                                 <h3 class="flex items-center mb-4 text-lg font-medium text-primary ">
                                     <svg
                                         class="flex-shrink-0 mr-2 w-5 h-5 text-gray-500 "
@@ -80,14 +80,14 @@ export default function Requirements() {
                             </div>
                         </div>
                     </div>
-                    <div className="h-auto mt-10 p-4 rounded-lg bg-[#00004C] flex flex-col items-center gap-5 justify-center">
+                    <div className="h-auto rounded-lg mt-4 lg:mt-24 p-4 bg-[#00004C] flex flex-col items-center gap-5 justify-center">
                         <div>
-                            <h1 className="text-white text-[32px] text-center">
+                            <h1 className="text-white text-2xl lg:text-[32px] text-center">
                                 Start your journey today and unlock endless
                                 possibilities in your education at
                                 <span
                                     className="text-[#ED1C24] font-bold block
-                    "
+                                        "
                                 >
                                     Westbridge Institue of Technology Inc.
                                 </span>{" "}

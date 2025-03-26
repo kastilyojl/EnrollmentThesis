@@ -13,9 +13,12 @@ export default function SeniorHighSchool() {
             <Topbar />
             <div className="bg-gray-50 pb-10 pt-20">
                 <div className="mx-auto max-w-2xl px-6 lg:px-8 lg:max-w-7xl">
-                    <p className="mx-auto mt-2 mb-6 w-full text-primary text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
+                    {/* <p className="mx-auto mt-2 mb-6 w-full text-primary text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
                         Overview
-                    </p>
+                    </p> */}
+                    <h2 className="mx-auto mt-2 mb-6 w-full text-4xl tracking-tight font-extrabold text-primary ">
+                        Overview
+                    </h2>
                     <p className="h-auto p-8 bg-[#00004C] rounded-lg text-white items-center gap-5 justify-center">
                         Westbridge Institute of Technology Inc. offers a dynamic
                         and enriching{" "}

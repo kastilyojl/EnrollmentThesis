@@ -10,6 +10,7 @@ use App\Models\College_Billing;
 use App\Models\Other_Billing;
 use App\Models\Payment_Details;
 use App\Models\Payment_Verification;
+use App\Models\Programs;
 use App\Models\Student_Info;
 use App\Models\Student_Subjects;
 use App\Models\Subjects;
@@ -23,7 +24,8 @@ class PaymentController extends Controller
     // Student
 
     public function index() {
-        return Inertia::render("Public/Section/TuitionFee");
+        $program = Programs::all();
+        return Inertia::render("Public/Section/TuitionFee", ['program'=>$program]);
     }
 
     public function store(PaymentVerification $request) {

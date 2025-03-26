@@ -414,7 +414,7 @@ export default function AssignFee({
                                         {data.year_level} {data.program}
                                     </span>
                                 </Label>
-                                <h1>Select Course</h1>
+                                <h1>Select Fee</h1>
                                 <ScrollArea className="h-[500px]">
                                     <SchoolFeeDetails
                                         student={student}

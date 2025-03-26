@@ -77,7 +77,6 @@ Route::get('/mail-send/{id}/onhold', [EmailController::class, 'sendEmailOnHold']
 
 Route::get('/mail-send/{id}/officialy-enrolled', [EmailController::class, 'sendEmailOfficiallyEnrolled'])->name('send.email.official-enroll');
 
-
 Route::group([], function () {
     Route::get('/Error', function () {
         return Inertia::render('Error404');
@@ -109,7 +108,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard/personal-information', [GeneralController::class, 'personalInfo'])->name('student.personal.info');
     Route::get('/dashboard/documents', [GeneralController::class, 'documents'])->name('student.documents');
     Route::get('/dashboard/grades', [GeneralController::class, 'grades'])->name('student.grades');
+    Route::get('/dashboard/enrollment', [GeneralController::class, 'enrollment'])->name('student.enrollment');
     Route::get('/dashboard/payment', [GeneralController::class, 'payment'])->name('student.payment.transaction');
+    Route::get('/dashboard/subjects', [GeneralController::class, 'subjects'])->name('student.subject');
+
 
 
     //Admin
@@ -180,6 +182,8 @@ Route::post('/schedule/{id}/update', [SectionController::class, 'editSchedule'])
 Route::delete('/section/{id}/delete', [SectionController::class, 'destroy'])->name("admin.section.destroy");
 
 Route::get('/user-management', [UserManagement::class, 'index'])->name('admin.user.management');
+Route::get('/user-management/create', [UserManagement::class, 'createUser'])->name('admin.user.management.create');
+
 
 Route::prefix('billing')->group(function () {
     Route::get('/', [BillingController::class, 'index'])->name('admin.billing');

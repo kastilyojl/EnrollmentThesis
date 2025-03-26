@@ -69,7 +69,7 @@ export function AppSidebar({ ...props }) {
                               },
                               {
                                   title: "Subjects",
-                                  url: "#",
+                                  url: route("student.subject"),
                               },
                               {
                                   title: "Personal Information",
@@ -83,8 +83,8 @@ export function AppSidebar({ ...props }) {
                           icon: BookOpen,
                           items: [
                               {
-                                  title: "Application",
-                                  url: "#",
+                                  title: "Enrollment",
+                                  url: route("student.enrollment"),
                               },
                               {
                                   title: "Documents",

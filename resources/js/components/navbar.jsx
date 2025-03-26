@@ -55,38 +55,40 @@ export default function Navbar() {
         <header className="sticky z-10 bg-background/95 supports-[backfrop-filter]:bg-background/60 backdrop-blur top-0 flex shrink-0 items-center gap-2 border-b h-16 px-3">
             <div className="flex gap-4 items-center">
                 <SidebarTrigger />
-                <Select
-                    className="h-[6px] w-[10px]"
-                    value={selectedYear}
-                    onValueChange={handleSelectChange}
-                >
-                    <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder="School Year" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {academic_year.length > 0 ? (
-                            academic_year.map((year) => {
-                                const formattedYear = `SY: ${format(
-                                    new Date(year.start),
-                                    "yyyy"
-                                )} - ${format(new Date(year.end), "yyyy")}`;
+                <div className="hidden sm:block">
+                    <Select
+                        className="h-[6px] w-[10px] "
+                        value={selectedYear}
+                        onValueChange={handleSelectChange}
+                    >
+                        <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="School Year" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {academic_year.length > 0 ? (
+                                academic_year.map((year) => {
+                                    const formattedYear = `SY: ${format(
+                                        new Date(year.start),
+                                        "yyyy"
+                                    )} - ${format(new Date(year.end), "yyyy")}`;
 
-                                return (
-                                    <SelectItem
-                                        key={year.id}
-                                        value={formattedYear}
-                                    >
-                                        {formattedYear}
-                                    </SelectItem>
-                                );
-                            })
-                        ) : (
-                            <SelectItem disabled>
-                                No Academic Years Available
-                            </SelectItem>
-                        )}
-                    </SelectContent>
-                </Select>
+                                    return (
+                                        <SelectItem
+                                            key={year.id}
+                                            value={formattedYear}
+                                        >
+                                            {formattedYear}
+                                        </SelectItem>
+                                    );
+                                })
+                            ) : (
+                                <SelectItem disabled>
+                                    No Academic Years Available
+                                </SelectItem>
+                            )}
+                        </SelectContent>
+                    </Select>
+                </div>
             </div>
 
             <div className="ml-auto">

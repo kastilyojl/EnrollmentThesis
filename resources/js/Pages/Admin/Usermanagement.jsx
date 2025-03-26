@@ -24,6 +24,9 @@ import { Edit, Filter, Trash, User } from "lucide-react";
 import BadgeWarning from "@/components/BadgeWarning";
 import BadgereDanger from "@/components/BadgeDanger";
 import BadgeSuccess from "@/components/BadgeSuccess";
+import { Label } from "@/components/ui/label";
+import { Link, useForm } from "@inertiajs/react";
+import InputError from "@/components/InputError copy";
 
 export default function UserManagement({ user = [] }) {
     const [itemId, setItemId] = useState(null);
@@ -31,6 +34,33 @@ export default function UserManagement({ user = [] }) {
     const [del, setDel] = useState(false);
     const tableHeader = ["Name", "Email", "Email Verified", "Created At"];
     const tableData = ["Name", "Email", "Email Verified", "Created At"];
+    const { data, setData, post, processing, errors, reset } = useForm({
+        name: "",
+        email: "",
+        role: "",
+        password: "",
+        password_confirmation: "",
+    });
+
+    const handleAdd = () => {
+        setItemId(null);
+        setAdd(true);
+        setData({
+            name: "",
+            email: "",
+            role: "",
+            password: "",
+            password_confirmation: "",
+        });
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        post(route("register"), {
+            onFinish: () => reset("password", "password_confirmation"),
+        });
+    };
 
     const handleDel = (program) => {
         setItemId(program);
@@ -74,7 +104,11 @@ export default function UserManagement({ user = [] }) {
                         </DropdownMenu>
                     </div>
                 </div>
-                <Button>Create</Button>
+                <Button>
+                    <Link href={route("admin.user.management.create")}>
+                        Create
+                    </Link>
+                </Button>
             </div>
             <div className="border rounded-sm px-4">
                 <Table>

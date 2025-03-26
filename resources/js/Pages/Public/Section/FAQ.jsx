@@ -9,7 +9,7 @@ export default function FAQ({ FAQ = [] }) {
             <Topbar />
             <section className="bg-gray-100 pt-10">
                 <div className="py-8 px-4 mx-auto max-w-screen-xl sm:py-16 lg:px-6">
-                    <h2 className="mb-8 text-4xl tracking-tight font-extrabold text-primary ">
+                    <h2 className="mx-auto mt-2 mb-6 w-full text-4xl tracking-tight font-extrabold text-primary ">
                         Frequently asked questions
                     </h2>
                     <div className="grid pt-8 text-left border-t border-gray-200 md:gap-16  md:grid-cols-2">

@@ -8,6 +8,7 @@ use App\Models\Email_Logs;
 use App\Models\Student_Info;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 
@@ -110,8 +111,10 @@ class EmailController extends Controller
 
     public function sendEmailOfficiallyEnrolled(Request $request) {
 
-        $email = Student_Info::findOrFail($request->id);
+        $email = Student_Info::where('users_id', $request->id)->firstOrFail();
+
         $user = $email->users;
+        Log::info($request->all());
 
         $to = $user->email;
         $message = "Greetings,
@@ -120,7 +123,7 @@ class EmailController extends Controller
                         " password: WITI@123. 
                     
                     Thank you.";
-        $subject = "Application Approved";
+        $subject = "Officially Enrolled";
 
         Email_Logs::create([
             'users_id' => $user->id,
@@ -131,6 +134,7 @@ class EmailController extends Controller
             $message->to($to)
                     ->subject($subject);
         });
+
 
     }
 }

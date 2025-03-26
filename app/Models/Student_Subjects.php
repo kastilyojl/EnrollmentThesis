@@ -15,4 +15,9 @@ class Student_Subjects extends Model
         'subject_code',
         'status'
     ];
+
+    public function studentInfo()
+    {
+        return $this->belongsTo(Student_Info::class, 'student_info_id', 'student_id');
+    }
 }

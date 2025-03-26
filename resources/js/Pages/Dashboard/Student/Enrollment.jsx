@@ -1,11 +1,11 @@
 import Layout from "@/components/layout";
 import React from "react";
 
-export default function Grades() {
+export default function Enrollment() {
     return (
         <Layout>
             <div className="flex items-end justify-between mb-7">
-                <h1 className="text-2xl font-bold">Grade</h1>
+                <h1 className="text-2xl font-bold">Enrollment</h1>
             </div>
             <div className="space-y-4">
                 <section class="bg-white dark:bg-gray-900">
@@ -15,11 +15,11 @@ export default function Grades() {
                                 503
                             </h1>
                             <p class="mb-4 text-3xl tracking-tight font-bold text-gray-900 md:text-4xl dark:text-white">
-                                Grades are not available as of the moment
+                                Enrollment is not open at the moment
                             </p>
                             <p class="mb-4 text-lg font-light text-gray-500 dark:text-gray-400">
-                                Please wait until the admin uploads all the
-                                students' grades
+                                Please wait until the evaluation is complete
+                                before you can access this section
                             </p>
                         </div>
                     </div>

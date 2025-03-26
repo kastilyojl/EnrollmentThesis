@@ -255,8 +255,7 @@ export default function AssignCourse({
 
             {
                 onSuccess: () => {
-                    console.log("Success Trigger");
-                    toast("Bill has been created", {
+                    toast("Courses Assigned to student", {
                         description: "Sunday, December 03, 2023 at 9:00 AM",
                     });
                     setAdd(false);
@@ -636,74 +635,79 @@ export default function AssignCourse({
                                                                     subject,
                                                                     index,
                                                                     array
-                                                                ) =>
-                                                                    index %
-                                                                        2 ===
-                                                                        0 && (
-                                                                        <tr
-                                                                            className="table-fixed"
-                                                                            key={
-                                                                                subject.code
-                                                                            }
-                                                                        >
-                                                                            {/* First Subject */}
-                                                                            <td className="whitespace-nowrap px-4 py-1 font-medium text-gray-900">
-                                                                                <Checkbox
-                                                                                    checked={selectedSubjects.some(
-                                                                                        (
-                                                                                            selectedSubject
-                                                                                        ) =>
-                                                                                            selectedSubject.id ===
-                                                                                            subject.id
-                                                                                    )}
-                                                                                    onCheckedChange={() =>
-                                                                                        handleSubjectToggle(
-                                                                                            subject
-                                                                                        )
-                                                                                    }
-                                                                                />
-                                                                            </td>
-                                                                            <td className="whitespace-nowrap px-4 py-1 font-medium text-gray-900">
-                                                                                {
-                                                                                    subject.name
-                                                                                }
-                                                                            </td>
+                                                                ) => {
+                                                                    // We are processing every two subjects in one row
+                                                                    const subject1 =
+                                                                        subject; // First subject
+                                                                    const subject2 =
+                                                                        array[
+                                                                            index +
+                                                                                1
+                                                                        ]; // Second subject (if exists)
 
-                                                                            {/* Second Subject (if exists) */}
-                                                                            {array[
-                                                                                index +
-                                                                                    1
-                                                                            ] && (
-                                                                                <>
-                                                                                    <td className="whitespace-nowrap px-4 py-1 font-medium text-gray-900">
-                                                                                        <Checkbox
-                                                                                            checked={selectedSubjects.some(
-                                                                                                (
-                                                                                                    selectedSubject
-                                                                                                ) =>
-                                                                                                    selectedSubject.id ===
-                                                                                                    subject.id
-                                                                                            )}
-                                                                                            onCheckedChange={() =>
-                                                                                                handleSubjectToggle(
-                                                                                                    subject
-                                                                                                )
-                                                                                            }
-                                                                                        />
-                                                                                    </td>
-                                                                                    <td className="whitespace-nowrap px-4 py-1 font-medium text-gray-900">
-                                                                                        {
-                                                                                            array[
-                                                                                                index +
-                                                                                                    1
-                                                                                            ]
-                                                                                                .name
+                                                                    return (
+                                                                        index %
+                                                                            2 ===
+                                                                            0 && (
+                                                                            <tr
+                                                                                className="table-fixed"
+                                                                                key={
+                                                                                    subject1.code
+                                                                                }
+                                                                            >
+                                                                                {/* First Subject Checkbox */}
+                                                                                <td className="whitespace-nowrap px-4 py-1 font-medium text-gray-900">
+                                                                                    <Checkbox
+                                                                                        checked={selectedSubjects.some(
+                                                                                            (
+                                                                                                selectedSubject
+                                                                                            ) =>
+                                                                                                selectedSubject.id ===
+                                                                                                subject1.id
+                                                                                        )}
+                                                                                        onCheckedChange={() =>
+                                                                                            handleSubjectToggle(
+                                                                                                subject1
+                                                                                            )
                                                                                         }
-                                                                                    </td>
-                                                                                </>
-                                                                            )}
-                                                                        </tr>
-                                                                    )
+                                                                                    />
+                                                                                </td>
+                                                                                <td className="whitespace-nowrap px-4 py-1 font-medium text-gray-900">
+                                                                                    {
+                                                                                        subject1.name
+                                                                                    }
+                                                                                </td>
+
+                                                                                {/* Second Subject Checkbox */}
+                                                                                {subject2 && (
+                                                                                    <>
+                                                                                        <td className="whitespace-nowrap px-4 py-1 font-medium text-gray-900">
+                                                                                            <Checkbox
+                                                                                                checked={selectedSubjects.some(
+                                                                                                    (
+                                                                                                        selectedSubject
+                                                                                                    ) =>
+                                                                                                        selectedSubject.id ===
+                                                                                                        subject2.id
+                                                                                                )}
+                                                                                                onCheckedChange={() =>
+                                                                                                    handleSubjectToggle(
+                                                                                                        subject2
+                                                                                                    )
+                                                                                                }
+                                                                                            />
+                                                                                        </td>
+                                                                                        <td className="whitespace-nowrap px-4 py-1 font-medium text-gray-900">
+                                                                                            {
+                                                                                                subject2.name
+                                                                                            }
+                                                                                        </td>
+                                                                                    </>
+                                                                                )}
+                                                                            </tr>
+                                                                        )
+                                                                    );
+                                                                }
                                                             )}
                                                     </ScrollArea>
                                                 </tbody>

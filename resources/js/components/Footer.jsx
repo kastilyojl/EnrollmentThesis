@@ -24,7 +24,7 @@ export default function Footer({ children, className = "" }) {
     };
 
     return (
-        <footer className={`${className} bg-gray-200`}>
+        <footer className={`${className} bg-customBlue`}>
             <div className="mx-auto  max-w-screen-xl px-4 pb-6 pt-16 sm:px-6 lg:px-8 lg:pt-24">
                 <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
                     <div>
@@ -32,7 +32,7 @@ export default function Footer({ children, className = "" }) {
                             {children}
                         </div>
 
-                        <p className="mt-6 max-w-md text-center leading-relaxed  text-gray-500 sm:max-w-xs sm:text-left">
+                        <p className="mt-6 max-w-md text-center leading-relaxed  text-gray-900 sm:max-w-xs sm:text-left">
                             {footerInfo.schoolName}
                         </p>
 
