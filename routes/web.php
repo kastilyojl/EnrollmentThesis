@@ -55,7 +55,7 @@ Route::get('/', function () {
     return Inertia::render('Public/LandingPage', ['FAQ'=>$FAQ, 'campus'=>$campus]);
 })->name('home');
 
-Route::prefix('dashboard')->group(function () {
+Route::prefix('dashboard/admin')->group(function () {
     Route::get('/enrollment', function () {
         return Inertia::render('Dashboard/Admin/Enrollment');
     })->name('admin.dashboard.enrollment');
@@ -111,6 +111,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard/enrollment', [GeneralController::class, 'enrollment'])->name('student.enrollment');
     Route::get('/dashboard/payment', [GeneralController::class, 'payment'])->name('student.payment.transaction');
     Route::get('/dashboard/subjects', [GeneralController::class, 'subjects'])->name('student.subject');
+    Route::get('/dashboard/student/schedule', [GeneralController::class, 'schedule'])->name('student.schedule');
 
 
 

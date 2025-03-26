@@ -5,7 +5,7 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { usePage } from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
 import React from "react";
 import educator from "../../../../../assets/undraw_educator_6dgp.svg";
 import { Button } from "@/components/ui/button";
@@ -30,7 +30,11 @@ export default function WelcomeCard({ className = "" }) {
                     </p>
                 </CardHeader>
                 <CardFooter className="text-[12px] text-gray-500  mt-4">
-                    <Button>View Schedule</Button>
+                    <Button>
+                        <Link href={route("student.schedule")}>
+                            View Schedule
+                        </Link>
+                    </Button>
                 </CardFooter>
             </div>
             <div>

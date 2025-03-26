@@ -65,7 +65,7 @@ export function AppSidebar({ ...props }) {
                               },
                               {
                                   title: "Schedule",
-                                  url: "#",
+                                  url: route("student.schedule"),
                               },
                               {
                                   title: "Subjects",
@@ -132,6 +132,7 @@ export function AppSidebar({ ...props }) {
                               {
                                   title: "Enrollment",
                                   url: route("admin.dashboard.enrollment"),
+                                  //   url: route("admin.dashboard.billing"),
                               },
                               {
                                   title: "Billing",

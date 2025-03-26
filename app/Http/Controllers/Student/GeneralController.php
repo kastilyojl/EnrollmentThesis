@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
+use App\Models\Schedule;
+use App\Models\Section;
 use App\Models\Student_Info;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -68,6 +70,19 @@ class GeneralController extends Controller
 
         return Inertia::render('Dashboard/Student/Subject', [
             'student' => $subjects,
+        ]);
+    }
+
+    public function schedule()
+    {
+        $user = Auth::user();
+    
+        $subjects = $user->studentInfo()->with('studentSubjects')->first();
+        
+        $schedule = Schedule::all();
+
+        return Inertia::render('Dashboard/Student/Schedule', [
+            'student' => $subjects, 'schedule' => $schedule
         ]);
     }
     
