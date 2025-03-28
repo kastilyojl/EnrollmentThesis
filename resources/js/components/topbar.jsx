@@ -45,7 +45,7 @@ export default function Topbar() {
         },
         {
             title: "Tuition Fee",
-            href: route("public.payment.submit"),
+            href: route("public.payment.details"),
         },
         {
             title: "Admission Guide",

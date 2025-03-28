@@ -17,11 +17,30 @@ use Inertia\Inertia;
 
 class AdminApplicationController extends Controller
 {
-    public function index() {
-        $student = Student_Info::with('users','personalInfo', 'guardian')->get();
-        $program = Programs::all();
-        return Inertia::render('Admin/Application', ['student'=>$student]);
+    public function index(Request $request)
+{
+    $perPage = $request->input('per_page', 2);
+    $query = Student_Info::with('users', 'personalInfo', 'guardian');
+
+    if ($request->has('search') && !empty($request->search)) {
+        $query->whereHas('personalInfo', function($q) use ($request) {
+            $q->where('first_name', 'like', "%{$request->search}%")
+              ->orWhere('last_name', 'like', "%{$request->search}%")
+              ->orWhere('department', 'like', "%{$request->search}%");
+        });
     }
+    
+    if ($request->has('program') && $request->program && $request->program !== 'All') {
+        $query->where('program', $request->program);
+    }
+    
+    $student = $query->paginate($perPage);
+    
+    return Inertia::render('Admin/Application', [
+        'student' => $student,
+        'filters' => $request->only(['search', 'program'])
+    ]);
+}
 
     public function add() {
         $program = Programs::all();
@@ -137,7 +156,7 @@ class AdminApplicationController extends Controller
     }
 
     public function updateDocuments(Request $request) {
-        $documents = Documents::findOrFail($request->id);
+        $documents = Documents::where('student_info_id', $request->student_info_id)->firstOrFail();
         $documents->update([
             'form_138A' => $request->form_138A,
             'form_137'  => $request->form_137,

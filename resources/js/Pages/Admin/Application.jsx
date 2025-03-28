@@ -7,6 +7,14 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
 
 import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
     DialogDescription,
     Dialog,
     DialogContent,
@@ -15,7 +23,7 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 
-import { Link, useForm } from "@inertiajs/react";
+import { Link, router, useForm } from "@inertiajs/react";
 import {
     Select,
     SelectContent,
@@ -24,8 +32,13 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import ApplicationForm from "../Public/Section/Application";
+import Pagination from "@/components/Pagination";
+import { ChevronDown, Filter } from "lucide-react";
+import RowPerPage from "@/components/RowPerPage";
+import SearchFilter from "@/components/SearchFilter";
+import FilterDropdown from "@/components/FilterDropDown";
 
-export default function Application({ student = [] }) {
+export default function Application({ student, filters }) {
     const tableHeader = [
         "Name",
         "Department",
@@ -46,7 +59,7 @@ export default function Application({ student = [] }) {
         status: "",
     });
 
-    const studentData = student.map((students) => ({
+    const studentData = student.data.map((students) => ({
         // student info
         id: students.id,
         department: students.department,
@@ -106,19 +119,6 @@ export default function Application({ student = [] }) {
     const handleCreate = () => {
         setCreate((prev) => !prev);
     };
-
-    // const handleAdd = () => {
-    //     setItemId(null);
-    //     setAdd(true);
-    //     setData({
-    //         code: "",
-    //         name: "",
-    //         department: "",
-    //         duration: "",
-    //         campus: "",
-    //         status: "",
-    //     });
-    // };
 
     const handleDel = (student) => {
         setItemId(student);
@@ -183,7 +183,7 @@ export default function Application({ student = [] }) {
     };
 
     const handleUpdateSubmit = () => {
-        post(route("admin.application.update", { id: itemId }), {
+        post(route("admin.documents.haha", { id: itemId }), {
             onSuccess: () => {
                 toast("Student Application has been updated", {
                     description: "Sunday, December 03, 2023 at 9:00 AM",
@@ -196,18 +196,89 @@ export default function Application({ student = [] }) {
         });
     };
 
+    const FilterData = [
+        "All",
+        "Computer Science",
+        "Uno",
+        "Senior High School",
+        "College",
+    ];
+
+    const [search, setSearch] = useState(filters?.search || "");
+    const [dataFilter, setDataFilter] = useState("All");
+    const [perPage, setPerPage] = useState(filters?.per_page || 2);
+
+    const handleSearchSubmit = () => {
+        setDataFilter("All");
+        router.get(
+            route("admin.application"),
+            {
+                search,
+                program: "",
+                per_page: perPage,
+            },
+            {
+                preserveState: true,
+                replace: true,
+            }
+        );
+    };
+
+    const handleFilterChange = (program) => {
+        setDataFilter(program);
+        router.get(
+            route("admin.application"),
+            {
+                search: "",
+                program: program === "All" ? "" : program,
+                per_page: perPage,
+            },
+            {
+                preserveState: true,
+                replace: true,
+            }
+        );
+    };
+
+    const clearAllFilters = () => {
+        setSearch("");
+        setDataFilter("All");
+        router.get(
+            route("admin.application"),
+            { per_page: perPage },
+            {
+                preserveState: true,
+                replace: true,
+            }
+        );
+    };
+
     return (
         <Layout>
             <div className="flex items-end justify-between mb-7">
                 <h1 className="text-2xl font-bold">Application</h1>
             </div>
-            <div className="flex justify-between mb-3">
-                <Input type="text" placeholder="Search" className="w-[300px]" />
+            <div className="flex justify-between items-center gap-2 mb-3">
+                <div className="flex items-center gap-2">
+                    <SearchFilter
+                        searchValue={search}
+                        onSearchChange={setSearch}
+                        onSearchSubmit={handleSearchSubmit}
+                        onClearFilters={clearAllFilters}
+                        showClearButton={search || dataFilter !== "All"}
+                    />
+                    <FilterDropdown
+                        currentFilter={dataFilter}
+                        onFilterChange={handleFilterChange}
+                        FilterData={FilterData}
+                    />
+                </div>
+
                 <Link href={route("admin.application.create")}>
                     <Button>Create</Button>
                 </Link>
             </div>
-            <div className="border rounded-sm px-4">
+            <div className="border rounded-sm px-4 min-h-96">
                 <TableData
                     tablerow={tableHeader}
                     tabledata={tableData}
@@ -570,6 +641,10 @@ export default function Application({ student = [] }) {
                         </DialogContent>
                     </Dialog>
                 )}
+            </div>
+            <div className="flex justify-between pt-2">
+                <RowPerPage filters={filters} />
+                <Pagination links={student.links} />
             </div>
         </Layout>
     );

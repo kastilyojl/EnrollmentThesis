@@ -117,13 +117,27 @@ class EmailController extends Controller
         Log::info($request->all());
 
         $to = $user->email;
-        $message = "Greetings,
-                    We are happy to inform you that you're now Officially Enrolled. You can now login to your student portal using this credential: 
-                        email: ". $user->email . 
-                        " password: WITI@123. 
+        $message = "Dear " . $user->name . ",\n\n
+                    Greetings from Westbridge Institute of Technology Inc.! We are excited to inform you that your enrollment has been successfully processed, and you are now officially enrolled as a student. 
+        
+                    You can now access your student portal to view important information, including your schedule, grades, payment status, and more. To log in, please use the following credentials:
                     
-                    Thank you.";
-        $subject = "Officially Enrolled";
+                    Email: " . $user->email . "\n
+                    Password: WITI@123\n\n
+        
+                    Please be sure to change your password upon your first login to ensure the security of your account. 
+        
+                    If you have any questions or encounter any issues, don't hesitate to reach out to the administration team. We are here to support you every step of the way!
+        
+                    We look forward to seeing you thrive in your academic journey at Westbridge Institute of Technology Inc. and wish you all the best in your studies.\n\n
+                    Thank you for choosing us as your educational partner. Welcome aboard!
+        
+                    Best regards,\n
+                    Westbridge Institute of Technology Inc.\n
+                    Enrollment Team";
+        
+        $subject = "Official Enrollment Confirmation";
+        
 
         Email_Logs::create([
             'users_id' => $user->id,

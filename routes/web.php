@@ -35,7 +35,7 @@ use Inertia\Inertia;
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified', VerifyAdminIp::class ])->name('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
 // use App\Http\Middleware\VerifyAdminIp;
 
@@ -92,6 +92,7 @@ Route::group([], function () {
     Route::get('/application', [ApplicationController::class, 'index'])->name('landing-page.section.application');
     Route::post('/application', [ApplicationController::class, 'create'])->name('public.application.submit');
     Route::get('/application/payment', [PaymentController::class, 'index'])->name('public.payment.submit');
+    Route::get('/tuition/details', [PublicController::class, 'tuitionDetails'])->name('public.payment.details');
     Route::get('/admission-guide', [PublicController::class, 'admissionGuide'])->name('public.admission.guide');
     Route::post('/private-file', [PaymentController::class, 'store'])->name('student.payment');
     Route::post('/private-file/{id}/update', [PaymentController::class, 'edit'])->name("admin.payment.update");
@@ -150,7 +151,9 @@ Route::prefix('admin/application')->group(function () {
     Route::delete('/student/{id}/delete', [AdminApplicationController::class, 'destroyStudent'])->name("admin.student.destroy");
     Route::post('/{id}/update', [AdminApplicationController::class, 'edit'])->name("admin.application.update");
     Route::get('/documents', [AdminApplicationController::class, 'indexDocuments'])->name("admin.documents");
-    Route::post('/document/{id}/update', [AdminApplicationController::class, 'updateDocuments'])->name("admin.documents.update");
+    // Route::post('/document/{id}/update', [AdminApplicationController::class, 'updateDocuments'])->name("admin.documents.update");
+    Route::post('/document/{student_info_id}/update', [AdminApplicationController::class, 'updateDocuments'])->name("admin.documents.haha");
+   
     Route::delete('/document/{id}/delete', [AdminApplicationController::class, 'destroyDocuments'])->name("admin.documents.destroy");
     });
     Route::get('/course-selection', [CourseSelectionController::class, 'index'])->name('admin.course.selection');

@@ -1,59 +1,3 @@
-// import Layout from "@/components/layout";
-// import { Input } from "@/components/ui/input";
-// import { Button } from "@/components/ui/button";
-// import { Label } from "@/components/ui/label";
-// import { toast } from "sonner";
-// import { Checkbox } from "@/components/ui/checkbox";
-
-// import {
-//     DropdownMenu,
-//     DropdownMenuContent,
-//     DropdownMenuItem,
-//     DropdownMenuLabel,
-//     DropdownMenuSeparator,
-//     DropdownMenuTrigger,
-// } from "@/components/ui/dropdown-menu";
-
-// import { Filter } from "lucide-react";
-
-// export default function AssignCourse() {
-//     return (
-//         <Layout>
-//             <div className="flex items-end justify-between mb-7">
-//                 <h1 className="text-2xl font-bold">Course Selection</h1>
-//             </div>
-//             <div className="flex justify-between mb-3">
-//                 <div className="flex gap-4">
-//                     <Input
-//                         type="text"
-//                         placeholder="Search"
-//                         className="w-[300px]"
-//                     />
-//                     <div className="text-white">
-//                         <DropdownMenu>
-//                             <DropdownMenuTrigger className="bg-primary flex px-2 py-1 rounded-md">
-//                                 Filter
-//                                 <Filter className="h-5 ml-2" />
-//                             </DropdownMenuTrigger>
-//                             <DropdownMenuContent className="bg-customBlue text-white">
-//                                 <DropdownMenuItem>
-//                                     Computer Science
-//                                 </DropdownMenuItem>
-//                                 <DropdownMenuItem>
-//                                     Information System
-//                                 </DropdownMenuItem>
-//                                 <DropdownMenuItem>Tourism</DropdownMenuItem>
-//                                 <DropdownMenuItem>Criminology</DropdownMenuItem>
-//                             </DropdownMenuContent>
-//                         </DropdownMenu>
-//                     </div>
-//                 </div>
-//             </div>
-//             <div className="border rounded-sm px-4"></div>
-//         </Layout>
-//     );
-// }
-
 import Layout from "@/components/layout";
 import TableData from "@/components/table";
 import { Input } from "@/components/ui/input";
@@ -272,19 +216,6 @@ export default function AssignCourse({
     const handleCreate = () => {
         setCreate((prev) => !prev);
     };
-
-    // const handleAdd = () => {
-    //     setItemId(null);
-    //     setAdd(true);
-    //     setData({
-    //         code: "",
-    //         name: "",
-    //         department: "",
-    //         duration: "",
-    //         campus: "",
-    //         status: "",
-    //     });
-    // };
 
     const handleDel = (student) => {
         setItemId(student);

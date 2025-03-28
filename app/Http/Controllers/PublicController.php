@@ -29,4 +29,8 @@ class PublicController extends Controller
     public function requirements() {
         return Inertia::render('Public/Section/Requirements');
     }
+
+    public function tuitionDetails() {
+        return Inertia::render('Public/Section/TuitionFeeDetails');
+    }
 }

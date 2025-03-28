@@ -17,10 +17,14 @@ class CourseSelectionController extends Controller
 {
     //
     public function index() {
-        $student = Student_Info::with('users','personalInfo', 'documents', 'guardian', 'paymentVerification')->get();
+        $student = Student_Info::with('users','personalInfo', 'documents', 'guardian', 'paymentVerification')->whereHas('documents')
+        ->whereHas('paymentVerification')
+        ->get();
+    
         $college_fee = College_Billing::all();
         $subjects = Subjects::all();
         $other_fee = Other_Billing::all();
+        
         return Inertia::render('Admin/AssignCourse', ['student'=>$student, 'college_fee'=>$college_fee, 'subjects'=>$subjects, 'other_fee' => $other_fee]);
     }
 

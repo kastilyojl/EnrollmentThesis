@@ -95,7 +95,10 @@ class PaymentController extends Controller
         }
 
         public function indexAssignFee() {
-            $student = Student_Info::with('users','personalInfo', 'documents', 'guardian', 'paymentVerification')->get();
+            $student = Student_Info::with('users','personalInfo', 'documents', 'guardian', 'paymentVerification')->whereHas('documents')
+            ->whereHas('paymentVerification')
+            ->get();
+            
             $college_fee = College_Billing::all();
             $subjects = Subjects::all();
             $other_fee = Other_Billing::all();

@@ -58,6 +58,7 @@ export default function Documents({ student = [] }) {
 
     const document = student.data.map((student) => ({
         id: student.id,
+        student_id: student.student_id,
 
         first_name: student.personal_info.first_name,
         middle_name: student.personal_info.middle_name,
@@ -179,26 +180,32 @@ export default function Documents({ student = [] }) {
     };
 
     const handleUpdateSubmit = () => {
-        post(route("admin.documents.update", { id: itemId }), {
-            onSuccess: () => {
-                toast("Documents has been updated", {
-                    description: "Sunday, December 03, 2023 at 9:00 AM",
-                });
-                setAdd(false);
-                setData({
-                    id: "",
-                    form_138A: "",
-                    form_137: "",
-                    good_moral: "",
-                    psa: "",
-                    pic_2x2: "",
-                    ctc_transferee: "",
-                    grade_transferee: "",
-                    f137_transferee: "",
-                    doc_status: "",
-                });
-            },
-        });
+        post(
+            route("admin.documents.haha", {
+                student_info_id: itemId.student_id,
+            }),
+            {
+                onSuccess: () => {
+                    toast("Documents has been updated", {
+                        description: "Sunday, December 03, 2023 at 9:00 AM",
+                    });
+
+                    setAdd(false);
+                    setData({
+                        id: "",
+                        form_138A: "",
+                        form_137: "",
+                        good_moral: "",
+                        psa: "",
+                        pic_2x2: "",
+                        ctc_transferee: "",
+                        grade_transferee: "",
+                        f137_transferee: "",
+                        doc_status: "",
+                    });
+                },
+            }
+        );
     };
 
     return (
