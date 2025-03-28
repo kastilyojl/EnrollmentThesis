@@ -16,13 +16,14 @@ export default function CollegeProgram() {
             <Topbar />
             <div className="bg-gray-50 pb-10 pt-20">
                 <div className="mx-auto max-w-2xl px-6 lg:px-8 lg:max-w-7xl">
-                    {/* <p className="mx-auto mt-2 mb-6 w-full text-primary text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
-                        Overview
-                    </p> */}
                     <h2 className="mx-auto mt-2 mb-6 w-full text-4xl tracking-tight font-extrabold text-primary ">
                         Overview
                     </h2>
-                    <p className="h-auto p-8 rounded-lg bg-[#00004C] text-white items-center gap-5 justify-center">
+                    <p
+                        data-aos="fade-up"
+                        data-aos-once="true"
+                        className="h-auto p-8 rounded-lg bg-[#00004C] text-white items-center gap-5 justify-center"
+                    >
                         Westbridge Institute of Technology Inc. offers a dynamic
                         and enriching{" "}
                         <span className="inline text-[#ED1C24] font-bold">
@@ -43,7 +44,12 @@ export default function CollegeProgram() {
                         <h2 className="text-center text-lg mb-10 font-semibold text-indigo-600">
                             4 Years College
                         </h2>
-                        <div className="grid gap-4 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                        <div
+                            data-aos="fade-up"
+                            data-aos-once="true"
+                            data-aos-delay="400"
+                            className="grid gap-4 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+                        >
                             <div className="relative lg:row-span-1">
                                 <div className="absolute inset-px rounded-lg bg-white lg:rounded-l-[2rem]"></div>
                                 <div className="relative flex h-full flex-col overflow-hidden rounded-[calc(var(--radius-lg)+1px)] max-lg:rounded-t-[calc(2rem+1px)]">
@@ -70,7 +76,12 @@ export default function CollegeProgram() {
                                 </div>
                                 <div className="pointer-events-none absolute inset-px rounded-lg ring-1 shadow-sm ring-black/5 lg:rounded-l-[2rem]"></div>
                             </div>
-                            <div className="relative max-lg:row-start-1">
+                            <div
+                                data-aos="fade-up"
+                                data-aos-once="true"
+                                data-aos-delay="400"
+                                className="relative max-lg:row-start-1"
+                            >
                                 <div className="absolute inset-px rounded-lg bg-white max-lg:rounded-t-[2rem]"></div>
                                 <div className="relative flex h-full flex-col overflow-hidden rounded-[calc(var(--radius-lg)+1px)] max-lg:rounded-t-[calc(2rem+1px)]">
                                     <div className="px-8 pt-8 sm:px-10 sm:pt-10">
@@ -98,7 +109,12 @@ export default function CollegeProgram() {
                                 <div className="pointer-events-none absolute inset-px rounded-lg ring-1 shadow-sm ring-black/5 max-lg:rounded-t-[2rem]"></div>
                             </div>
 
-                            <div className="relative lg:row-span-1">
+                            <div
+                                data-aos="fade-up"
+                                data-aos-once="true"
+                                data-aos-delay="400"
+                                className="relative lg:row-span-1"
+                            >
                                 <div className="absolute inset-px rounded-lg bg-white max-lg:rounded-b-[2rem] lg:rounded-r-[2rem]"></div>
                                 <div className="relative flex h-full flex-col overflow-hidden rounded-[calc(var(--radius-lg)+1px)] max-lg:rounded-t-[calc(2rem+1px)]">
                                     <div className="px-8 pt-8 sm:px-10 sm:pt-10">
@@ -128,7 +144,12 @@ export default function CollegeProgram() {
                                 <div className="pointer-events-none absolute inset-px rounded-lg ring-1 shadow-sm ring-black/5 max-lg:rounded-b-[2rem] lg:rounded-r-[2rem]"></div>
                             </div>
 
-                            <div className="relative lg:row-span-1">
+                            <div
+                                data-aos="fade-up"
+                                data-aos-once="true"
+                                data-aos-delay="400"
+                                className="relative lg:row-span-1"
+                            >
                                 <div className="absolute inset-px rounded-lg bg-white lg:rounded-l-[2rem]"></div>
                                 <div className="relative flex h-full flex-col overflow-hidden rounded-[calc(var(--radius-lg)+1px)] max-lg:rounded-t-[calc(2rem+1px)]">
                                     <div className="px-8 pt-8 sm:px-10 sm:pt-10">
@@ -157,7 +178,12 @@ export default function CollegeProgram() {
                                 <div className="pointer-events-none absolute inset-px rounded-lg ring-1 shadow-sm ring-black/5 lg:rounded-l-[2rem]"></div>
                             </div>
 
-                            <div className="relative ">
+                            <div
+                                data-aos="fade-up"
+                                data-aos-once="true"
+                                data-aos-delay="400"
+                                className="relative "
+                            >
                                 <div className="absolute inset-px rounded-lg bg-white max-lg:rounded-t-[2rem]"></div>
                                 <div className="relative flex h-full flex-col overflow-hidden rounded-[calc(var(--radius-lg)+1px)] max-lg:rounded-t-[calc(2rem+1px)]">
                                     <div className="px-8 pt-8 sm:px-10 sm:pt-10">
@@ -185,7 +211,12 @@ export default function CollegeProgram() {
                                 <div className="pointer-events-none absolute inset-px rounded-lg ring-1 shadow-sm ring-black/5 max-lg:rounded-t-[2rem]"></div>
                             </div>
 
-                            <div className="relative lg:row-span-1">
+                            <div
+                                data-aos="fade-up"
+                                data-aos-once="true"
+                                data-aos-delay="400"
+                                className="relative lg:row-span-1"
+                            >
                                 <div className="absolute inset-px rounded-lg bg-white max-lg:rounded-b-[2rem] lg:rounded-r-[2rem]"></div>
                                 <div className="relative flex h-full flex-col overflow-hidden rounded-[calc(var(--radius-lg)+1px)] max-lg:rounded-t-[calc(2rem+1px)]">
                                     <div className="px-8 pt-8 sm:px-10 sm:pt-10">
@@ -219,7 +250,12 @@ export default function CollegeProgram() {
                         <h2 className="text-center text-lg mb-10 font-semibold text-indigo-600">
                             2 Years College
                         </h2>
-                        <div className=" grid gap-4 lg:grid-cols-3">
+                        <div
+                            data-aos="fade-up"
+                            data-aos-once="true"
+                            data-aos-delay="400"
+                            className=" grid gap-4 lg:grid-cols-3"
+                        >
                             <div className="relative lg:row-span-1">
                                 <div className="absolute inset-px rounded-lg bg-white lg:rounded-l-[2rem]"></div>
                                 <div className="relative flex h-full flex-col overflow-hidden rounded-[calc(var(--radius-lg)+1px)] max-lg:rounded-t-[calc(2rem+1px)]">

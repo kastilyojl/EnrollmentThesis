@@ -1,16 +1,32 @@
-import React from "react";
+import React, { useEffect } from "react";
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 export default function Branch({ campus }) {
+    useEffect(() => {
+        AOS.init({
+            duration: 2000,
+            easing: "ease-out-back",
+            once: false,
+            offset: 120,
+        });
+    }, []);
     return (
-        <div className="py-10 px-6 lg:p-20 bg-slate-50">
+        <div data-aos="fade-up" className="py-10 px-6 lg:p-20 bg-slate-50">
             <p className="text-2xl lg:text-[32px] text-center py-4 text-[#00004C] font-bold">
                 Visit any of our WITI Branches
             </p>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-2">
+            <div
+                data-aos="fade-up"
+                data-aos-delay="1000"
+                className="grid md:grid-cols-2 lg:grid-cols-4 gap-2"
+            >
                 {campus.map((branch, index) => {
                     return (
                         <article
                             key={index}
+                            data-aos="fade-up"
+                            data-aos-delay="1200"
                             className="rounded-lg border border-gray-100 bg-white p-4 shadow-sm transition hover:shadow-lg sm:p-6"
                         >
                             <span className="inline-block rounded bg-[#00004C] p-2 text-white">

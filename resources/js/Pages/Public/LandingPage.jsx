@@ -7,13 +7,15 @@ import ApplicationLogo from "@/components/ApplicationLogo";
 import Branch from "@/components/Branch";
 import Banner from "@/components/Banner";
 import ChatBubbles from "@/components/ChatBubbles";
+import VideoGuide from "./Section/VideoGuide";
 
 export default function LandingPage({ FAQ = [], campus = [] }) {
     return (
-        <div className="bg-gray-200">
+        <div className="bg-gray-200 overflow-x-hidden">
             <Topbar />
             <CarouselCard className="pt-20" />
             <Banner />
+            <VideoGuide />
             <ProgramOffer />
             <Branch campus={campus} />
             <Footer className="">

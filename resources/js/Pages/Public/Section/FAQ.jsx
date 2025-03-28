@@ -12,7 +12,12 @@ export default function FAQ({ FAQ = [] }) {
                     <h2 className="mx-auto mt-2 mb-6 w-full text-4xl tracking-tight font-extrabold text-primary ">
                         Frequently asked questions
                     </h2>
-                    <div className="grid pt-8 text-left border-t border-gray-200 md:gap-16  md:grid-cols-2">
+                    <div
+                        data-aos="fade-up"
+                        data-aos-once="true"
+                        data-aos-delay="400"
+                        className="grid pt-8 text-left border-t border-gray-200 md:gap-16  md:grid-cols-2"
+                    >
                         {FAQ.map((FAQItem, index) => (
                             <div className="mb-10" key={index}>
                                 <h3 className="flex items-center mb-4 text-lg font-medium text-gray-900 ">

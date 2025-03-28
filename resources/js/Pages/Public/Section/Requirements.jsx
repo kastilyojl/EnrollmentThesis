@@ -14,7 +14,12 @@ export default function Requirements() {
                         Requirements
                     </h2>
                     <div class="grid pt-8 text-left border-t border-gray-200 md:gap-6 ">
-                        <div className="border rounded-lg shadow-sm">
+                        <div
+                            data-aos="fade-up"
+                            data-aos-delay="200"
+                            data-aos-once="true"
+                            className="border rounded-lg shadow-sm"
+                        >
                             <div class="p-4 md:p-6 lg:p-10">
                                 <h3 class="flex items-center mb-4 text-lg font-medium text-primary ">
                                     <svg
@@ -49,7 +54,12 @@ export default function Requirements() {
                                 </div>
                             </div>
                         </div>
-                        <div className="border rounded-lg shadow-sm">
+                        <div
+                            data-aos="fade-up"
+                            data-aos-delay="400"
+                            data-aos-once="true"
+                            className="border rounded-lg shadow-sm"
+                        >
                             <div class="p-4 md:p-6 lg:p-10">
                                 <h3 class="flex items-center mb-4 text-lg font-medium text-primary ">
                                     <svg
@@ -80,9 +90,14 @@ export default function Requirements() {
                             </div>
                         </div>
                     </div>
-                    <div className="h-auto rounded-lg mt-4 lg:mt-24 p-4 bg-[#00004C] flex flex-col items-center gap-5 justify-center">
+                    <div
+                        data-aos="fade-up"
+                        data-aos-delay="400"
+                        data-aos-once="true"
+                        className="h-auto rounded-lg mt-4 lg:mt-24 p-4 bg-[#00004C] flex flex-col items-center gap-5 justify-center"
+                    >
                         <div>
-                            <h1 className="text-white text-2xl lg:text-[32px] text-center">
+                            <h1 className="text-white text-2xl lg:text-[32px] text-center leading-relaxed">
                                 Start your journey today and unlock endless
                                 possibilities in your education at
                                 <span

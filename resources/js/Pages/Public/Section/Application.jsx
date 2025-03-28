@@ -71,7 +71,7 @@ export default function ApplicationForm({ program = [], academic_year = [] }) {
     };
 
     const applicationFields = {
-        department: ["Senior High School", "College"],
+        department: ["SHS", "College"],
         semester: ["1st Semester", "2nd Semester"],
         branch: ["Banlic - Main", "Uno"],
         classified_as: ["Old Student", "New Student", "Transferee"],
@@ -319,7 +319,7 @@ export default function ApplicationForm({ program = [], academic_year = [] }) {
                                     <option hidden>Please select</option>
                                     {data.department.length > 0 ? (
                                         data.department ===
-                                        "Senior High School" ? (
+                                        "SHS" ? (
                                             <>
                                                 <option value="Grade 11">
                                                     Grade 11

@@ -19,7 +19,11 @@ export default function SeniorHighSchool() {
                     <h2 className="mx-auto mt-2 mb-6 w-full text-4xl tracking-tight font-extrabold text-primary ">
                         Overview
                     </h2>
-                    <p className="h-auto p-8 bg-[#00004C] rounded-lg text-white items-center gap-5 justify-center">
+                    <p
+                        data-aos="fade-up"
+                        data-aos-once="true"
+                        className="h-auto p-8 bg-[#00004C] rounded-lg text-white items-center gap-5 justify-center"
+                    >
                         Westbridge Institute of Technology Inc. offers a dynamic
                         and enriching{" "}
                         <span className="inline text-[#ED1C24] font-bold">
@@ -42,7 +46,12 @@ export default function SeniorHighSchool() {
                     <div className="grid gap-4 lg:grid-cols-3">
                         <div className="relative lg:row-span-1">
                             <div className="absolute inset-px rounded-lg bg-white lg:rounded-l-[2rem]"></div>
-                            <div className="relative flex h-full flex-col overflow-hidden rounded-[calc(var(--radius-lg)+1px)] max-lg:rounded-t-[calc(2rem+1px)]">
+                            <div
+                                data-aos="fade-up"
+                                data-aos-once="true"
+                                data-aos-delay="400"
+                                className="relative flex h-full flex-col overflow-hidden rounded-[calc(var(--radius-lg)+1px)] max-lg:rounded-t-[calc(2rem+1px)]"
+                            >
                                 <div className="px-8 pt-8 sm:px-10 sm:pt-10">
                                     <p className="mt-2 text-lg font-medium tracking-tight text-primary max-lg:text-center">
                                         Science, Technology, Engineering, and
@@ -66,7 +75,12 @@ export default function SeniorHighSchool() {
                             </div>
                             <div className="pointer-events-none absolute inset-px rounded-lg ring-1 shadow-sm ring-black/5 lg:rounded-l-[2rem]"></div>
                         </div>
-                        <div className="relative max-lg:row-start-1">
+                        <div
+                            data-aos="fade-up"
+                            data-aos-once="true"
+                            data-aos-delay="400"
+                            className="relative max-lg:row-start-1"
+                        >
                             <div className="absolute inset-px rounded-lg bg-white max-lg:rounded-t-[2rem]"></div>
                             <div className="relative flex h-full flex-col overflow-hidden rounded-[calc(var(--radius-lg)+1px)] max-lg:rounded-t-[calc(2rem+1px)]">
                                 <div className="px-8 pt-8 sm:px-10 sm:pt-10">
@@ -94,7 +108,12 @@ export default function SeniorHighSchool() {
                             <div className="pointer-events-none absolute inset-px rounded-lg ring-1 shadow-sm ring-black/5 max-lg:rounded-t-[2rem]"></div>
                         </div>
 
-                        <div className="relative lg:row-span-1">
+                        <div
+                            data-aos="fade-up"
+                            data-aos-once="true"
+                            data-aos-delay="400"
+                            className="relative lg:row-span-1"
+                        >
                             <div className="absolute inset-px rounded-lg bg-white max-lg:rounded-b-[2rem] lg:rounded-r-[2rem]"></div>
                             <div className="relative flex h-full flex-col overflow-hidden rounded-[calc(var(--radius-lg)+1px)] max-lg:rounded-t-[calc(2rem+1px)]">
                                 <div className="px-8 pt-8 sm:px-10 sm:pt-10">
@@ -120,7 +139,12 @@ export default function SeniorHighSchool() {
                             <div className="pointer-events-none absolute inset-px rounded-lg ring-1 shadow-sm ring-black/5 max-lg:rounded-b-[2rem] lg:rounded-r-[2rem]"></div>
                         </div>
 
-                        <div className="relative lg:row-span-1">
+                        <div
+                            data-aos="fade-up"
+                            data-aos-once="true"
+                            data-aos-delay="400"
+                            className="relative lg:row-span-1"
+                        >
                             <div className="absolute inset-px rounded-lg bg-white lg:rounded-l-[2rem]"></div>
                             <div className="relative flex h-full flex-col overflow-hidden rounded-[calc(var(--radius-lg)+1px)] max-lg:rounded-t-[calc(2rem+1px)]">
                                 <div className="px-8 pt-8 sm:px-10 sm:pt-10">
