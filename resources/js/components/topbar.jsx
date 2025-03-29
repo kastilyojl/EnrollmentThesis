@@ -278,7 +278,7 @@ export default function Topbar() {
                                                         <DisclosureButton className="w-full font-medium text-left hover:bg-primary rounded-lg hover:text-white focus:bg-customBlue focus:text-white">
                                                             <Link
                                                                 href={route(
-                                                                    "public.payment.submit"
+                                                                    "public.payment.details"
                                                                 )}
                                                                 className="block px-4 py-2 text-gray-900  hover:text-white"
                                                             >
