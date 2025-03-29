@@ -3,6 +3,7 @@ import Container from "@/Components/Container";
 import FileInput from "@/Components/FileInput";
 import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import PrimaryButton from "@/Components/PrimaryButton";
 import SelectInput from "@/Components/SelectInput";
 import TextInput from "@/Components/TextInput";
@@ -28,6 +29,7 @@ export default function TuitionFee({ program = [] }) {
     };
     const [isOpen, setIsOpen] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [spinner, setSpinner] = useState(false);
 
     const { data, setData, post, errors } = useForm({
         name: "",
@@ -54,6 +56,7 @@ export default function TuitionFee({ program = [] }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        setSpinner(true);
 
         const formData = new FormData();
         formData.append("name", data.name);
@@ -66,16 +69,17 @@ export default function TuitionFee({ program = [] }) {
         formData.append("reference", data.reference);
         formData.append("payment_receipt", data.payment_receipt); // Use data.payment_receipt
 
-        console.log("Payment receipt:", data.payment_receipt);
+        // console.log("Payment receipt:", data.payment_receipt);
 
         post(route("student.payment"), formData, {
             // onError: (error) => {
             //     alert("Payment verification not save successfully!");
-            // },
+
             onError: () => {
-                setLoading(false);
+                setSpinner(false);
             },
         });
+
         setIsOpen(false);
     };
 
@@ -85,6 +89,7 @@ export default function TuitionFee({ program = [] }) {
             onSubmit={handleSubmit}
             encType="multipart/form-data"
         >
+            {/* {spinner && <LoadingSpinner />} */}
             <div className="flex items-center">
                 <ApplicationLogo className="h-16" />{" "}
                 <span className="text-2xl font-bold">WITI</span>

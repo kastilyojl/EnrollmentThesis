@@ -25,25 +25,50 @@ export default function VideoGuide() {
                     <div>
                         <div className="max-w-lg md:max-w-none">
                             <h2 className="text-2xl font-semibold text-gray-900 sm:text-3xl">
-                                Lorem ipsum dolor sit amet consectetur
-                                adipisicing elit.
+                                Step-by-step Procedure for Student Admission and
+                                Enrollment
                             </h2>
 
                             <p className="mt-4 text-gray-700">
-                                Lorem ipsum dolor sit amet consectetur
-                                adipisicing elit. Tenetur doloremque saepe
-                                architecto maiores repudiandae amet perferendis
-                                repellendus, reprehenderit voluptas sequi.
+                                This video guides you through the entire process
+                                of student admission and enrollment. From
+                                submitting your application to finalizing your
+                                enrollment, we cover each step in detail to
+                                ensure a smooth experience. Whether you're a new
+                                applicant or transferring from another
+                                institution, we walk you through every
+                                requirement and procedure, making it easy to
+                                understand and follow.
                             </p>
                         </div>
                     </div>
 
                     <div>
-                        <img
+                        {/* <img
                             src="https://images.unsplash.com/photo-1731690415686-e68f78e2b5bd?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                             className="rounded"
                             alt=""
-                        />
+                        /> */}
+                        {/* YouTube Video Embed */}
+                        <iframe
+                            width="100%" // You can set the width to 100% to make it responsive
+                            height="315" // Default height for videos
+                            src="https://youtu.be/sFV91DY0l3E"
+                            title="YouTube video player"
+                            frameBorder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                            className="rounded"
+                        ></iframe>
+                        <p>
+                            If the video is not working,{" "}
+                            <a
+                                className="underline"
+                                href="https://youtu.be/sFV91DY0l3E"
+                            >
+                                click here
+                            </a>
+                        </p>
                     </div>
                 </div>
             </div>

@@ -183,7 +183,7 @@ export default function Application({ student, filters }) {
     };
 
     const handleUpdateSubmit = () => {
-        post(route("admin.documents.haha", { id: itemId }), {
+        post(route("admin.application.update", { id: itemId }), {
             onSuccess: () => {
                 toast("Student Application has been updated", {
                     description: "Sunday, December 03, 2023 at 9:00 AM",

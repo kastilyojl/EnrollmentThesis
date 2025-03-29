@@ -2,14 +2,29 @@ import React from "react";
 
 export default function LoadingSpinner() {
     return (
-        <div className="loading">
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
+        <div className="overlay">
+            <div className="loading">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
 
             <style jsx>{`
+                .overlay {
+                    position: fixed; /* Cover the whole screen */
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.5); /* Dark background */
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    z-index: 9999; /* Ensure it's on top */
+                }
+
                 .loading {
                     --speed-of-animation: 0.9s;
                     --gap: 6px;

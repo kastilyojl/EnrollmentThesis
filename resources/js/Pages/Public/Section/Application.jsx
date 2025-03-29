@@ -16,10 +16,12 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import ApplicationLogo from "@/components/ApplicationLogo";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function ApplicationForm({ program = [], academic_year = [] }) {
     const [isOpen, setIsOpen] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [spinner, setSpinner] = useState(false);
     const { data, setData, post, errors } = useForm({
         department: "",
         school_year: "",
@@ -53,13 +55,15 @@ export default function ApplicationForm({ program = [], academic_year = [] }) {
 
     function handleSubmit(e) {
         e.preventDefault();
-        setLoading(true);
+        // setLoading(true);
+        setSpinner(true);
         post(route("public.application.submit"), {
             onSuccess: () => {
                 setCreate(false);
             },
             onError: () => {
                 setLoading(false);
+                setSpinner(false);
             },
         });
 
@@ -81,6 +85,7 @@ export default function ApplicationForm({ program = [], academic_year = [] }) {
 
     return (
         <form className="max-w-6xl p-6 mx-auto">
+            {spinner && <LoadingSpinner />}
             <div className="flex items-center">
                 <ApplicationLogo className="h-16" />{" "}
                 <span className="text-2xl font-bold">WITI</span>
@@ -318,8 +323,7 @@ export default function ApplicationForm({ program = [], academic_year = [] }) {
                                 >
                                     <option hidden>Please select</option>
                                     {data.department.length > 0 ? (
-                                        data.department ===
-                                        "SHS" ? (
+                                        data.department === "SHS" ? (
                                             <>
                                                 <option value="Grade 11">
                                                     Grade 11
