@@ -273,8 +273,13 @@ export default function Footer({ children, className = "" }) {
                 </div>
 
                 <div className="mt-12 border-t border-gray-100 pt-6">
-                    <div className="text-center sm:flex sm:justify-between sm:text-left">
-                        <p className="mt-4 text-sm text-gray-500 sm:order-first sm:mt-0">
+                    <div className="text-center sm:flex flex-col sm:justify-between sm:text-left">
+                        <p className="mb-4 text-sm text-gray-700 sm:mt-0">
+                            This website is for educational purposes only and is
+                            not the official website of Westbridge Institute of
+                            Technology Inc.
+                        </p>
+                        <p className="mt-4 text-sm text-gray-700 sm:order-second sm:mt-0">
                             {footerInfo.copyright}
                         </p>
                     </div>

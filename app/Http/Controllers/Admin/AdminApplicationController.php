@@ -17,30 +17,33 @@ use Inertia\Inertia;
 
 class AdminApplicationController extends Controller
 {
-    public function index(Request $request)
-{
-    $perPage = $request->input('per_page', 2);
-    $query = Student_Info::with('users', 'personalInfo', 'guardian');
+        public function index(Request $request)
+    {
+        $perPage = $request->input('per_page', session('rows_per_page', 2));
+        
+        session(['rows_per_page' => $perPage]);
 
-    if ($request->has('search') && !empty($request->search)) {
-        $query->whereHas('personalInfo', function($q) use ($request) {
-            $q->where('first_name', 'like', "%{$request->search}%")
-              ->orWhere('last_name', 'like', "%{$request->search}%")
-              ->orWhere('department', 'like', "%{$request->search}%");
-        });
+        $query = Student_Info::with('users', 'personalInfo', 'guardian');
+
+        if ($request->has('search') && !empty($request->search)) {
+            $query->whereHas('personalInfo', function($q) use ($request) {
+                $q->where('first_name', 'like', "%{$request->search}%")
+                ->orWhere('last_name', 'like', "%{$request->search}%")
+                ->orWhere('department', 'like', "%{$request->search}%");
+            });
+        }
+        
+        if ($request->has('program') && $request->program && $request->program !== 'All') {
+            $query->where('program', $request->program);
+        }
+        
+        $student = $query->paginate($perPage);
+        
+        return Inertia::render('Admin/Application', [
+            'student' => $student,
+            'filters' => $request->only(['search', 'program', 'per_page'])
+        ]);
     }
-    
-    if ($request->has('program') && $request->program && $request->program !== 'All') {
-        $query->where('program', $request->program);
-    }
-    
-    $student = $query->paginate($perPage);
-    
-    return Inertia::render('Admin/Application', [
-        'student' => $student,
-        'filters' => $request->only(['search', 'program'])
-    ]);
-}
 
     public function add() {
         $program = Programs::all();
@@ -48,7 +51,6 @@ class AdminApplicationController extends Controller
     }
 
     public function createStudent(ApplicationRequest $request) {
-        // Validate the incoming request data
       
         DB::beginTransaction();
         try {

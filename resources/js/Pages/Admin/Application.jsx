@@ -46,6 +46,7 @@ export default function Application({ student, filters }) {
         "Program",
         "Semester",
         "Branch",
+        "Status",
     ];
 
     const {
@@ -109,6 +110,7 @@ export default function Application({ student, filters }) {
         program: student.program,
         semester: student.semester,
         branch: student.branch,
+        status: student.status,
     }));
 
     const [itemId, setItemId] = useState(null);

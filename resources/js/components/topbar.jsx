@@ -67,7 +67,7 @@ export default function Topbar() {
     return (
         <Disclosure
             as="nav"
-            className="bg-white border-b shadow-sm fixed top-0 right-0 left-0 z-50"
+            className="bg-white border-b shadow-sm fixed top-0 right-0 left-0 z-40"
         >
             <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
                 <div className="relative flex h-16 items-center justify-end">
