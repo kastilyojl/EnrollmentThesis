@@ -500,6 +500,77 @@ export function AppSidebar({ ...props }) {
                       },
                   ]
                 : []),
+            ...(user.role === "accounting"
+                ? [
+                      {
+                          title: "Billing",
+                          url: "#",
+                          icon: PhilippinePeso,
+                          active: true,
+                          items: [
+                              { title: "Setup", url: route("admin.billing") },
+                              {
+                                  title: "Fee Selection",
+                                  url: route("admin.assign-fee.index"),
+                              },
+                              { title: "Payment", url: route("admin.payment") },
+                          ],
+                      },
+                  ]
+                : []),
+            ...(user.role === "registrar"
+                ? [
+                      {
+                          title: "Dashboard",
+                          url: "#",
+                          icon: Grid2x2,
+                          items: [
+                              {
+                                  title: "Enrollment",
+                                  url: route("admin.dashboard.enrollment"),
+                              },
+                          ],
+                      },
+                      {
+                          title: "Enrollment",
+                          url: "#",
+                          icon: Notebook,
+                          items: [
+                              {
+                                  title: "Application",
+                                  url: route("admin.application"),
+                              },
+                              {
+                                  title: "Documents",
+                                  url: route("admin.documents"),
+                              },
+                              {
+                                  title: "Course Selection",
+                                  url: route("admin.course.selection"),
+                              },
+                              { title: "Evaluation", url: "" },
+                              {
+                                  title: "Enrollment Processing",
+                                  url: route("admin.enrollment"),
+                              },
+                          ],
+                      },
+                      {
+                          title: "Curriculum Management",
+                          url: "#",
+                          icon: BookOpen,
+                          items: [
+                              { title: "Program", url: route("admin.program") },
+                              { title: "Subject", url: route("admin.subject") },
+                              {
+                                  title: "Curriculum",
+                                  url: route("admin.curriculum"),
+                              },
+                              { title: "Section", url: route("admin.section") },
+                          ],
+                      },
+                  ]
+                : []),
         ];
 
         return baseItems.map((item) => ({
@@ -511,7 +582,8 @@ export function AppSidebar({ ...props }) {
     const data = {
         user: {
             name: user.name,
-            email: user.email,
+
+            role: user.role,
             avatar: "/avatars/shadcn.jpg",
         },
         teams: [

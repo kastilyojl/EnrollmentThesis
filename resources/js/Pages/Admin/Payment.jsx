@@ -57,6 +57,7 @@ export default function Payment({ program = [], payment = [] }) {
 
     const paymentData = payment.map((payment) => ({
         id: payment.id,
+        student_info_id: payment.student_info_id,
         name: payment.name,
         email: payment.email,
         year_level: payment.year_level,

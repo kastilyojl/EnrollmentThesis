@@ -69,9 +69,13 @@ class GeneralSettingController extends Controller
      }
 
      public function idFormatStore(Request $request) {
-       $validatedData = $request->validate([
-        'id_format'  => ['required'],
-       ]);
+        $validatedData = $request->validate([
+            'prefix' => ['required'],
+            'separator' => ['required'],
+            'auto_inc' => ['required'],
+            'user_type' => ['required'],
+        ]);
+       
        $id_format = $validatedData['prefix'] . $validatedData['separator'] . $validatedData['auto_inc'];
 
        Users_IDFormat::create([

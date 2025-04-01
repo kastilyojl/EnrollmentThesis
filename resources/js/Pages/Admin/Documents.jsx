@@ -215,7 +215,7 @@ export default function Documents({ student = [] }) {
             </div>
             <div className="flex justify-between mb-3">
                 <Input type="text" placeholder="Search" className="w-[300px]" />
-                <Button>Create</Button>
+                {/* <Button>Create</Button> */}
             </div>
             <div className="border rounded-sm px-4">
                 <TableData

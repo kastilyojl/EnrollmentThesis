@@ -42,10 +42,13 @@ export function NavUser({ user }) {
                                 </AvatarFallback>
                             </Avatar>
                             <div className="grid flex-1 text-left text-sm leading-tight">
+                                <span className="truncate font-medium capitalize italic">
+                                    {user.role}
+                                </span>
                                 <span className="truncate font-semibold">
                                     {user.name}
                                 </span>
-                                <span className="truncate text-xs">
+                                <span className="truncate font-semibold">
                                     {user.email}
                                 </span>
                             </div>
@@ -75,6 +78,9 @@ export function NavUser({ user }) {
                                     </span>
                                     <span className="truncate text-xs">
                                         {user.email}
+                                    </span>
+                                    <span className="truncate text-xs capitalize italic">
+                                        {user.role}
                                     </span>
                                 </div>
                             </div>

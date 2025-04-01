@@ -38,25 +38,30 @@ class PaymentController extends Controller
             if ($request->hasFile('payment_receipt')) {
                 $path = $request->file('payment_receipt')->store('images');
                 
-            Payment_Verification::create([
-                'student_info_id' => $items->student_id,
-                
-                'name' => $request->name,
-                'year_level' => $request->year_level,
-                'program' => $request->program,
-                'email' => $request->email,
-                'purpose' => $request->purpose,
-                'semester' => $request->semester,
-                'amount' => $request->amount,
-                'reference' => $request->reference,
-                'payment_receipt' => $path,
-                'status' => 'pending'
+                Payment_Verification::create([
+                    'student_info_id' => $items->student_id,
+                    
+                    'name' => $request->name,
+                    'year_level' => $request->year_level,
+                    'program' => $request->program,
+                    'email' => $request->email,
+                    'purpose' => $request->purpose,
+                    'semester' => $request->semester,
+                    'amount' => $request->amount,
+                    'reference' => $request->reference,
+                    'payment_receipt' => $path,
+                    'status' => 'pending'
+                ]);
+                return Inertia::render('Success');
+            } 
+        }
+        else {
+            return back()->withErrors([
+                'email' => 'The provided email does not exist in our system.',
             ]);
-            return Inertia::render('Success');
-        } 
-    }
+        }
 
-}
+    }
         // Admin
 
         public function indexPayment() {
@@ -78,7 +83,7 @@ class PaymentController extends Controller
                     'reference' => $request->reference,
                     'status' => $request->status,
                 ]);
-            
+
         }
 
         public function showImage($filename) {

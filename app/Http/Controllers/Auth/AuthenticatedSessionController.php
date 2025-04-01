@@ -24,15 +24,50 @@ class AuthenticatedSessionController extends Controller
         ]);
     }
 
+    public function createAdmin(): Response
+    {
+        return Inertia::render('Auth/AdminLogin', [
+            'canResetPassword' => Route::has('password.request'),
+            'status' => session('status'),
+        ]);
+    }
+
     /**
      * Handle an incoming authentication request.
      */
     public function store(LoginRequest $request): RedirectResponse
     {
+
         $request->authenticate();
-
+    
+        if (Auth::user()->role !== 'student' && Auth::user()->role !== 'professor') {
+            Auth::logout();
+    
+            return back()->withErrors([
+                'email' => 'Admin login is not allowed on this page.',
+            ]);
+        }
+    
         $request->session()->regenerate();
+    
+        return redirect()->intended(route('dashboard', absolute: false));
+    }
 
+    public function storeAdmin(LoginRequest $request): RedirectResponse
+    {
+       
+        $request->authenticate();
+    
+        if (Auth::user()->role !== 'super admin' && Auth::user()->role !== 'accounting' && Auth::user()->role !== 'registrar') {
+            Auth::logout();
+    
+        return back()->withErrors([
+            'email' => 'You must have an admin account to log in here.',
+        ])
+        ;}
+          
+        $request->session()->regenerate();
+    
         return redirect()->intended(route('dashboard', absolute: false));
     }
 
