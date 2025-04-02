@@ -503,6 +503,17 @@ export function AppSidebar({ ...props }) {
             ...(user.role === "accounting"
                 ? [
                       {
+                          title: "Dashboard",
+                          url: "#",
+                          icon: Grid2x2,
+                          items: [
+                              {
+                                  title: "Billing",
+                                  url: route("admin.dashboard.billing"),
+                              },
+                          ],
+                      },
+                      {
                           title: "Billing",
                           url: "#",
                           icon: PhilippinePeso,
