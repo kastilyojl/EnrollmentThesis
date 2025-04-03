@@ -25,10 +25,14 @@ import BadgeWarning from "@/components/BadgeWarning";
 import BadgereDanger from "@/components/BadgeDanger";
 import BadgeSuccess from "@/components/BadgeSuccess";
 import { Label } from "@/components/ui/label";
-import { Link, useForm } from "@inertiajs/react";
+import { Link, router, useForm } from "@inertiajs/react";
 import InputError from "@/components/InputError copy";
+import RowPerPage from "@/components/RowPerPage";
+import Pagination from "@/components/Pagination";
+import SearchFilter from "@/components/SearchFilter";
+import FilterDropdown from "@/components/FilterDropdown";
 
-export default function UserManagement({ user = [] }) {
+export default function UserManagement({ user, filters }) {
     const [itemId, setItemId] = useState(null);
     const [add, setAdd] = useState(false);
     const [del, setDel] = useState(false);
@@ -75,6 +79,57 @@ export default function UserManagement({ user = [] }) {
         });
     };
 
+    const FilterData = ["All", "Admin", "Student", "Email Verified", "College"];
+
+    const [search, setSearch] = useState(filters?.search || "");
+    const [dataFilter, setDataFilter] = useState("All");
+    const [perPage, setPerPage] = useState(filters?.per_page || 2);
+
+    const handleSearchSubmit = () => {
+        setDataFilter("All");
+        router.get(
+            route("admin.user.management"),
+            {
+                search,
+                program: "",
+                per_page: perPage,
+            },
+            {
+                preserveState: true,
+                replace: true,
+            }
+        );
+    };
+
+    const handleFilterChange = (program) => {
+        setDataFilter(program);
+        router.get(
+            route("admin.user.management"),
+            {
+                search: "",
+                program: program === "All" ? "" : program,
+                per_page: perPage,
+            },
+            {
+                preserveState: true,
+                replace: true,
+            }
+        );
+    };
+
+    const clearAllFilters = () => {
+        setSearch("");
+        setDataFilter("All");
+        router.get(
+            route("admin.user.management"),
+            { per_page: perPage },
+            {
+                preserveState: true,
+                replace: true,
+            }
+        );
+    };
+
     return (
         <Layout>
             <div className="flex items-end justify-between mb-7">
@@ -82,26 +137,19 @@ export default function UserManagement({ user = [] }) {
             </div>
             <div className="flex justify-between mb-3">
                 <div className="flex gap-4">
-                    <Input
-                        type="text"
-                        placeholder="Search"
-                        className="w-[300px]"
-                    />
-                    <div className="text-white">
-                        <DropdownMenu>
-                            <DropdownMenuTrigger className="bg-primary flex px-2 py-1 rounded-md">
-                                Filter
-                                <Filter className="h-5 ml-2" />
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent className="bg-customBlue ">
-                                <DropdownMenuItem>Role</DropdownMenuItem>
-                                <DropdownMenuItem>Name</DropdownMenuItem>
-                                <DropdownMenuItem>
-                                    Email Verified
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>Created</DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
+                    <div className="flex items-center gap-2">
+                        <SearchFilter
+                            searchValue={search}
+                            onSearchChange={setSearch}
+                            onSearchSubmit={handleSearchSubmit}
+                            onClearFilters={clearAllFilters}
+                            showClearButton={search || dataFilter !== "All"}
+                        />
+                        <FilterDropdown
+                            currentFilter={dataFilter}
+                            onFilterChange={handleFilterChange}
+                            FilterData={FilterData}
+                        />
                     </div>
                 </div>
                 <Button>
@@ -110,7 +158,7 @@ export default function UserManagement({ user = [] }) {
                     </Link>
                 </Button>
             </div>
-            <div className="border rounded-sm px-4">
+            <div className="border rounded-sm px-4 min-h-96">
                 <Table>
                     <TableHeader>
                         <TableRow className="table-fixed">
@@ -129,11 +177,11 @@ export default function UserManagement({ user = [] }) {
                             <TableHead className="text-center w-1/12">
                                 Created At
                             </TableHead>
-                            <TableHead className="text-center w-1/12"></TableHead>
+                            {/* <TableHead className="text-center w-1/12"></TableHead> */}
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {user.map((users, index) => {
+                        {user.data.map((users, index) => {
                             return (
                                 <TableRow className="table-fixed">
                                     <TableCell className="font-medium text-center w-1/12">
@@ -169,15 +217,23 @@ export default function UserManagement({ user = [] }) {
                                               )
                                             : "not verified yet"}
                                     </TableCell>
-                                    <TableCell className="flex justify-center items-center">
+                                    {/* <TableCell className="flex justify-center items-center">
                                         <Edit className="h-5 text-blue-600" />
                                         <Trash className="h-5 text-red-600" />
-                                    </TableCell>
+                                    </TableCell> */}
                                 </TableRow>
                             );
                         })}
                     </TableBody>
                 </Table>
+            </div>
+            <div className="flex justify-between pt-2">
+                <RowPerPage
+                    filters={filters}
+                    routeName={"admin.user.management"}
+                    dataFilter={dataFilter}
+                />
+                <Pagination links={user.links} />
             </div>
         </Layout>
     );

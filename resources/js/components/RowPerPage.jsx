@@ -13,22 +13,27 @@ export default function RowPerPage({
     filters,
     search = "",
     dataFilter = "All",
+    routeName,
 }) {
     const [perPage, setPerPage] = useState(() => {
-        // Initialize from session storage or filters
-        return getStorageItem("rowsPerPage", filters?.per_page || 2);
+        return filters?.per_page || getStorageItem("rowsPerPage", 2);
     });
 
-    // Update session storage when perPage changes
     useEffect(() => {
         setStorageItem("rowsPerPage", perPage);
     }, [perPage]);
+
+    useEffect(() => {
+        if (filters?.per_page && filters.per_page !== perPage) {
+            setPerPage(filters.per_page);
+        }
+    }, [filters?.per_page]);
 
     const handlePerPageChange = (value) => {
         const newValue = Number(value);
         setPerPage(newValue);
         router.get(
-            route("admin.application"),
+            route(routeName),
             {
                 search,
                 program: dataFilter === "All" ? "" : dataFilter,

@@ -13,6 +13,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import { toast } from "sonner";
 
 export default function CreateUser() {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -28,6 +29,11 @@ export default function CreateUser() {
 
         post(route("register"), {
             onFinish: () => reset("password", "password_confirmation"),
+            onSuccess: () => {
+                toast("User has been created", {
+                    description: "Sunday, December 03, 2023 at 9:00 AM",
+                });
+            },
         });
     };
 
@@ -162,7 +168,7 @@ export default function CreateUser() {
                     </Link> */}
 
                         <Button className="ms-4" disabled={processing}>
-                            Register
+                            Create User
                         </Button>
                     </div>
                 </div>

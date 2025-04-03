@@ -645,7 +645,12 @@ export default function Application({ student, filters }) {
                 )}
             </div>
             <div className="flex justify-between pt-2">
-                <RowPerPage filters={filters} />
+                <RowPerPage
+                    filters={filters}
+                    routeName={"admin.application"}
+                    perPage={perPage}
+                    onPerPageChange={setPerPage}
+                />
                 <Pagination links={student.links} />
             </div>
         </Layout>

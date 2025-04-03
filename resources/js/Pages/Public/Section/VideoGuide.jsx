@@ -44,27 +44,23 @@ export default function VideoGuide() {
                     </div>
 
                     <div>
-                        {/* <img
-                            src="https://images.unsplash.com/photo-1731690415686-e68f78e2b5bd?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                            className="rounded"
-                            alt=""
-                        /> */}
                         {/* YouTube Video Embed */}
                         <iframe
                             width="100%" // You can set the width to 100% to make it responsive
                             height="315" // Default height for videos
-                            src="https://youtu.be/sFV91DY0l3E"
+                            src="https://www.youtube.com/embed/PLVc0pqBGoc"
                             title="YouTube video player"
                             frameBorder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             allowFullScreen
                             className="rounded"
                         ></iframe>
+
                         <p>
                             If the video is not working,{" "}
                             <a
                                 className="underline"
-                                href="https://youtu.be/sFV91DY0l3E"
+                                href="https://youtu.be/PLVc0pqBGoc"
                             >
                                 click here
                             </a>

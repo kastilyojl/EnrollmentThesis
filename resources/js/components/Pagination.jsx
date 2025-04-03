@@ -84,12 +84,10 @@ import React from "react";
 import { Link } from "@inertiajs/react";
 
 export default function Pagination({ links = [] }) {
-    // Get the first (previous) and last (next) links
     const previousLink = links[0];
     const nextLink = links[links.length - 1];
     const pageLinks = links.slice(1, -1);
 
-    // Function to generate smart pagination links
     const getDisplayedPages = () => {
         if (pageLinks.length <= 5) {
             return pageLinks;
@@ -98,15 +96,12 @@ export default function Pagination({ links = [] }) {
         const currentPageIndex = pageLinks.findIndex((link) => link.active);
         const pages = [];
 
-        // Always show first page
         pages.push(pageLinks[0]);
 
-        // Show ellipsis if current page is far from start
         if (currentPageIndex > 2) {
             pages.push({ label: "...", url: null });
         }
 
-        // Show current page and adjacent pages
         const start = Math.max(1, currentPageIndex - 1);
         const end = Math.min(pageLinks.length - 2, currentPageIndex + 1);
 
@@ -116,12 +111,10 @@ export default function Pagination({ links = [] }) {
             }
         }
 
-        // Show ellipsis if current page is far from end
         if (currentPageIndex < pageLinks.length - 3) {
             pages.push({ label: "...", url: null });
         }
 
-        // Always show last page
         pages.push(pageLinks[pageLinks.length - 1]);
 
         return pages;
