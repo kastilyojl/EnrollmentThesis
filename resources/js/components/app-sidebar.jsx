@@ -439,10 +439,10 @@ export function AppSidebar({ ...props }) {
                                   url: route("admin.course.selection"),
                               },
                               { title: "Evaluation", url: "" },
-                              {
-                                  title: "Enrollment Processing",
-                                  url: route("admin.enrollment"),
-                              },
+                              //   {
+                              //       title: "Enrollment Processing",
+                              //       url: route("admin.enrollment"),
+                              //   },
                           ],
                       },
                       {
