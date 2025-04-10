@@ -477,8 +477,9 @@ export function AppSidebar({ ...props }) {
                           url: "#",
                           icon: Pen,
                           items: [
-                              { title: "Setup", url: route("admin.billing") },
-                              { title: "Payment", url: route("admin.payment") },
+                              { title: "Upload", url: route("index.csv") },
+                              { title: "List", url: route("ocr") },
+                              { title: "Request", url: "#" },
                           ],
                       },
                       {

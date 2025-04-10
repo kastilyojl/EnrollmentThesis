@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AdminApplicationController;
 use App\Http\Controllers\Admin\BillingController;
 use App\Http\Controllers\Admin\CourseSelectionController;
+use App\Http\Controllers\Admin\CSVController;
 use App\Http\Controllers\Admin\CurriculumController;
 use App\Http\Controllers\Admin\EmailController;
 use App\Http\Controllers\Admin\EnrollmentController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\Admin\ProgramController;
 use App\Http\Controllers\Admin\SectionController;
 use App\Http\Controllers\Admin\SubjectController;
 use App\Http\Controllers\Admin\UserManagement;
+use App\Http\Controllers\OCR\OCRController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\Student\ApplicationController;
@@ -207,11 +209,19 @@ Route::prefix('billing')->group(function () {
     Route::delete('/other-fee/{id}/delete', [BillingController::class, 'destroyOtherFee'])->name("admin.otherfee.destroy");
 });
 
+Route::prefix('grades')->group(function () {
+    Route::get('/csv', [CSVController::class, 'index'])->name('index.csv');
+    Route::post('/upload-csv', [CSVController::class, 'upload'])->name('upload.csv');
+});
+
+Route::prefix('OCR')->group(function () {
+    Route::get('/',[OCRController::class, 'index'])->name('ocr');
+    Route::post('/process-ocr', [OCRController::class, 'processOCR'])->name('process.ocr');
+});
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-    
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');    
 });
 
 require __DIR__.'/auth.php';

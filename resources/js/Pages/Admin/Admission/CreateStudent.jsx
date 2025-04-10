@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Label } from "@/components/ui/Label";
 import { Link, useForm } from "@inertiajs/react";
 import InputError from "@/components/InputError";
@@ -16,9 +16,24 @@ import {
 } from "@/components/ui/alert-dialog";
 import Layout from "@/components/layout";
 import { ArrowLeft, Scan } from "lucide-react";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import Camera from "@/Pages/OCR/Camera";
 
-export default function CreateStudent({ program = [], school_year = [] }) {
+export default function CreateStudent({
+    program = [],
+    school_year = [],
+    error,
+}) {
+    const [text, setText] = useState(""); // Store extracted text from Camera
     const [isOpen, setIsOpen] = useState(false);
+    const [scan, setScan] = useState(false);
     const [loading, setLoading] = useState(false);
     const { data, setData, post, errors } = useForm({
         department: "",
@@ -70,6 +85,10 @@ export default function CreateStudent({ program = [], school_year = [] }) {
         setIsOpen(open);
     };
 
+    const handleScan = () => {
+        setScan(true);
+    };
+
     const applicationFields = {
         department: ["Senior High School", "College"],
         semester: ["1st Semester", "2nd Semester"],
@@ -85,6 +104,223 @@ export default function CreateStudent({ program = [], school_year = [] }) {
         return `${startYear} - ${endYear}`;
     });
 
+    // Function to handle OCR text extraction
+    const handleTextExtracted = (extractedText) => {
+        setText(extractedText); // Update text state with the extracted text
+    };
+
+    // Parse the extracted OCR text and update the form fields
+    useEffect(() => {
+        if (!text) return;
+
+        // List of labels to exclude from the input values
+        const unwantedLabels = [
+            "Department",
+            "School Year",
+            "Semester",
+            "AY",
+            "Branch",
+            "Year Level",
+            "Program",
+            "Classified As",
+            "Last School Attended",
+            "School Address",
+            "Email",
+
+            "First Name",
+            "Middle Name",
+            "Last Name",
+            "Address",
+            "Date of Birth",
+            "Place of Birth",
+            "Civil Status",
+            "Gender",
+            "Religion",
+
+            "Father's Name",
+            "Occupation",
+            "Guradian's Name",
+            "Mother's Name",
+            "Relationship to Guardian",
+            "Relationship",
+            "Telephone No",
+        ];
+
+        // Extract field based on regex
+        const extractField = (label, fallback = "") => {
+            const regex = new RegExp(
+                `${label}\\s*:?\\s*([A-Za-z0-9 .,_/-]+)`,
+                "i"
+            );
+            const match = text.match(regex);
+
+            if (match) {
+                let extractedText = match[1].replace(/_/g, "").trim();
+
+                // If the label itself is present in the extracted text, remove it
+                unwantedLabels.forEach((unwanted) => {
+                    extractedText = extractedText
+                        .replace(new RegExp(unwanted, "i"), "")
+                        .trim();
+                });
+
+                return extractedText;
+            }
+            return fallback;
+        };
+
+        console.log("Extracted Text Data: ", text);
+
+        // Handle text fields (names, email, address)
+        setData("last_name", extractField("Last Name"));
+        setData("first_name", extractField("First Name"));
+        setData("middle_name", extractField("Middle Name"));
+        // Extract email and check if it has '@', if not, append '@gmail.com'
+        let email = extractField("Email");
+
+        // If email doesn't contain '@', append '@gmail.com'
+        if (email && !email.includes("@")) {
+            email += "@gmail.com";
+        }
+        console.log("EmaiL:", extractField("Email"));
+        setData("email", email);
+        setData("address", extractField("Present Address"));
+
+        // Date of birth (Format: MM/DD/YYYY)
+        const birthDay = text.match(
+            /\b(\d{1,2})\s*\/\s*(\d{1,2})\s*\/\s*(\d{4})/
+        );
+        if (birthDay) {
+            const [_, mm, dd, yyyy] = birthDay;
+            const formatted = `${yyyy}-${mm.padStart(2, "0")}-${dd.padStart(
+                2,
+                "0"
+            )}`;
+            setData("birth_date", formatted);
+        }
+
+        // Handle birth place, civil status, gender, and religion
+        setData("birth_place", extractField("Place of Birth"));
+        setData("civil_status", extractField("Civil Status"));
+        setData("gender", extractField("Gender"));
+        setData("religion", extractField("Religion"));
+
+        // Handle parent's info (name, occupation, phone)
+        // Handle parent's info (name, occupation, phone)
+        setData("mother_name", extractField("Mother's Name"));
+        // Handle mother occupation extraction
+        // Handle mother occupation extraction
+        const motherOccupation = text.match(
+            /Mother's Name:.*?Occupation:\s*([A-Za-z0-9 .,_/-]+)\s*(?=Telephone)/i
+        );
+        if (motherOccupation) {
+            setData(
+                "mother_occupation",
+                motherOccupation[1].replace(/_/g, " ").trim()
+            );
+        } else {
+            setData("mother_occupation", ""); // Fallback if no occupation is found
+        }
+
+        setData("father_name", extractField("Father's Name"));
+
+        // Handle father occupation extraction
+        const fatherOccupation = text.match(
+            /Father's Name:.*?Occupation:\s*([A-Za-z0-9 .,_/-]+)\s*(?=Telephone)/i
+        );
+        if (fatherOccupation) {
+            setData(
+                "father_occupation",
+                fatherOccupation[1].replace(/_/g, " ").trim()
+            );
+        } else {
+            setData("father_occupation", ""); // Fallback if no occupation is found
+        }
+
+        // AY: 2024 / _ 2025
+
+        // Extract phone numbers
+        const phones = [...text.matchAll(/(\b09\d{9}\b)/g)].map((m) => m[1]);
+        if (phones.length >= 3) {
+            setData("mother_phone", phones[0]);
+            setData("father_phone", phones[1]);
+            setData("guardian_phone", phones[2]);
+        }
+
+        // Handle guardian info
+        setData("guardian_name", extractField("Guardian's Name"));
+        setData("guardian_relationship", extractField("Relationship"));
+
+        // Handle department, semester, and branch info
+
+        // Normalize the text (remove unwanted characters or formatting issues)
+        const lowerText = text
+            .toLowerCase()
+            .replace(/[^a-z0-9\s]/gi, "")
+            .replace(/\s+/g, " ")
+            .trim();
+
+        if (lowerText.includes("college")) {
+            setData("department", "College");
+        } else if (lowerText.includes("senior high")) {
+            setData("department", "Senior High School");
+        }
+
+        if (
+            lowerText.includes("1st semester") ||
+            lowerText.includes("1 semester")
+        ) {
+            setData("semester", "1st Semester");
+        } else if (lowerText.includes("2nd semester")) {
+            setData("semester", "2nd Semester");
+        }
+
+        if (lowerText.includes("banlic")) {
+            setData("branch", "Banlic - Main");
+        } else if (lowerText.includes("uno")) {
+            setData("branch", "Uno");
+        }
+
+        if (lowerText.includes("4th year") || 
+            lowerText.includes("4 year")) {
+            setData("year_level", "4th Year");
+        } else if (
+            lowerText.includes("3rd year") ||
+            lowerText.includes("3 year")) 
+        {
+            setData("year_level", "3rd Year");
+        } else if (
+            lowerText.includes("2nd year") ||
+            lowerText.includes("2 year")
+        ) {
+            setData("year_level", "2nd Year");
+        } else if (
+            lowerText.includes("1st year") ||
+            lowerText.includes("1 year")
+        ) {
+            setData("year_level", "1st Year");
+        } else if (
+            lowerText.includes("Grade 11") ||
+            lowerText.includes("G11") ||
+            lowerText.includes("G 11") ||
+            lowerText.includes("11")
+        ) {
+            setData("year_level", "Grade 11");
+        } else if (
+            lowerText.includes("Grade 12") ||
+            lowerText.includes("G12") ||
+            lowerText.includes("G 12") ||
+            lowerText.includes("12")
+        ) {
+            setData("year_level", "Grade 12");
+        }
+
+        // Program info
+        setData("program", extractField("Program"));
+        setData("last_school_attended", extractField("School Last Attended"));
+        setData("last_school_address", extractField("School Address"));
+    }, [text]);
+
     return (
         <Layout>
             <form className="px-6 mx-auto space-y-4">
@@ -95,9 +331,30 @@ export default function CreateStudent({ program = [], school_year = [] }) {
                     >
                         <ArrowLeft /> Back
                     </Link>
-                    <p className="flex cursor-pointer gap-2 text-green-700">
+                    <p
+                        onClick={handleScan}
+                        className="flex cursor-pointer gap-2 text-green-700"
+                    >
                         <Scan /> Scan
                     </p>
+                    <Dialog open={scan} onOpenChange={(open) => setScan(open)}>
+                        <DialogContent className="max-w-5xl">
+                            <DialogHeader>
+                                <DialogTitle>
+                                    Optical Character Recognition (OCR)
+                                </DialogTitle>
+                                <DialogDescription>
+                                    <ScrollArea className="h-[500px]">
+                                        <Camera
+                                            onTextExtracted={
+                                                handleTextExtracted
+                                            }
+                                        />
+                                    </ScrollArea>
+                                </DialogDescription>
+                            </DialogHeader>
+                        </DialogContent>
+                    </Dialog>
                 </div>
 
                 <div className="space-y-12 ">
@@ -160,29 +417,6 @@ export default function CreateStudent({ program = [], school_year = [] }) {
                                     <span className="pl-1 text-red-500">*</span>
                                 </Label>
                                 <div className="mt-2">
-                                    {/* <select
-                                    name="school_year"
-                                    id="school_year"
-                                    value={data.school_year}
-                                    onChange={(e) =>
-                                        setData("school_year", e.target.value)
-                                    }
-                                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-1 focus:-outline-offset-1 focus:outline-indigo-600 sm:text-sm/6"
-                                >
-                                    <option hidden>Select</option>
-                                    {applicationFields.school_year.map(
-                                        (school_year, index) => {
-                                            return (
-                                                <option
-                                                    key={index}
-                                                    value={school_year}
-                                                >
-                                                    {school_year}
-                                                </option>
-                                            );
-                                        }
-                                    )}
-                                </select> */}
                                     <select
                                         name="school_year"
                                         id="school_year"
