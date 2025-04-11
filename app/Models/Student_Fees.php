@@ -16,4 +16,15 @@ class Student_Fees extends Model
         'status',
         'amount_paid',
     ];
+
+    public function studentInfo()
+    {
+        return $this->belongsTo(Student_Info::class, 'student_info_id', 'student_id');
+    }
+
+    public function paymentDetails()
+    {
+        return $this->belongsTo(Payment_Details::class, 'payment_details_id', 'id');
+    }
+    
 }

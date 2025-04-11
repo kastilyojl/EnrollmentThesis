@@ -17,12 +17,16 @@ import {
 import { Download, Edit, MoreHorizontal, Trash } from "lucide-react";
 import BadgeSuccess from "./BadgeSuccess";
 import BadgeWarning from "./BadgeWarning";
+import BadgeEnrolled from "./BadgeEnrolled";
+import BadgeOnhold from "./BadgeOnhold";
 
 export default function TableData({
     tablerow,
     tabledata,
     handleEdit,
     handleDel,
+    showDelete = true,
+    showDownload = true,
 }) {
     return (
         <Table>
@@ -55,6 +59,10 @@ export default function TableData({
                                             <BadgeSuccess>{col}</BadgeSuccess>
                                         ) : col === "pending" ? (
                                             <BadgeWarning>{col}</BadgeWarning>
+                                        ) : col === "enrolled" ? (
+                                            <BadgeEnrolled>{col}</BadgeEnrolled>
+                                        ) : col === "onhold" ? (
+                                            <BadgeOnhold>{col}</BadgeOnhold>
                                         ) : (
                                             col
                                         )}
@@ -73,16 +81,22 @@ export default function TableData({
                                             <Edit />
                                             Edit
                                         </DropdownMenuItem>
-                                        <DropdownMenuItem>
-                                            <Download />
-                                            Download
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem
-                                            onClick={() => handleDel(program)}
-                                        >
-                                            <Trash />
-                                            Delete
-                                        </DropdownMenuItem>
+                                        {showDownload && (
+                                            <DropdownMenuItem>
+                                                <Download />
+                                                Download
+                                            </DropdownMenuItem>
+                                        )}
+                                        {showDelete && (
+                                            <DropdownMenuItem
+                                                onClick={() =>
+                                                    handleDel(program)
+                                                }
+                                            >
+                                                <Trash />
+                                                Delete
+                                            </DropdownMenuItem>
+                                        )}
                                     </DropdownMenuContent>
                                 </DropdownMenu>
                             </TableCell>

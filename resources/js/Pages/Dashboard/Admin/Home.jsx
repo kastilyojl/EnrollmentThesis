@@ -10,8 +10,22 @@ import {
 } from "@/components/ui/card";
 import Stats from "./Content/Stats";
 import Chart from "./Content/Chart";
+import { usePage } from "@inertiajs/react";
 
 export default function Dashboard() {
+    const {
+        auth,
+        adminCount,
+        professorCount,
+        studentCount,
+        shsCount,
+        collegeCount,
+        preEnrolledCount,
+        shsEnrolledCount,
+        collegeEnrolledCount,
+    } = usePage().props;
+    const user = auth?.user;
+
     return (
         <Layout>
             <div className="flex items-end justify-between mb-7">
@@ -22,25 +36,27 @@ export default function Dashboard() {
                     <Stats
                         card_title={"Total Administrator"}
                         card_footer={"Number of admin"}
-                        card_content={4}
+                        card_content={adminCount ?? 0}
                         className="text-primary"
                     />
                     <Stats
                         card_title={"Total Pre-enrolled"}
                         card_footer={"Number of pre-enrolled"}
-                        card_content={250}
+                        card_content={preEnrolledCount ?? 0}
                         className=" text-pink-600"
                     />
                     <Stats
                         card_title={"Total Professor"}
                         card_footer={"Number of professor account "}
-                        card_content={20}
+                        card_content={professorCount ?? 0}
                         className=" text-violet-600"
                     />
                     <Stats
                         card_title={"Total Program"}
-                        card_footer={"SHS: 3 | College: 6"}
-                        card_content={9}
+                        card_footer={`SHS: ${shsCount ?? 0} | College: ${
+                            collegeCount ?? 0
+                        }`}
+                        card_content={shsCount + collegeCount}
                         className=" text-green-600"
                     />
                 </div>

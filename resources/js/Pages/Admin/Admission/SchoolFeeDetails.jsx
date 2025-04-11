@@ -9,7 +9,7 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { useForm } from "@inertiajs/react";
+import { router, useForm } from "@inertiajs/react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
@@ -23,7 +23,7 @@ export default function SchoolFeeDetails({
     const [selectedOtherFees, setSelectedOtherFees] = useState([]);
     const { data, setData, post } = useForm({
         id: student[0].users_id,
-        student_info_id: student[0].users_id,
+        student_info_id: student[0].student_id,
         fee_type: "",
         fee_id: "",
         amount: "",
@@ -33,7 +33,8 @@ export default function SchoolFeeDetails({
     // console.log("Student", data.id);
     // console.log("Student ID", data.student_info_id);
 
-    const handleSubmit = () => {
+    const handleSubmit = (e) => {
+        e.preventDefault(); // <-- prevent default form behavior
         const paymentDetails = [];
         selectedCollegeFees.forEach((fee) => {
             paymentDetails.push({
@@ -54,18 +55,25 @@ export default function SchoolFeeDetails({
             });
         });
 
-        post(
+        console.log("Submitting to Laravel:", {
+            paymentDetails,
+        });
+
+        router.post(
             route("admin.payment.storeDetails"),
-            // {
-            //     paymentDetails: paymentDetails,
-            // },
+            {
+                paymentDetails: paymentDetails,
+            },
             {
                 onSuccess: () => {
                     setAdd(false);
                 },
             }
         );
-        // console.log("Payment Details", paymentDetails);
+        console.log("Payment Details", paymentDetails);
+        console.log("Selected College Fees:", selectedCollegeFees);
+        console.log("Selected Other Fees:", selectedOtherFees);
+        console.log("Final Payment Details:", paymentDetails);
     };
 
     const handleCollegeFeeToggle = (fee) => {

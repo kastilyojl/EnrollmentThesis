@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Mail\GreetingEmail;
 use App\Models\Email_Logs;
+use App\Models\Payment_Verification;
 use App\Models\Student_Info;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -111,11 +112,10 @@ class EmailController extends Controller
 
     public function sendEmailOfficiallyEnrolled(Request $request) {
 
-        $email = Student_Info::where('users_id', $request->id)->firstOrFail();
+        $user = User::where('id', $request->users_id)->firstOrFail();
 
-        $user = $email->users;
         Log::info($request->all());
-
+    
         $to = $user->email;
         $message = "Dear " . $user->name . ",\n\n
                     Greetings from Westbridge Institute of Technology Inc.! We are excited to inform you that your enrollment has been successfully processed, and you are now officially enrolled as a student. 
@@ -149,6 +149,45 @@ class EmailController extends Controller
                     ->subject($subject);
         });
 
-
     }
+
+    public function sendEmailPaymentVerified($id)
+{
+    $paymentVerification = Payment_Verification::findOrFail($id);
+
+    $studentInfoId = $paymentVerification->student_info_id;
+    Log::info("Student Info ID: " . $studentInfoId);
+
+    // Check existence first
+    $email = Student_Info::findOrFail($studentInfoId);
+    Log::info("Email Info ID: " . $email);
+    $user = $email->users;
+
+        $to = $user->email;
+
+    $message = "Greetings,
+
+    We are pleased to inform you that your payment has been successfully verified. If you have completed all required steps, we will proceed to assign you your subjects and provide you with the tuition fee breakdown for enrollment.
+
+    Thank you for your timely payment and cooperation.
+
+    Best regards,
+    The Registrar's Office.";
+
+    $subject = "Payment Verified";
+
+    Email_Logs::create([
+        'users_id' => $user->id,
+        'application' => 'sent'
+    ]);
+
+    Mail::raw($message, function ($mailMessage) use ($user, $subject) {
+        $mailMessage->to($user->email)
+                    ->subject($subject);
+    });
+}
+
+
+    
+    
 }

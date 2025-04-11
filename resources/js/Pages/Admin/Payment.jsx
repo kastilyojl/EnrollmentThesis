@@ -34,6 +34,7 @@ export default function Payment({ program = [], payment = [] }) {
         "Semester",
         "Reference",
         "Amount",
+        "Status",
     ];
 
     const {
@@ -80,6 +81,7 @@ export default function Payment({ program = [], payment = [] }) {
         semester: payment.semester,
         reference: payment.reference,
         amount: payment.amount,
+        status: payment.status,
     }));
 
     const [itemId, setItemId] = useState(null);

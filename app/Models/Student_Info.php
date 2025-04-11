@@ -52,9 +52,24 @@ class Student_Info extends Model
         return $this->hasOne(Payment_Verification::class, 'student_info_id', 'student_id');
     }
 
+    public function sectionStudent() 
+    {
+        return $this->hasOne(Section_Student::class, 'student_info_id', 'student_id');
+    }
+
     public function studentSubjects() 
     {
         return $this->hasMany(Student_Subjects::class, 'student_info_id', 'student_id');
+    }
+
+    public function studentFees() 
+    {
+        return $this->hasMany(Student_Fees::class, 'student_info_id', 'student_id');
+    }
+
+    public function paymentDetails() 
+    {
+        return $this->hasMany(Payment_Details::class, 'student_info_id', 'student_id');
     }
     
 }

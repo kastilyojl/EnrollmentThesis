@@ -4,9 +4,22 @@ import Home from "./Admin/Home";
 import HomeProfile from "./Student/HomeProfile";
 import Enrollment from "./Admin/Enrollment";
 import Billing from "./Admin/Billing";
+import HomeProfessor from "./Professor/HomeProfessor";
 
 export default function HomeContent() {
-    const user = usePage().props.auth.user;
+    const {
+        auth,
+        adminCount,
+        professorCount,
+        studentCount,
+        shsCount,
+        collegeCount,
+        preEnrolledCount,
+        shsEnrolledCount,
+        collegeEnrolledCount,
+    } = usePage().props;
+    const user = auth?.user;
+
     return (
         <>
             {user.role === "super admin" ? (
@@ -17,6 +30,8 @@ export default function HomeContent() {
                 <Billing />
             ) : user.role === "student" ? (
                 <HomeProfile />
+            ) : user.role === "professor" ? (
+                <HomeProfessor />
             ) : null}
         </>
     );

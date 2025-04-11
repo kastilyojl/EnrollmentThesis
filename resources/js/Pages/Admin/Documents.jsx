@@ -16,7 +16,7 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 
-import { useForm } from "@inertiajs/react";
+import { router, useForm } from "@inertiajs/react";
 import InputLabel from "@/components/InputLabel";
 import {
     Select,
@@ -27,14 +27,18 @@ import {
 } from "@/components/ui/select";
 import { Check } from "lucide-react";
 import BadgeSuccess from "@/components/BadgeSuccess";
+import SearchFilter from "@/components/SearchFilter";
+import FilterDropdown from "@/components/FilterDropdown";
+import RowPerPage from "@/components/RowPerPage";
+import Pagination from "@/components/Pagination";
 
-export default function Documents({ student = [] }) {
+export default function Documents({ student, filters }) {
     const tableHeader = [
         "Name",
         "Department",
         "Year Level",
         "Classified As",
-        "Application Status",
+        "Status",
     ];
 
     const {
@@ -77,6 +81,7 @@ export default function Documents({ student = [] }) {
         ctc_transferee: student.documents.ctc_transferee,
         grade_transferee: student.documents.grade_transferee,
         f137_transferee: student.documents.f137_transferee,
+        doc_status: student.documents.status,
     }));
 
     // Filtered data with only the required columns
@@ -91,7 +96,7 @@ export default function Documents({ student = [] }) {
         department: student.department,
         year_level: student.year_level,
         classified_as: student.classified_as,
-        status: student.status,
+        doc_status: student.doc_status,
     }));
 
     const [itemId, setItemId] = useState(null);
@@ -208,21 +213,86 @@ export default function Documents({ student = [] }) {
         );
     };
 
+    const FilterData = ["All", "Approved", "OnHold", "Pending"];
+
+    const [search, setSearch] = useState(filters?.search || "");
+    const [dataFilter, setDataFilter] = useState("All");
+    const [perPage, setPerPage] = useState(filters?.per_page || 10);
+
+    const handleSearchSubmit = () => {
+        setDataFilter("All");
+        router.get(
+            route("admin.documents"),
+            {
+                search,
+                status: "",
+                per_page: perPage,
+            },
+            {
+                preserveState: true,
+                replace: true,
+            }
+        );
+    };
+
+    const handleFilterChange = (status) => {
+        setDataFilter(status);
+        router.get(
+            route("admin.documents"),
+            {
+                search: "",
+                status: status === "All" ? "" : status,
+                per_page: perPage,
+            },
+            {
+                preserveState: true,
+                replace: true,
+            }
+        );
+    };
+
+    const clearAllFilters = () => {
+        setSearch("");
+        setDataFilter("All");
+        router.get(
+            route("admin.documents"),
+            { per_page: perPage },
+            {
+                preserveState: true,
+                replace: true,
+            }
+        );
+    };
+
     return (
         <Layout>
             <div className="flex items-end justify-between mb-7">
                 <h1 className="text-2xl font-bold">Documents</h1>
             </div>
             <div className="flex justify-between mb-3">
-                <Input type="text" placeholder="Search" className="w-[300px]" />
-                {/* <Button>Create</Button> */}
+                <div className="flex items-center gap-2">
+                    <SearchFilter
+                        searchValue={search}
+                        onSearchChange={setSearch}
+                        onSearchSubmit={handleSearchSubmit}
+                        onClearFilters={clearAllFilters}
+                        showClearButton={search || dataFilter !== "All"}
+                    />
+                    <FilterDropdown
+                        currentFilter={dataFilter}
+                        onFilterChange={handleFilterChange}
+                        FilterData={FilterData}
+                    />
+                </div>
             </div>
-            <div className="border rounded-sm px-4">
+            <div className="border rounded-sm px-4 min-h-96">
                 <TableData
                     tablerow={tableHeader}
                     tabledata={tableData}
                     handleEdit={handleEdit}
                     handleDel={handleDel}
+                    showDownload={false}
+                    showDelete={false}
                 />
                 {add && (
                     <Dialog open={add} onOpenChange={(open) => setAdd(open)}>
@@ -929,6 +999,14 @@ export default function Documents({ student = [] }) {
                         </DialogContent>
                     </Dialog>
                 )}
+            </div>
+            <div className="flex justify-between pt-2">
+                <RowPerPage
+                    filters={filters}
+                    routeName={"admin.documents"}
+                    dataFilter={dataFilter}
+                />
+                <Pagination links={student.links} />
             </div>
         </Layout>
     );

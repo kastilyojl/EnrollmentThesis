@@ -16,7 +16,7 @@ export default function RowPerPage({
     routeName,
 }) {
     const [perPage, setPerPage] = useState(() => {
-        return filters?.per_page || getStorageItem("rowsPerPage", 2);
+        return filters?.per_page || getStorageItem("rowsPerPage", 10);
     });
 
     useEffect(() => {
@@ -55,7 +55,7 @@ export default function RowPerPage({
                     <ChevronDown className="w-4 h-4" />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="bg-white">
-                    {[2, 4, 6, 50, 100].map((option) => (
+                    {[10, 20, 30, 50, 100].map((option) => (
                         <DropdownMenuItem
                             key={option}
                             onSelect={() => handlePerPageChange(option)}

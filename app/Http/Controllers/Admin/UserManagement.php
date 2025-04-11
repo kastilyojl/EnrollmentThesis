@@ -25,8 +25,8 @@ class UserManagement extends Controller
             });
         }
         
-        if ($request->has('program') && $request->program && $request->program !== 'All') {
-            $query->where('program', $request->program);
+        if ($request->has('role') && $request->role && $request->role !== 'All') {
+            $query->where('role', $request->role);
         }
 
         $user = $query->paginate($perPage);

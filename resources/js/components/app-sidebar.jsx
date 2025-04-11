@@ -389,12 +389,43 @@ export function AppSidebar({ ...props }) {
                           items: [
                               {
                                   title: "Payment Plan",
-                                  url: route("admin.dashboard.audit-trail"),
+                                  url: route("student.payment.plan"),
                               },
                               {
                                   title: "Payment History",
                                   url: route("student.payment.transaction"),
                               },
+                          ],
+                      },
+                  ]
+                : []),
+            ...(user.role === "professor"
+                ? [
+                      {
+                          title: "General",
+                          url: route("admin.billing"),
+                          icon: Grid2x2,
+                          items: [
+                              { title: "Home", url: route("dashboard") },
+                              {
+                                  title: "Schedule",
+                                  url: "",
+                              },
+                              {
+                                  title: "Subjects",
+                                  url: "",
+                              },
+                          ],
+                      },
+                      {
+                          title: "Grades",
+                          url: "#",
+                          icon: Pen,
+                          active: true,
+                          items: [
+                              { title: "Upload", url: route("index.csv") },
+                              { title: "List", url: route("ocr") },
+                              { title: "Request", url: "#" },
                           ],
                       },
                   ]
@@ -439,6 +470,10 @@ export function AppSidebar({ ...props }) {
                                   url: route("admin.course.selection"),
                               },
                               { title: "Evaluation", url: "" },
+                              {
+                                  title: "Enrollment Confirmation",
+                                  url: route("enrollment.final.step"),
+                              },
                               //   {
                               //       title: "Enrollment Processing",
                               //       url: route("admin.enrollment"),
@@ -478,7 +513,7 @@ export function AppSidebar({ ...props }) {
                           icon: Pen,
                           items: [
                               { title: "Upload", url: route("index.csv") },
-                              { title: "List", url: route("ocr") },
+                              { title: "List", url: "#" },
                               { title: "Request", url: "#" },
                           ],
                       },
@@ -490,6 +525,10 @@ export function AppSidebar({ ...props }) {
                               {
                                   title: "General",
                                   url: route("admin.setting.general"),
+                              },
+                              {
+                                  title: "Controller",
+                                  url: "#",
                               },
                               {
                                   title: "User Management",

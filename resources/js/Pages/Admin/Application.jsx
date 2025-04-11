@@ -208,7 +208,7 @@ export default function Application({ student, filters }) {
 
     const [search, setSearch] = useState(filters?.search || "");
     const [dataFilter, setDataFilter] = useState("All");
-    const [perPage, setPerPage] = useState(filters?.per_page || 2);
+    const [perPage, setPerPage] = useState(filters?.per_page || 10);
 
     const handleSearchSubmit = () => {
         setDataFilter("All");

@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\CourseSelectionController;
 use App\Http\Controllers\Admin\CSVController;
 use App\Http\Controllers\Admin\CurriculumController;
 use App\Http\Controllers\Admin\EmailController;
+use App\Http\Controllers\Admin\EnrollmentConfirmationController;
 use App\Http\Controllers\Admin\EnrollmentController;
 use App\Http\Controllers\Admin\GeneralSettingController;
 use App\Http\Controllers\Admin\PaymentController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\Admin\ProgramController;
 use App\Http\Controllers\Admin\SectionController;
 use App\Http\Controllers\Admin\SubjectController;
 use App\Http\Controllers\Admin\UserManagement;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OCR\OCRController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicController;
@@ -35,9 +37,13 @@ use Inertia\Inertia;
 //     ]);
 // });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Route::get('/dashboard', function () {
+//     return Inertia::render('Dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
+
 
 // use App\Http\Middleware\VerifyAdminIp;
 
@@ -58,9 +64,8 @@ Route::get('/', function () {
 })->name('home');
 
 Route::prefix('dashboard/admin')->group(function () {
-    Route::get('/enrollment', function () {
-        return Inertia::render('Dashboard/Admin/Enrollment');
-    })->name('admin.dashboard.enrollment');
+    Route::get('/enrollment', [DashboardController::class, 'enrollment'])->name('admin.dashboard.enrollment');
+    
     Route::get('/audit-trail', function () {
         return Inertia::render('Dashboard/Admin/AuditTrail');
     })->name('admin.dashboard.audit-trail');
@@ -77,7 +82,9 @@ Route::get('/mail-send/{id}/approved', [EmailController::class, 'sendEmailSucces
 Route::get('/mail-send/{id}/rejected', [EmailController::class, 'sendEmailRejected'])->name('send.email.rejected');
 Route::get('/mail-send/{id}/onhold', [EmailController::class, 'sendEmailOnHold'])->name('send.email.onhold');
 
-Route::get('/mail-send/{id}/officialy-enrolled', [EmailController::class, 'sendEmailOfficiallyEnrolled'])->name('send.email.official-enroll');
+Route::get('/mail-send/{id}/payment/approved', [EmailController::class, 'sendEmailPaymentVerified'])->name('send.email.payment.verified');
+
+Route::get('/mail-send/{users_id}/officialy-enrolled', [EmailController::class, 'sendEmailOfficiallyEnrolled'])->name('send.email.official-enroll');
 
 Route::group([], function () {
     Route::get('/Error', function () {
@@ -113,10 +120,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard/grades', [GeneralController::class, 'grades'])->name('student.grades');
     Route::get('/dashboard/enrollment', [GeneralController::class, 'enrollment'])->name('student.enrollment');
     Route::get('/dashboard/payment', [GeneralController::class, 'payment'])->name('student.payment.transaction');
+    Route::get('/dashboard/payment/plan', [GeneralController::class, 'plan'])->name('student.payment.plan');
     Route::get('/dashboard/subjects', [GeneralController::class, 'subjects'])->name('student.subject');
     Route::get('/dashboard/student/schedule', [GeneralController::class, 'schedule'])->name('student.schedule');
 
-
+    // Professor
 
     //Admin
 Route::prefix('/setting')->group(function () {
@@ -209,6 +217,9 @@ Route::prefix('billing')->group(function () {
     Route::delete('/other-fee/{id}/delete', [BillingController::class, 'destroyOtherFee'])->name("admin.otherfee.destroy");
 });
 
+Route::get('enrollment/final-step', [EnrollmentConfirmationController::class, 'index'])->name('enrollment.final.step');
+Route::post('enrollment/assign-section', [EnrollmentConfirmationController::class, 'insertStudentSection'])->name('enrollment.insert.section');
+
 Route::prefix('grades')->group(function () {
     Route::get('/csv', [CSVController::class, 'index'])->name('index.csv');
     Route::post('/upload-csv', [CSVController::class, 'upload'])->name('upload.csv');
@@ -216,7 +227,7 @@ Route::prefix('grades')->group(function () {
 
 Route::prefix('OCR')->group(function () {
     Route::get('/',[OCRController::class, 'index'])->name('ocr');
-    Route::post('/process-ocr', [OCRController::class, 'processOCR'])->name('process.ocr');
+    // Route::post('/process-ocr', [OCRController::class, 'processOCR'])->name('process.ocr');
 });
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

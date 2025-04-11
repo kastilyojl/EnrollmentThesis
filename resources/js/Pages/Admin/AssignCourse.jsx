@@ -421,7 +421,7 @@ export default function AssignCourse({
                 </Table>
                 {add && (
                     <Dialog open={add} onOpenChange={(open) => setAdd(open)}>
-                        <DialogContent className="max-w-4xl h-[600px]">
+                        <DialogContent className="max-w-6xl h-[600px]">
                             <DialogHeader>
                                 <Label>
                                     <span>{data.name}</span>
@@ -432,7 +432,7 @@ export default function AssignCourse({
                                     </span>
                                 </Label>
                                 <h1>Select Course</h1>
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-[70%_30%] gap-4">
                                     <div className="grid grid-rows-2 h-full">
                                         <div className="overflow-x-auto">
                                             <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
@@ -656,7 +656,7 @@ export default function AssignCourse({
                                                         (subject) => (
                                                             <li
                                                                 key={subject.id}
-                                                                className="border p-2 rounded-md bg-gray-50"
+                                                                className="border p-2 text-sm rounded-md bg-gray-50"
                                                             >
                                                                 {subject.name}
                                                             </li>

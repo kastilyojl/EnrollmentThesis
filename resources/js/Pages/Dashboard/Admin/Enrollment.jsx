@@ -10,8 +10,17 @@ import {
 } from "@/components/ui/card";
 import Chart from "./Content/Chart";
 import Timeline from "./Content/Timeline";
+import { usePage } from "@inertiajs/react";
 
 export default function Enrollment() {
+    const {
+        auth,
+        shsEnrolledCount,
+        collegeEnrolledCount,
+        studentEnrolled = [],
+    } = usePage().props;
+    const user = auth?.user;
+
     return (
         <Layout>
             <div className="flex items-end justify-between mb-7">

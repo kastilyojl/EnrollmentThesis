@@ -16,4 +16,13 @@ class Payment_Details extends Model
         'fee_id',
         'amount'
     ];
+
+    public function studentFees() 
+    {
+        return $this->hasOne(Student_Fees::class,'payment_details_id', 'id');
+    }
+
+    public function studentInfo() {
+        return $this->belongsTo(Student_Info::class,'student_info_id', 'student_id');
+    }
 }

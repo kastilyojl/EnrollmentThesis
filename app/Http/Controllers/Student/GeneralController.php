@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
+use App\Models\College_Billing;
+use App\Models\Other_Billing;
 use App\Models\Schedule;
 use App\Models\Section;
+use App\Models\SHS_Billing;
 use App\Models\Student_Info;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -58,6 +61,23 @@ class GeneralController extends Controller
 
         return Inertia::render('Dashboard/Student/Payment', [
             'student' => $payment,
+        ]);
+    }
+
+    public function plan()
+    {
+        $user = Auth::user();
+    
+        $payment = $user->studentInfo()->with('paymentDetails')->first();
+        $otherBilling = Other_Billing::all();
+        $collegeBilling = College_Billing::all();
+        $shsBilling = SHS_Billing::all();
+
+        return Inertia::render('Dashboard/Student/PaymentPlan', [
+            'student' => $payment,
+            'otherBilling'  => $otherBilling,
+            'collegeBilling' => $collegeBilling,
+            'shsBilling' => $shsBilling
         ]);
     }
 

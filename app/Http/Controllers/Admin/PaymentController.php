@@ -84,6 +84,9 @@ class PaymentController extends Controller
                     'status' => $request->status,
                 ]);
 
+                // if($request->status === 'Approved' || $request->status === 'approved') {
+                //     return redirect()->route('send.email.payment.verified', ['id' => $items]);
+                // }
         }
 
         public function showImage($filename) {
@@ -101,8 +104,8 @@ class PaymentController extends Controller
 
         public function indexAssignFee() {
             $student = Student_Info::with('users','personalInfo', 'documents', 'guardian', 'paymentVerification')->whereHas('documents')
-            ->whereHas('paymentVerification')
-            ->get();
+                    ->whereHas('paymentVerification')
+                    ->get();
             
             $college_fee = College_Billing::all();
             $subjects = Subjects::all();
@@ -111,20 +114,24 @@ class PaymentController extends Controller
             return Inertia::render('Admin/AssigningFee', ['student'=>$student, 'college_fee'=>$college_fee, 'subjects'=>$subjects, 'other_fee' => $other_fee, 'student_subjects' => $student_subjects]);
         }
 
-        public function storePaymentDetails(Request $request) {
-            Log::info($request->all());
-            foreach ($request->paymentDetails as $paymentDetail) {
-                Log::info('Payment Detail',$paymentDetail); 
-                Payment_Details::create([
-                    'student_info_id' => $paymentDetail['student_info_id'],  
-                    'fee_type' => $paymentDetail['fee_type'], 
-                    'fee_id' => $paymentDetail['fee_id'],
-                    'amount_paid' => $paymentDetail['amount'],  
-                        ]);
-            }
-            $items = User::where('id', $request->id)->first();
-            return redirect()->route('send.email.official-enroll', ['id'=>$items]);
-        }
+        public function storePaymentDetails(Request $request)
+{
+    $paymentDetails = $request->input('paymentDetails');
+
+    Log::info('Received Payment Details:', $paymentDetails);
+
+    foreach ($paymentDetails as $paymentDetail) {
+        Log::info('Payment Detail:', $paymentDetail);
+
+        Payment_Details::create([
+            'student_info_id' => $paymentDetail['student_info_id'],
+            'fee_type' => $paymentDetail['fee_type'],
+            'fee_id' => $paymentDetail['fee_id'],
+            'amount' => $paymentDetail['amount'],
+        ]);
+    }
+}
+
         
 
         

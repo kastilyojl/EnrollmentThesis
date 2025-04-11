@@ -79,11 +79,17 @@ export default function UserManagement({ user, filters }) {
         });
     };
 
-    const FilterData = ["All", "Admin", "Student", "Email Verified", "College"];
+    const FilterData = [
+        "All",
+        "Registrar",
+        "Student",
+        "Accounting",
+        "Super Admin",
+    ];
 
     const [search, setSearch] = useState(filters?.search || "");
     const [dataFilter, setDataFilter] = useState("All");
-    const [perPage, setPerPage] = useState(filters?.per_page || 2);
+    const [perPage, setPerPage] = useState(filters?.per_page || 10);
 
     const handleSearchSubmit = () => {
         setDataFilter("All");
@@ -91,7 +97,7 @@ export default function UserManagement({ user, filters }) {
             route("admin.user.management"),
             {
                 search,
-                program: "",
+                role: "",
                 per_page: perPage,
             },
             {
@@ -101,13 +107,13 @@ export default function UserManagement({ user, filters }) {
         );
     };
 
-    const handleFilterChange = (program) => {
-        setDataFilter(program);
+    const handleFilterChange = (role) => {
+        setDataFilter(role);
         router.get(
             route("admin.user.management"),
             {
                 search: "",
-                program: program === "All" ? "" : program,
+                role: role === "All" ? "" : role,
                 per_page: perPage,
             },
             {

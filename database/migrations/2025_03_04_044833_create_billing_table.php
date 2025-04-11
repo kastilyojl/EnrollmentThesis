@@ -56,7 +56,6 @@ return new class extends Migration
             $table->double('midterm')->nullable();
             $table->double('finals')->nullable();
             $table->double('total_amount')->nullable();
-            $table->foreign('program_code')->references('code')->on('programs')->onDelete('cascade')->onUpdate('cascade');
             $table->softDeletes();
             $table->timestamps();
         });
@@ -73,7 +72,6 @@ return new class extends Migration
             $table->integer('no_unit')->nullable();
             $table->double('per_unit')->nullable();
             $table->double('total_amount')->nullable();
-            $table->foreign('program_code')->references('code')->on('programs')->onDelete('cascade')->onUpdate('cascade');
             $table->softDeletes();
             $table->timestamps();
         });
