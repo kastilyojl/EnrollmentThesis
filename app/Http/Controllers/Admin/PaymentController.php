@@ -28,19 +28,28 @@ class PaymentController extends Controller
         return Inertia::render("Public/Section/TuitionFee", ['program'=>$program]);
     }
 
-    public function store(PaymentVerification $request) {
+    public function store(PaymentVerification $request)
+{
+    
+    $user = User::where('email', $request->email)->first();
+
+    if ($user) {
        
-        $user = User::where('email', $request->email)->first();
-        
-        if($user) {
-            $items = Student_Info::where('users_id', $user->id)->first();
+        $student = Student_Info::where('users_id', $user->id)->first();
+
+        if ($student) {
+           
+            if ($student->status === 'pending' || $student->status === 'onhold' || $student->status === 'cancel') {
+                return back()->withErrors([
+                    'email' => 'This email is not associated with any student record.',
+                ]);
+            }
 
             if ($request->hasFile('payment_receipt')) {
                 $path = $request->file('payment_receipt')->store('images');
-                
+
                 Payment_Verification::create([
-                    'student_info_id' => $items->student_id,
-                    
+                    'student_info_id' => $student->student_id,
                     'name' => $request->name,
                     'year_level' => $request->year_level,
                     'program' => $request->program,
@@ -52,16 +61,23 @@ class PaymentController extends Controller
                     'payment_receipt' => $path,
                     'status' => 'pending'
                 ]);
+
                 return Inertia::render('Success');
-            } 
-        }
-        else {
+            }
+
+        } else {
             return back()->withErrors([
-                'email' => 'The provided email does not exist in our system.',
+                'email' => 'This email is not associated with any student record.',
             ]);
         }
 
+    } else {
+        return back()->withErrors([
+            'email' => 'The provided email does not exist in our system.',
+        ]);
     }
+}
+
         // Admin
 
         public function indexPayment() {

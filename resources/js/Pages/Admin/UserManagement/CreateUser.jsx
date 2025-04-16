@@ -14,6 +14,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
+import { getFormattedDateTime } from "@/components/utils/formatDateTime";
 
 export default function CreateUser() {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -31,7 +32,7 @@ export default function CreateUser() {
             onFinish: () => reset("password", "password_confirmation"),
             onSuccess: () => {
                 toast("User has been created", {
-                    description: "Sunday, December 03, 2023 at 9:00 AM",
+                    description: getFormattedDateTime(),
                 });
             },
         });
@@ -89,7 +90,6 @@ export default function CreateUser() {
                                 <SelectItem value="professor">
                                     professor
                                 </SelectItem>
-                                <SelectItem value="student">student</SelectItem>
                             </SelectContent>
                         </Select>
 

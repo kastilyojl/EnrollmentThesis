@@ -32,12 +32,16 @@ export default function RowPerPage({
     const handlePerPageChange = (value) => {
         const newValue = Number(value);
         setPerPage(newValue);
+
+        const year = sessionStorage.getItem("selectedYear");
+
         router.get(
             route(routeName),
             {
                 search,
                 program: dataFilter === "All" ? "" : dataFilter,
                 per_page: newValue,
+                year,
             },
             {
                 preserveState: true,

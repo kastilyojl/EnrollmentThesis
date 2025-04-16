@@ -48,6 +48,10 @@ export default function Topbar() {
             href: route("public.payment.details"),
         },
         {
+            title: "Payment Form",
+            href: route("public.payment.submit"),
+        },
+        {
             title: "Admission Guide",
             href: route("public.admission.guide"),
         },

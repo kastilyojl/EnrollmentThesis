@@ -20,11 +20,11 @@ export default function TuitionFeeDetails() {
                         data-aos-once="true"
                         class="grid pt-8 text-left border-t border-gray-200 md:gap-6 "
                     >
-                        <p className="text-end text-primary italic underline cursor-pointer">
+                        {/* <p className="text-end text-primary italic underline cursor-pointer">
                             <Link href={route("public.payment.submit")}>
                                 Pay Now
                             </Link>
-                        </p>
+                        </p> */}
                         <Tabs defaultValue="shs" className="">
                             <TabsList className="flex justify-center border  border-t-primary border-b-primary">
                                 <TabsTrigger value="shs">SHS</TabsTrigger>

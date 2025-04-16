@@ -321,6 +321,7 @@ import {
 import { usePage } from "@inertiajs/react";
 import { ScrollArea } from "./ui/scroll-area";
 import { getSidebarState, setSidebarState } from "./utils/sidebarStorage";
+import routeWithYear from "./utils/routeWithYear";
 
 export function AppSidebar({ ...props }) {
     const user = usePage().props.auth.user;
@@ -447,6 +448,10 @@ export function AppSidebar({ ...props }) {
                                   url: route("admin.dashboard.billing"),
                               },
                               {
+                                  title: "Trend Analysis",
+                                  url: "#",
+                              },
+                              {
                                   title: "Audit Trail",
                                   url: route("admin.dashboard.audit-trail"),
                               },
@@ -459,7 +464,7 @@ export function AppSidebar({ ...props }) {
                           items: [
                               {
                                   title: "Application",
-                                  url: route("admin.application"),
+                                  url: routeWithYear("admin.application"),
                               },
                               {
                                   title: "Documents",
@@ -532,7 +537,7 @@ export function AppSidebar({ ...props }) {
                               },
                               {
                                   title: "User Management",
-                                  url: route("admin.user.management"),
+                                  url: routeWithYear("admin.user.management"),
                               },
                               { title: "Account", url: route("profile.edit") },
                               { title: "Help", url: "#" },

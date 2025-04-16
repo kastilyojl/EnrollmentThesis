@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { SidebarTrigger } from "./ui/sidebar";
 import { NavUser } from "@/components/nav-user";
-import { usePage } from "@inertiajs/react";
+import { router, usePage } from "@inertiajs/react";
 import {
     Select,
     SelectContent,
@@ -15,17 +15,18 @@ export default function Navbar() {
     const { academic_year } = usePage().props;
     const user = usePage().props.auth.user;
 
+    const formatYear = (year) =>
+        `SY: ${format(new Date(year.start), "yyyy")} - ${format(
+            new Date(year.end),
+            "yyyy"
+        )}`;
+
     const getLatestAcademicYear = () => {
         if (academic_year.length > 0) {
             const sortedYears = [...academic_year].sort((a, b) => {
                 return new Date(b.start) - new Date(a.start);
             });
-
-            const latestYear = sortedYears[0];
-            return `SY: ${format(
-                new Date(latestYear.start),
-                "yyyy"
-            )} - ${format(new Date(latestYear.end), "yyyy")}`;
+            return formatYear(sortedYears[0]);
         }
         return null;
     };
@@ -33,15 +34,44 @@ export default function Navbar() {
     const [selectedYear, setSelectedYear] = useState(() => {
         if (typeof window !== "undefined") {
             const storedYear = sessionStorage.getItem("selectedYear");
-            if (storedYear) {
-                return storedYear;
-            }
+            if (storedYear) return storedYear;
         }
         return getLatestAcademicYear();
     });
+
+    // Handle selecting a year from the dropdown
     const handleSelectChange = (value) => {
         setSelectedYear(value);
         sessionStorage.setItem("selectedYear", value);
+
+        // Construct the new URL with the current query params
+        const currentUrl = new URL(window.location.href);
+        const currentYear = currentUrl.searchParams.get("year");
+
+        // Get the other query parameters
+        const perPage = currentUrl.searchParams.get("per_page");
+        const search = currentUrl.searchParams.get("search");
+        const role = currentUrl.searchParams.get("role");
+
+        // Only update the `year` query parameter if it has changed
+        if (currentYear !== value) {
+            currentUrl.searchParams.set("year", value);
+        }
+
+        // Rebuild the URL with the current year and other parameters
+        router.get(
+            currentUrl.pathname + currentUrl.search,
+            {
+                per_page: perPage,
+                role: role,
+                search: search,
+                year: value, // Set the selected year here
+            },
+            {
+                preserveState: true,
+                replace: true,
+            }
+        );
     };
 
     const users = {
@@ -52,12 +82,11 @@ export default function Navbar() {
     };
 
     return (
-        <header className="sticky z-10 bg-background/95 supports-[backfrop-filter]:bg-background/60 backdrop-blur top-0 flex shrink-0 items-center gap-2 border-b h-16 px-3">
+        <header className="sticky z-10 bg-background/95 supports-[backdrop-filter]:bg-background/60 backdrop-blur top-0 flex shrink-0 items-center gap-2 border-b h-16 px-3">
             <div className="flex gap-4 items-center">
                 <SidebarTrigger />
                 <div className="hidden sm:block">
                     <Select
-                        className="h-[6px] w-[10px] "
                         value={selectedYear}
                         onValueChange={handleSelectChange}
                     >
@@ -67,17 +96,13 @@ export default function Navbar() {
                         <SelectContent>
                             {academic_year.length > 0 ? (
                                 academic_year.map((year) => {
-                                    const formattedYear = `SY: ${format(
-                                        new Date(year.start),
-                                        "yyyy"
-                                    )} - ${format(new Date(year.end), "yyyy")}`;
-
+                                    const formatted = formatYear(year);
                                     return (
                                         <SelectItem
                                             key={year.id}
-                                            value={formattedYear}
+                                            value={formatted}
                                         >
-                                            {formattedYear}
+                                            {formatted}
                                         </SelectItem>
                                     );
                                 })

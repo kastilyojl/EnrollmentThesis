@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Student\ApplicationRequest;
+use App\Models\Academic_Year;
 use App\Models\Documents;
 use App\Models\Guardian;
 use App\Models\Personal_Info;
@@ -33,15 +34,35 @@ class AdminApplicationController extends Controller
             });
         }
         
-        if ($request->has('program') && $request->program && $request->program !== 'All') {
-            $query->where('program', $request->program);
+        // Filter
+        if ($request->has('filter') && $request->filter && $request->filter !== 'All') {
+            $query->where(function($q) use ($request) {
+                $q->where('department', $request->filter)
+                  ->orWhere('branch', $request->filter)
+                  ->orWhere('semester', $request->filter)
+                  ->orWhere('year_level', $request->filter);
+            });
+        }
+        
+         // Academic year filter
+         if ($request->filled('year')) {
+            $year = str_replace('SY: ', '', $request->year); 
+            [$startYear, $endYear] = explode(' - ', $year);
+
+            $academic = Academic_Year::whereYear('start', $startYear)
+                ->whereYear('end', $endYear)
+                ->first();
+
+            if ($academic) {
+                $query->whereBetween('created_at', [$academic->start, $academic->end]);
+            }
         }
         
         $student = $query->paginate($perPage);
         
         return Inertia::render('Admin/Application', [
             'student' => $student,
-            'filters' => $request->only(['search', 'program', 'per_page'])
+            'filters' => $request->only(['search', 'filter', 'per_page'])
         ]);
     }
 
@@ -154,6 +175,7 @@ class AdminApplicationController extends Controller
         session(['rows_per_page' => $perPage]);
 
         $query = Student_Info::with('personalInfo', 'documents')
+        ->whereHas('documents')
         ->whereIn('status', ['Approved', 'Pending', 'OnHold'])
         ->orderByRaw("FIELD(status, 'Pending', 'OnHold', 'Approved')");
 

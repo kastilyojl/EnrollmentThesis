@@ -197,7 +197,8 @@ Route::delete('/section/{id}/delete', [SectionController::class, 'destroy'])->na
 
 Route::get('/user-management', [UserManagement::class, 'index'])->name('admin.user.management');
 Route::get('/user-management/create', [UserManagement::class, 'createUser'])->name('admin.user.management.create');
-
+Route::post('/user-management{id}//update', [UserManagement::class, 'update'])->name('admin.user.management.update');
+Route::delete('/user-management/{id}/delete', [UserManagement::class, 'destroyUser'])->name('admin.user.management.destroy');
 
 Route::prefix('billing')->group(function () {
     Route::get('/', [BillingController::class, 'index'])->name('admin.billing');

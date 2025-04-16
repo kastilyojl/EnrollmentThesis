@@ -24,18 +24,18 @@ export default function General({
 
             <div className="flex w-full shadow bg-slate-50  py-2 rounded-md">
                 <div className=" space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    {/* <NavLink onClick={() => setActiveTab("announcement")}>
+                    <NavLink onClick={() => setActiveTab("announcement")}>
                         Announcement
-                    </NavLink> */}
+                    </NavLink>
                     <NavLink onClick={() => setActiveTab("academicYear")}>
                         Academic Setup
                     </NavLink>
                     <NavLink onClick={() => setActiveTab("id-setup")}>
                         ID Setup
                     </NavLink>
-                    {/* <NavLink onClick={() => setActiveTab("requirements")}>
+                    <NavLink onClick={() => setActiveTab("requirements")}>
                         Requirements
-                    </NavLink> */}
+                    </NavLink>
                     <NavLink onClick={() => setActiveTab("FAQ")}>FAQ</NavLink>
                     <NavLink onClick={() => setActiveTab("campus")}>
                         Campus

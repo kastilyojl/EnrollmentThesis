@@ -1,4 +1,3 @@
-// utils/storage.js
 export const getStorageItem = (key, defaultValue) => {
     if (typeof window !== "undefined") {
         try {
