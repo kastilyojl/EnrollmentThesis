@@ -12,11 +12,38 @@ use Inertia\Inertia;
 
 class SubjectController extends Controller
 {
-    public function index() {
+    public function index(Request $request) {
+    
+        $perPage = $request->input('per_page', session('rows_per_page', 10));
+        
+        session(['rows_per_page' => $perPage]);
+        $query = Subjects::query();
+
+        if ($request->has('search') && !empty($request->search)) {
+            $query->where(function($q) use ($request) {
+                $q->where('program_code', 'like', "%{$request->search}%")
+                ->orWhere('code', 'like', "%{$request->search}%")
+                ->orWhere('name', 'like', "%{$request->search}%");
+            });
+        }
+        
+        // Filter
+        if ($request->has('filter') && $request->filter && $request->filter !== 'All') {
+            $query->where(function($q) use ($request) {
+                $q->where('department', $request->filter)
+                  ->orWhere('category', $request->filter)
+                  ->orWhere('period', $request->filter);
+            });
+        }
+
+        $subject = $query->paginate($perPage);
         $program = Programs::all();
-        $subject = Subjects::all();
-        return Inertia::render("Admin/Subject", ['program'=>$program, 'subject'=>$subject]);
+
+        return Inertia::render('Admin/Subject', ['subject'=>$subject,'program'=>$program,  
+                        'filters' => $request->only(['search', 'filter', 'per_page']), 
+                       ]);
     }
+
 
     public function store(SubjectRequest $request) {
         DB::beginTransaction();

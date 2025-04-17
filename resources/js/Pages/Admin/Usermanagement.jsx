@@ -321,7 +321,7 @@ export default function UserManagement({ user, filters }) {
                                                     data.role === "student"
                                                 }
                                             >
-                                                <SelectTrigger>
+                                                <SelectTrigger className="text-black">
                                                     <SelectValue placeholder="Select..." />
                                                 </SelectTrigger>
                                                 <SelectContent>

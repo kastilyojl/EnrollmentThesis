@@ -33,25 +33,18 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import InputError from "@/components/InputError";
-import { useForm } from "@inertiajs/react";
+import { router, useForm } from "@inertiajs/react";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import RowPerPage from "@/components/RowPerPage";
+import Pagination from "@/components/Pagination";
+import SearchFilter from "@/components/SearchFilter";
+import FilterDropdown from "@/components/FilterDropdown";
+import useDebouncedSearch from "@/components/utils/useDebounceSearch";
+import { getFormattedDateTime } from "@/components/utils/formatDateTime";
+import { Trash } from "lucide-react";
 
-export default function Subjects({ program = [], subject = [] }) {
+export default function Subjects({ program = [], subject, filters }) {
     const tableHeader = [
-        "Program",
-        "Subject Code",
-        "Subject Name",
-        "Category",
-        "Prerequisites",
-        "Year Level",
-        "Period",
-        "Lec",
-        "Lab",
-        "Unit",
-        "Total",
-    ];
-
-    const tableAddHeader = [
         "Program",
         "Subject Code",
         "Subject Name",
@@ -59,10 +52,26 @@ export default function Subjects({ program = [], subject = [] }) {
         "Prerequisites",
         "Department",
         "Year Level",
+        "Period",
         "Lec",
         "Lab",
         "Unit",
-        "Total",
+        // "Total",
+    ];
+
+    const tableAddHeader = [
+        "Program",
+        "Subject Code",
+        "Subject Name",
+        "Period",
+        "Category",
+        "Prerequisites",
+        "Department",
+        "Year Level",
+        "Lec",
+        "Lab",
+        "Unit",
+        // "Total",
     ];
 
     const {
@@ -72,6 +81,7 @@ export default function Subjects({ program = [], subject = [] }) {
         errors,
         delete: onDelete,
     } = useForm({
+        sub: [],
         program_code: "",
         code: "",
         name: "",
@@ -86,16 +96,16 @@ export default function Subjects({ program = [], subject = [] }) {
         total: "",
     });
 
-    const tableData = subject.map((subject) => ({
+    const tableData = subject?.data?.map((subject) => ({
         id: subject.id,
         program_code: subject.program_code,
         code: subject.code,
         name: subject.name,
         category: subject.category,
         prerequisites: subject.prerequisites,
+        department: subject.department,
         year_level: subject.year_level,
         period: subject.period,
-        // department: subject.department,
         lec: subject.lec,
         lab: subject.lab,
         unit: subject.unit,
@@ -105,6 +115,11 @@ export default function Subjects({ program = [], subject = [] }) {
     const [itemId, setItemId] = useState(null);
     const [add, setAdd] = useState(false);
     const [del, setDel] = useState(false);
+    const [showList, setShowList] = useState(false);
+
+    const toggleList = () => {
+        setShowList((prev) => !prev);
+    };
 
     const handleAdd = () => {
         setItemId(null);
@@ -144,6 +159,7 @@ export default function Subjects({ program = [], subject = [] }) {
 
     const handleEdit = (subject) => {
         setItemId(subject);
+        console.log("Item id", itemId);
         setAdd(true);
         setData({
             program_code: subject.program_code,
@@ -165,10 +181,9 @@ export default function Subjects({ program = [], subject = [] }) {
         console.log("Data being sent:", sub);
         post(
             route("admin.subject.store"),
-            // { data: data },
+            { sub: sub },
             {
                 onSuccess: () => {
-                    console.log("Success Trigger");
                     toast("Subjects has been created", {
                         description: "Sunday, December 03, 2023 at 9:00 AM",
                     });
@@ -219,10 +234,81 @@ export default function Subjects({ program = [], subject = [] }) {
     };
 
     const [sub, setSub] = useState([]);
+    const addSubject = (newSubject) => {
+        // Take current subjects and add new one
+        setData("sub", [...data.sub, newSubject]);
+    };
 
     const handleSubjectList = (e) => {
         e.preventDefault();
 
+        // Mapping field names to user-friendly labels
+        const fieldLabels = {
+            department: "Department",
+            program_code: "Program",
+            year_level: "Year Level",
+            period: "Period",
+            category: "Category",
+            name: "Subject Name",
+            code: "Subject Code",
+            prerequisites: "Prerequisites",
+            lec: "Lec.",
+            lab: "Lab.",
+            unit: "Unit",
+        };
+
+        // List of required fields
+        const requiredFields = [
+            "department",
+            "program_code",
+            "year_level",
+            "period",
+            "category",
+            "name",
+            "code",
+            "prerequisites",
+            "lec",
+            "lab",
+            "unit",
+        ];
+
+        // Check if any required field is empty
+        for (let field of requiredFields) {
+            if (!data[field]) {
+                toast(`❗ ${fieldLabels[field]} is required.`, {
+                    description: (
+                        <span className="text-gray-900 mx-4">
+                            Please fill all required fields.
+                        </span>
+                    ),
+                });
+                return;
+            }
+        }
+
+        // Check if subject with same code and name already exists in both 'sub' and 'tableData'
+        const isDuplicate = [
+            ...sub, // Subjects added manually
+            ...tableData, // Subjects from the existing list (probably fetched)
+        ].some(
+            (subject) =>
+                subject.code.toLowerCase() === data.code.toLowerCase() ||
+                subject.name.toLowerCase() === data.name.toLowerCase()
+        );
+
+        if (isDuplicate) {
+            toast("⚠️ Duplicate Subject", {
+                description: (
+                    <span className="text-gray-900 mx-4">
+                        A subject with the same code or name already exists in
+                        the list.
+                    </span>
+                ),
+            });
+            return;
+        }
+
+        // Create new subject object
         const newSubject = {
             program_code: data.program_code,
             code: data.code,
@@ -235,12 +321,90 @@ export default function Subjects({ program = [], subject = [] }) {
             lec: data.lec,
             lab: data.lab,
             unit: data.unit,
-            total: data.total,
         };
 
+        // Update the 'sub' list directly
         setSub([...sub, newSubject]);
-
         setData("sub", [...sub, newSubject]);
+
+        console.log("Subject List:", sub);
+
+        // Reset form data (optional)
+        setData({
+            code: "",
+            name: "",
+            lec: "",
+            lab: "",
+            unit: "",
+        });
+
+        // Show success toast
+        toast("✅️ Subject has been added to the list", {
+            description: (
+                <span className="text-gray-900">{getFormattedDateTime()}</span>
+            ),
+        });
+    };
+
+    const filterData = {
+        Department: ["SHS", "College"],
+        Category: ["Minor Subject", "Major Subject"],
+        Period: ["1st Semester", "2nd Semester", "Summer"],
+    };
+
+    const [search, setSearch] = useState(filters?.search || "");
+    const [dataFilter, setDataFilter] = useState("All");
+    const [perPage, setPerPage] = useState(filters?.per_page || 10);
+
+    const { triggerSearch } = useDebouncedSearch({
+        routeName: "admin.subject",
+        filterKey: "filter",
+        filterValue: dataFilter,
+        perPage,
+    });
+
+    const handleSearchChange = (val) => {
+        setSearch(val);
+        triggerSearch(val);
+    };
+
+    const year = sessionStorage.getItem("selectedYear");
+
+    const handleFilterChange = (filterValue) => {
+        setDataFilter(filterValue);
+        router.get(
+            route("admin.subject"),
+            {
+                search: "",
+                filter: filterValue === "All" ? "" : filterValue,
+                per_page: perPage,
+                year,
+            },
+            {
+                preserveState: true,
+                replace: true,
+            }
+        );
+    };
+
+    const clearAllFilters = () => {
+        const year = sessionStorage.getItem("selectedYear");
+        setSearch("");
+        setDataFilter("All");
+
+        router.get(
+            route("admin.subject"),
+            {
+                search: "",
+                filter: "",
+                per_page: perPage,
+                year: year || "",
+            },
+            {
+                preserveState: true,
+                replace: true,
+            }
+        );
     };
 
     return (
@@ -249,10 +413,25 @@ export default function Subjects({ program = [], subject = [] }) {
                 <h1 className="text-2xl font-bold">Subject</h1>
             </div>
             <div className="flex justify-between mb-3">
-                <Input type="text" placeholder="Search" className="w-[300px]" />
+                <div className="flex gap-4">
+                    <div className="flex items-center gap-2">
+                        <SearchFilter
+                            searchValue={search}
+                            onSearchChange={handleSearchChange}
+                            onSearchSubmit={triggerSearch}
+                            onClearFilters={clearAllFilters}
+                            showClearButton={search || dataFilter !== "All"}
+                        />
+                        <FilterDropdown
+                            currentFilter={dataFilter}
+                            filterData={filterData}
+                            onFilterChange={handleFilterChange}
+                        />
+                    </div>
+                </div>
                 <Button onClick={handleAdd}>Create</Button>
             </div>
-            <div className="border rounded-sm px-4">
+            <div className="border rounded-sm px-4 min-h-96">
                 <TableData
                     tablerow={tableHeader}
                     tabledata={tableData}
@@ -263,7 +442,7 @@ export default function Subjects({ program = [], subject = [] }) {
                     <Dialog open={add} onOpenChange={(open) => setAdd(open)}>
                         <DialogContent
                             className={`${
-                                itemId === null ? "max-w-7xl" : "max-w-xl"
+                                itemId === null ? "max-w-xl" : "max-w-xl"
                             }`}
                         >
                             <DialogHeader>
@@ -277,7 +456,7 @@ export default function Subjects({ program = [], subject = [] }) {
                                 </div>
                                 <DialogDescription
                                     className={`grid gap-4 ${
-                                        itemId === null ? "lg:grid-cols-2" : ""
+                                        itemId === null ? "lg:grid-cols-1" : ""
                                     }`}
                                 >
                                     <div className="mt-3 grid grid-cols-2 gap-x-8 gap-y-4">
@@ -292,8 +471,8 @@ export default function Subjects({ program = [], subject = [] }) {
                                                     setData("department", value)
                                                 }
                                             >
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Department" />
+                                                <SelectTrigger className="text-black">
+                                                    <SelectValue placeholder="Select..." />
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     <SelectItem value="SHS">
@@ -328,8 +507,8 @@ export default function Subjects({ program = [], subject = [] }) {
                                                     )
                                                 }
                                             >
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Category" />
+                                                <SelectTrigger className="text-black">
+                                                    <SelectValue placeholder="Select..." />
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     {program
@@ -378,8 +557,8 @@ export default function Subjects({ program = [], subject = [] }) {
                                                     setData("year_level", value)
                                                 }
                                             >
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Year Level" />
+                                                <SelectTrigger className="text-black">
+                                                    <SelectValue placeholder="Select..." />
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     {data.department ===
@@ -431,8 +610,8 @@ export default function Subjects({ program = [], subject = [] }) {
                                                     setData("period", value)
                                                 }
                                             >
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Period" />
+                                                <SelectTrigger className="text-black">
+                                                    <SelectValue placeholder="Select..." />
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     <SelectItem value="1st Semester">
@@ -440,6 +619,9 @@ export default function Subjects({ program = [], subject = [] }) {
                                                     </SelectItem>
                                                     <SelectItem value="2nd Semester">
                                                         2nd Semester
+                                                    </SelectItem>
+                                                    <SelectItem value="Summer">
+                                                        Summer
                                                     </SelectItem>
                                                 </SelectContent>
                                             </Select>
@@ -461,8 +643,8 @@ export default function Subjects({ program = [], subject = [] }) {
                                                     setData("category", value)
                                                 }
                                             >
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Category" />
+                                                <SelectTrigger className="text-black">
+                                                    <SelectValue placeholder="Select..." />
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     <SelectItem value="Major Subject">
@@ -485,11 +667,12 @@ export default function Subjects({ program = [], subject = [] }) {
                                         </div>
 
                                         <div>
-                                            <Label htmlFor="name">Name</Label>
+                                            <Label htmlFor="name">
+                                                Subject Name
+                                            </Label>
                                             <Input
                                                 name="name"
                                                 type="text"
-                                                placeholder="Subject name"
                                                 className="text-black"
                                                 value={data.name}
                                                 onChange={(e) =>
@@ -513,7 +696,6 @@ export default function Subjects({ program = [], subject = [] }) {
                                             <Input
                                                 name="code"
                                                 type="text"
-                                                placeholder="Subject code"
                                                 className="text-black"
                                                 value={data.code}
                                                 onChange={(e) =>
@@ -545,14 +727,14 @@ export default function Subjects({ program = [], subject = [] }) {
                                                     )
                                                 }
                                             >
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Prerequisites" />
+                                                <SelectTrigger className="text-black">
+                                                    <SelectValue placeholder="Select..." />
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     <SelectItem value="None">
                                                         None
                                                     </SelectItem>
-                                                    {subject.map((sub) => (
+                                                    {subject.data.map((sub) => (
                                                         <SelectItem
                                                             value={sub.name}
                                                         >
@@ -581,7 +763,6 @@ export default function Subjects({ program = [], subject = [] }) {
                                                 <Input
                                                     name="lec"
                                                     type="number"
-                                                    placeholder="0"
                                                     className="text-black"
                                                     value={data.lec}
                                                     onChange={(e) =>
@@ -605,7 +786,6 @@ export default function Subjects({ program = [], subject = [] }) {
                                                 <Input
                                                     name="lab"
                                                     type="number"
-                                                    placeholder="0"
                                                     className="text-black"
                                                     value={data.lab}
                                                     onChange={(e) =>
@@ -623,7 +803,7 @@ export default function Subjects({ program = [], subject = [] }) {
                                                 )}
                                             </div>
                                         </div>
-                                        <div className="grid grid-cols-2 gap-2">
+                                        <div className="grid grid-cols-1 gap-2">
                                             <div>
                                                 {" "}
                                                 <Label htmlFor="unit">
@@ -632,9 +812,12 @@ export default function Subjects({ program = [], subject = [] }) {
                                                 <Input
                                                     name="unit"
                                                     type="number"
-                                                    placeholder="0"
                                                     className="text-black"
-                                                    value={data.unit}
+                                                    value={
+                                                        (data.unit =
+                                                            Number(data.lec) +
+                                                            Number(data.lab))
+                                                    }
                                                     onChange={(e) =>
                                                         setData(
                                                             "unit",
@@ -649,7 +832,7 @@ export default function Subjects({ program = [], subject = [] }) {
                                                     />
                                                 )}
                                             </div>
-                                            <div>
+                                            <div className="hidden">
                                                 <Label htmlFor="total">
                                                     Total
                                                 </Label>
@@ -682,79 +865,6 @@ export default function Subjects({ program = [], subject = [] }) {
                                             </div>
                                         </div>
                                     </div>
-                                    <ScrollArea className="h-auto max-h-[400px] p-4">
-                                        {itemId === null && (
-                                            <Table>
-                                                <TableCaption>
-                                                    A list of subject added.
-                                                </TableCaption>
-                                                <TableHeader>
-                                                    <TableRow>
-                                                        {tableAddHeader.map(
-                                                            (row) => {
-                                                                return (
-                                                                    <TableHead>
-                                                                        {row}
-                                                                    </TableHead>
-                                                                );
-                                                            }
-                                                        )}
-                                                    </TableRow>
-                                                </TableHeader>
-                                                <TableBody>
-                                                    {sub.map((sub) => {
-                                                        return (
-                                                            <TableRow className="odd:bg-cyan-50">
-                                                                <TableCell className="font-medium">
-                                                                    {
-                                                                        sub.program_code
-                                                                    }
-                                                                </TableCell>
-                                                                <TableCell className="font-medium">
-                                                                    {sub.name}
-                                                                </TableCell>
-                                                                <TableCell className="font-medium">
-                                                                    {
-                                                                        sub.prerequisites
-                                                                    }
-                                                                </TableCell>
-                                                                <TableCell className="font-medium">
-                                                                    {sub.period}
-                                                                </TableCell>
-                                                                <TableCell className="font-medium">
-                                                                    {
-                                                                        sub.department
-                                                                    }
-                                                                </TableCell>
-                                                                <TableCell className="font-medium">
-                                                                    {
-                                                                        sub.year_level
-                                                                    }
-                                                                </TableCell>
-                                                                <TableCell className="font-medium">
-                                                                    {
-                                                                        sub.category
-                                                                    }
-                                                                </TableCell>
-                                                                <TableCell className="font-medium">
-                                                                    {sub.lec}
-                                                                </TableCell>
-                                                                <TableCell className="font-medium">
-                                                                    {sub.lab}
-                                                                </TableCell>
-                                                                <TableCell className="font-medium">
-                                                                    {sub.unit}
-                                                                </TableCell>
-                                                                <TableCell className="font-medium">
-                                                                    {sub.total}
-                                                                </TableCell>
-                                                            </TableRow>
-                                                        );
-                                                    })}
-                                                </TableBody>
-                                            </Table>
-                                        )}
-                                    </ScrollArea>
 
                                     <div
                                         className={`flex gap-4 ${
@@ -781,12 +891,165 @@ export default function Subjects({ program = [], subject = [] }) {
                                                 Add
                                             </Button>
                                         )}
+                                        {itemId === null && (
+                                            <Button
+                                                className="mt-3"
+                                                onClick={toggleList}
+                                            >
+                                                List
+                                            </Button>
+                                        )}
                                     </div>
                                 </DialogDescription>
                             </DialogHeader>
                         </DialogContent>
                     </Dialog>
-                )}{" "}
+                )}
+                {showList && (
+                    <Dialog
+                        open={showList}
+                        onOpenChange={(open) => setShowList(open)}
+                    >
+                        <DialogContent className="max-w-5xl">
+                            <DialogHeader>
+                                <DialogTitle className="text-primary">
+                                    Course List
+                                </DialogTitle>
+                                <DialogDescription>
+                                    <ScrollArea className="h-[500px] p-4">
+                                        {itemId === null && (
+                                            <Table>
+                                                <TableCaption>
+                                                    A list of subjects added.
+                                                </TableCaption>
+                                                <TableHeader>
+                                                    <TableRow>
+                                                        {tableAddHeader.map(
+                                                            (row, index) => {
+                                                                return (
+                                                                    <TableHead
+                                                                        key={
+                                                                            index
+                                                                        }
+                                                                        className="text-center text-primary"
+                                                                    >
+                                                                        {row}
+                                                                    </TableHead>
+                                                                );
+                                                            }
+                                                        )}
+                                                    </TableRow>
+                                                </TableHeader>
+                                                <TableBody>
+                                                    {sub.map(
+                                                        (subject, index) => {
+                                                            // This function will handle the removal of the subject from the list
+                                                            const handleRemoveSubject =
+                                                                (
+                                                                    indexToRemove
+                                                                ) => {
+                                                                    const updatedSubjects =
+                                                                        sub.filter(
+                                                                            (
+                                                                                _,
+                                                                                i
+                                                                            ) =>
+                                                                                i !==
+                                                                                indexToRemove
+                                                                        );
+                                                                    setSub(
+                                                                        updatedSubjects
+                                                                    ); // Update the state with the new array
+                                                                };
+
+                                                            return (
+                                                                <TableRow
+                                                                    key={index}
+                                                                    className="odd:bg-gray-50 text-center"
+                                                                >
+                                                                    <TableCell className="font-medium">
+                                                                        {
+                                                                            subject.program_code
+                                                                        }
+                                                                    </TableCell>
+                                                                    <TableCell className="font-medium">
+                                                                        {
+                                                                            subject.code
+                                                                        }
+                                                                    </TableCell>
+                                                                    <TableCell className="font-medium">
+                                                                        {
+                                                                            subject.name
+                                                                        }
+                                                                    </TableCell>
+                                                                    <TableCell className="font-medium">
+                                                                        {
+                                                                            subject.period
+                                                                        }
+                                                                    </TableCell>
+                                                                    <TableCell className="font-medium">
+                                                                        {
+                                                                            subject.category
+                                                                        }
+                                                                    </TableCell>
+                                                                    <TableCell className="font-medium">
+                                                                        {
+                                                                            subject.prerequisites
+                                                                        }
+                                                                    </TableCell>
+                                                                    <TableCell className="font-medium">
+                                                                        {
+                                                                            subject.department
+                                                                        }
+                                                                    </TableCell>
+                                                                    <TableCell className="font-medium">
+                                                                        {
+                                                                            subject.year_level
+                                                                        }
+                                                                    </TableCell>
+                                                                    <TableCell className="font-medium">
+                                                                        {
+                                                                            subject.lec
+                                                                        }
+                                                                    </TableCell>
+                                                                    <TableCell className="font-medium">
+                                                                        {
+                                                                            subject.lab
+                                                                        }
+                                                                    </TableCell>
+                                                                    <TableCell className="font-medium">
+                                                                        {
+                                                                            subject.unit
+                                                                        }
+                                                                    </TableCell>
+
+                                                                    {/* Add a column for the removal button */}
+                                                                    <TableCell className="font-medium">
+                                                                        <button
+                                                                            onClick={() =>
+                                                                                handleRemoveSubject(
+                                                                                    index
+                                                                                )
+                                                                            }
+                                                                            className="text-red-600 hover:text-red-800"
+                                                                        >
+                                                                            <Trash />
+                                                                        </button>
+                                                                    </TableCell>
+                                                                </TableRow>
+                                                            );
+                                                        }
+                                                    )}
+                                                </TableBody>
+                                            </Table>
+                                        )}
+                                    </ScrollArea>
+                                </DialogDescription>
+                            </DialogHeader>
+                        </DialogContent>
+                    </Dialog>
+                )}
+
                 {del && (
                     <Dialog open={del} onOpenChange={(open) => setDel(open)}>
                         <DialogContent>
@@ -815,6 +1078,14 @@ export default function Subjects({ program = [], subject = [] }) {
                         </DialogContent>
                     </Dialog>
                 )}
+            </div>
+            <div className="flex justify-between pt-2">
+                <RowPerPage
+                    filters={filters}
+                    routeName={"admin.subject"}
+                    dataFilter={dataFilter}
+                />
+                <Pagination links={subject.links} />
             </div>
         </Layout>
     );

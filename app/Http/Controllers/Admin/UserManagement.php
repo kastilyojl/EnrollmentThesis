@@ -39,20 +39,6 @@ class UserManagement extends Controller
                 });
         });
         }
-
-         // Academic year filter
-        if ($request->filled('year')) {
-            $year = str_replace('SY: ', '', $request->year); 
-            [$startYear, $endYear] = explode(' - ', $year);
-
-            $academic = Academic_Year::whereYear('start', $startYear)
-                ->whereYear('end', $endYear)
-                ->first();
-
-            if ($academic) {
-                $query->whereBetween('created_at', [$academic->start, $academic->end]);
-            }
-        }
    
         $user = $query->paginate($perPage);
         return Inertia::render('Admin/Usermanagement', ['user'=>$user,  

@@ -172,6 +172,7 @@ class AdminApplicationController extends Controller
 
     public function indexDocuments (Request $request) {
         $perPage = $request->input('per_page', session('rows_per_page', 10));
+        
         session(['rows_per_page' => $perPage]);
 
         $query = Student_Info::with('personalInfo', 'documents')
@@ -183,18 +184,37 @@ class AdminApplicationController extends Controller
             $query->whereHas('personalInfo', function($q) use ($request) {
                 $q->where('first_name', 'like', "%{$request->search}%")
                 ->orWhere('last_name', 'like', "%{$request->search}%")
-                ->orWhere('department', 'like', "%{$request->search}%");
+                ->orWhere('student_info_id', 'like', "%{$request->search}%");
             });
         }
         
-        if ($request->has('status') && $request->status && $request->status !== 'All') {
-            $query->where('status', $request->status);
+        if ($request->has('filter') && $request->filter && $request->filter !== 'All') {
+            $query->where(function($q) use ($request) {
+                $q->where('department', $request->filter)
+                  ->orWhere('classified_as', $request->filter)
+                  ->orWhere('year_level', $request->filter);
+            });
+        }
+        
+         // Academic year filter
+         if ($request->filled('year')) {
+            $year = str_replace('SY: ', '', $request->year); 
+            [$startYear, $endYear] = explode(' - ', $year);
+
+            $academic = Academic_Year::whereYear('start', $startYear)
+                ->whereYear('end', $endYear)
+                ->first();
+
+            if ($academic) {
+                $query->whereBetween('created_at', [$academic->start, $academic->end]);
+            }
         }
 
         $student = $query->paginate($perPage);
         // $query = Student_Info::with('users', 'personalInfo', 'guardian');
         // $student = Student_Info::with('users','personalInfo', 'guardian')->get();
-        return Inertia::render('Admin/Documents', ['student'=>$student]);
+        return Inertia::render('Admin/Documents', ['student'=>$student,  
+        'filters' => $request->only(['search', 'filter', 'per_page'])]);
     }
 
     public function updateDocuments(Request $request) {

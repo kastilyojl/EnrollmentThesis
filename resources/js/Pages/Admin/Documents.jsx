@@ -31,6 +31,7 @@ import SearchFilter from "@/components/SearchFilter";
 import FilterDropdown from "@/components/FilterDropdown";
 import RowPerPage from "@/components/RowPerPage";
 import Pagination from "@/components/Pagination";
+import useDebouncedSearch from "@/components/utils/useDebounceSearch";
 
 export default function Documents({ student, filters }) {
     const tableHeader = [
@@ -102,19 +103,6 @@ export default function Documents({ student, filters }) {
     const [itemId, setItemId] = useState(null);
     const [add, setAdd] = useState(false);
     const [del, setDel] = useState(false);
-
-    // const handleAdd = () => {
-    //     setItemId(null);
-    //     setAdd(true);
-    //     setData({
-    //         code: "",
-    //         name: "",
-    //         department: "",
-    //         duration: "",
-    //         campus: "",
-    //         status: "",
-    //     });
-    // };
 
     const handleDel = (student) => {
         setItemId(student);
@@ -213,36 +201,46 @@ export default function Documents({ student, filters }) {
         );
     };
 
-    const FilterData = ["All", "Approved", "OnHold", "Pending"];
+    const filterData = {
+        Department: ["SHS", "College"],
+        Year: [
+            "Grade 11",
+            "Grade 12",
+            "1st Year",
+            "2nd Year",
+            "3rd Year",
+            "4th Year",
+        ],
+        Classified_As: ["New Student", "Old Student"],
+    };
 
     const [search, setSearch] = useState(filters?.search || "");
     const [dataFilter, setDataFilter] = useState("All");
     const [perPage, setPerPage] = useState(filters?.per_page || 10);
 
-    const handleSearchSubmit = () => {
-        setDataFilter("All");
-        router.get(
-            route("admin.documents"),
-            {
-                search,
-                status: "",
-                per_page: perPage,
-            },
-            {
-                preserveState: true,
-                replace: true,
-            }
-        );
+    const { triggerSearch } = useDebouncedSearch({
+        routeName: "admin.documents",
+        filterKey: "filter",
+        filterValue: dataFilter,
+        perPage,
+    });
+
+    const handleSearchChange = (val) => {
+        setSearch(val);
+        triggerSearch(val);
     };
 
-    const handleFilterChange = (status) => {
-        setDataFilter(status);
+    const year = sessionStorage.getItem("selectedYear");
+
+    const handleFilterChange = (filterValue) => {
+        setDataFilter(filterValue);
         router.get(
             route("admin.documents"),
             {
                 search: "",
-                status: status === "All" ? "" : status,
+                filter: filterValue === "All" ? "" : filterValue,
                 per_page: perPage,
+                year,
             },
             {
                 preserveState: true,
@@ -252,11 +250,18 @@ export default function Documents({ student, filters }) {
     };
 
     const clearAllFilters = () => {
+        const year = sessionStorage.getItem("selectedYear");
         setSearch("");
         setDataFilter("All");
+
         router.get(
             route("admin.documents"),
-            { per_page: perPage },
+            {
+                search: "",
+                filter: "",
+                per_page: perPage,
+                year: year || "",
+            },
             {
                 preserveState: true,
                 replace: true,
@@ -273,15 +278,15 @@ export default function Documents({ student, filters }) {
                 <div className="flex items-center gap-2">
                     <SearchFilter
                         searchValue={search}
-                        onSearchChange={setSearch}
-                        onSearchSubmit={handleSearchSubmit}
+                        onSearchChange={handleSearchChange}
+                        onSearchSubmit={triggerSearch}
                         onClearFilters={clearAllFilters}
                         showClearButton={search || dataFilter !== "All"}
                     />
                     <FilterDropdown
                         currentFilter={dataFilter}
+                        filterData={filterData}
                         onFilterChange={handleFilterChange}
-                        FilterData={FilterData}
                     />
                 </div>
             </div>
