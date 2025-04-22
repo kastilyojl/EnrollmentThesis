@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+
         Schema::create('grades', function (Blueprint $table) {
             $table->id();
             $table->string('student_info_id', 50);
@@ -19,7 +20,8 @@ return new class extends Migration
             $table->string('subject');
             $table->integer('grade');
             $table->string('status');
-            $table->foreign('student_info_id')->references('student_id')->on('student_info')->onDelete('cascade')->onUpdate('cascade');
+            // $table->foreign('student_info_id')->references('student_id')->on('student_info')->onDelete('cascade')->onUpdate('cascade');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

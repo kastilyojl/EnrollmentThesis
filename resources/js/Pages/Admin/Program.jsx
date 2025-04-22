@@ -7,6 +7,15 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 
 import {
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+} from "@/components/ui/sheet";
+
+import {
     DialogDescription,
     Dialog,
     DialogContent,
@@ -29,6 +38,9 @@ import Pagination from "@/components/Pagination";
 import SearchFilter from "@/components/SearchFilter";
 import FilterDropdown from "@/components/FilterDropdown";
 import useDebouncedSearch from "@/components/utils/useDebounceSearch";
+import { Download } from "lucide-react";
+import excel from "../../../assets/excel.png";
+import UploadButton from "@/components/uploadButton";
 
 export default function Program({ program, filters }) {
     const tableHeader = [
@@ -57,15 +69,17 @@ export default function Program({ program, filters }) {
 
     console.log("Program prop:", program);
 
-    const tableData = program.data.map((programs) => ({
-        id: programs.id,
-        code: programs.code,
-        name: programs.name,
-        department: programs.department,
-        duration: programs.duration,
-        status: programs.status,
-        campus: programs.campus,
-    }));
+    const tableData = program.data
+        .filter((programs) => programs.code !== "General")
+        .map((programs) => ({
+            id: programs.id,
+            code: programs.code,
+            name: programs.name,
+            department: programs.department,
+            duration: programs.duration,
+            status: programs.status,
+            campus: programs.campus,
+        }));
 
     const [itemId, setItemId] = useState(null);
     const [add, setAdd] = useState(false);
@@ -259,7 +273,27 @@ export default function Program({ program, filters }) {
                         />
                     </div>
                 </div>
-                <Button onClick={handleAdd}>Create</Button>
+                <div className="flex items-center gap-4">
+                    <Sheet>
+                        <SheetTrigger>
+                            <Button className="bg-green-600 hover:bg-[#307750]">
+                                <img src={excel} className="h-4 w-4" />
+                            </Button>
+                        </SheetTrigger>
+                        <SheetContent>
+                            <SheetHeader>
+                                <SheetTitle>Program</SheetTitle>
+                                <SheetDescription className="space-y-2">
+                                    <Button className="p-7">
+                                        <Download /> Download Format
+                                    </Button>
+                                    <UploadButton></UploadButton>
+                                </SheetDescription>
+                            </SheetHeader>
+                        </SheetContent>
+                    </Sheet>
+                    <Button onClick={handleAdd}>Create</Button>
+                </div>
             </div>
             <div className="border rounded-sm px-4 min-h-96">
                 <TableData
@@ -267,6 +301,7 @@ export default function Program({ program, filters }) {
                     tabledata={tableData}
                     handleEdit={handleEdit}
                     handleDel={handleDel}
+                    showDownload={false}
                 />
                 {add && (
                     <Dialog open={add} onOpenChange={(open) => setAdd(open)}>

@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function BadgereDanger({ children }) {
+export default function BadgeDanger({ children }) {
     return (
         <div>
             <span className="inline-flex items-center justify-center rounded-full bg-red-100 px-2.5 py-0.5 text-red-700">

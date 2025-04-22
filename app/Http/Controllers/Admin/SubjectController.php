@@ -8,6 +8,7 @@ use App\Models\Programs;
 use App\Models\Subjects;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class SubjectController extends Controller
@@ -45,9 +46,10 @@ class SubjectController extends Controller
     }
 
 
-    public function store(SubjectRequest $request) {
-        DB::beginTransaction();
-        try {
+    public function store(Request $request) {
+        Log::info($request->all());
+        // DB::beginTransaction();
+        // try {
             foreach ($request->sub as $subject) {
                 $programCode = $subject['program_code'];
                 $program = Programs::where('code', $programCode)->first();
@@ -66,13 +68,13 @@ class SubjectController extends Controller
                     'unit'  => $subject['unit'],
                     'total'  => $subject['total'],
                 ]);
-                DB::commit();
+                // DB::commit();
             }
            
-        } catch (\Exception $e) {
-            DB::rollBack();
+        // } catch (\Exception $e) {
+            // DB::rollBack();
             return redirect()->back()->with('error', 'An error occurred while saving subjects.');
-        }
+        // }
     }
 
     public function edit(SubjectRequest $request) {

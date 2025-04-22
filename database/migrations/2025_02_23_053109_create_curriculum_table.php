@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -22,6 +23,17 @@ return new class extends Migration
             $table->softDeletes();
             $table->timestamps();
         });
+
+        DB::table('programs')->insertOrIgnore([
+            'code' => 'General',
+            'name' => 'General Subjects',
+            'status' => 'Active',
+            'campus' => 'N/A',
+            'duration' => 'N/A',
+            'department' => 'General Education',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
         Schema::create('subjects', function (Blueprint $table) {
             $table->id();

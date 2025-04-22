@@ -13,29 +13,27 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $adminCount = User::whereIn('role', ['super admin', 'accounting', 'registrar'])->count();
-        $professorCount = User::where('role', 'professor')->count();
-        $studentCount = User::where('role', 'student')->count();
-        $shsCount = Programs::where('department', 'SHS')->count();
-        $collegeCount = Programs::where('department', 'College')->count();
-        $preEnrolledCount = Student_Info::whereIn('status', ['pending', 'onhold'])->count();
-        $shsEnrolledCount = Student_Info::where('status', 'enrolled')
-                ->where('department', 'SHS')
-                ->selectRaw('DATE(created_at) as date, count(*) as count')
-                ->groupBy('date')
-                ->orderBy('date')
-                ->get();
-        $collegeEnrolledCount = Student_Info::where('status', 'enrolled')
-                ->where('department', 'College')
-                ->selectRaw('DATE(created_at) as date, count(*) as count')
-                ->groupBy('date')
-                ->orderBy('date')
-                ->get();
+        $user = Auth::user();  // Get the authenticated user.
 
+        // If no authenticated user, handle appropriately (e.g., redirect or error message).
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'Please login to access the dashboard.');
+        }
 
+        // Count data for the dashboard
+        $adminCount = $this->getUserCount(['super admin', 'accounting', 'registrar']);
+        $professorCount = $this->getUserCount(['professor']);
+        $studentCount = $this->getUserCount(['student']);
+        $shsCount = $this->getProgramCount('SHS');
+        $collegeCount = $this->getProgramCount('College');
+        $preEnrolledCount = $this->getPreEnrolledCount();
+        $shsEnrolledCount = $this->getEnrolledCountByDepartment('SHS');
+        $collegeEnrolledCount = $this->getEnrolledCountByDepartment('College');
+
+        // Return data to the Inertia view
         return Inertia::render('Dashboard', [
             'auth' => [
-                'user' => Auth::user(),
+                'user' => $user,
             ],
             'adminCount' => $adminCount,
             'professorCount' => $professorCount,
@@ -48,24 +46,11 @@ class DashboardController extends Controller
         ]);
     }
 
-    public function enrollment() {
-        $shsEnrolledCount = Student_Info::where('status', 'enrolled')
-                ->where('department', 'SHS')
-                ->selectRaw('DATE(created_at) as date, count(*) as count')
-                ->groupBy('date')
-                ->orderBy('date')
-                ->get();
-        $collegeEnrolledCount = Student_Info::where('status', 'enrolled')
-                ->where('department', 'College')
-                ->selectRaw('DATE(created_at) as date, count(*) as count')
-                ->groupBy('date')
-                ->orderBy('date')
-                ->get();
-
-        $studentEnrolled = Student_Info::orderBy('created_at', 'desc')
-                                    ->orderBy('id', 'desc')
-                                    ->take(20) 
-                                    ->get();
+    public function enrollment()
+    {
+        $shsEnrolledCount = $this->getEnrolledCountByDepartment('SHS');
+        $collegeEnrolledCount = $this->getEnrolledCountByDepartment('College');
+        $studentEnrolled = $this->getLatestEnrolledStudents();
 
         return Inertia::render('Dashboard/Admin/Enrollment', [
             'auth' => [
@@ -77,4 +62,38 @@ class DashboardController extends Controller
         ]);
     }
 
+    // Helper functions to simplify and make the code more maintainable.
+
+    private function getUserCount(array $roles)
+    {
+        return User::whereIn('role', $roles)->count();
+    }
+
+    private function getProgramCount(string $department)
+    {
+        return Programs::where('department', $department)->count();
+    }
+
+    private function getPreEnrolledCount()
+    {
+        return Student_Info::whereIn('status', ['pending', 'onhold'])->count();
+    }
+
+    private function getEnrolledCountByDepartment(string $department)
+    {
+        return Student_Info::where('status', 'enrolled')
+                ->where('department', $department)
+                ->selectRaw('DATE(created_at) as date, count(*) as count')
+                ->groupBy('date')
+                ->orderBy('date')
+                ->get();
+    }
+
+    private function getLatestEnrolledStudents()
+    {
+        return Student_Info::orderBy('created_at', 'desc')
+                            ->orderBy('id', 'desc')
+                            ->take(20) 
+                            ->get();
+    }
 }

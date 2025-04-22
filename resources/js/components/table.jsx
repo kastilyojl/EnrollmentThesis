@@ -19,6 +19,8 @@ import BadgeSuccess from "./BadgeSuccess";
 import BadgeWarning from "./BadgeWarning";
 import BadgeEnrolled from "./BadgeEnrolled";
 import BadgeOnhold from "./BadgeOnhold";
+import NoData from "./no-data";
+import BadgeDanger from "./BadgeDanger";
 
 export default function TableData({
     tablerow,
@@ -45,64 +47,89 @@ export default function TableData({
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {tabledata.map((program) => {
-                    const { id, ...programWithoutId } = program;
-                    return (
-                        <TableRow key={id} className="table-fixed">
-                            {Object.values(programWithoutId).map((col, idx) => {
-                                return (
-                                    <TableCell
-                                        className="font-medium w-1/12 text-center"
-                                        key={idx}
-                                    >
-                                        {col === "approved" ? (
-                                            <BadgeSuccess>{col}</BadgeSuccess>
-                                        ) : col === "pending" ? (
-                                            <BadgeWarning>{col}</BadgeWarning>
-                                        ) : col === "enrolled" ? (
-                                            <BadgeEnrolled>{col}</BadgeEnrolled>
-                                        ) : col === "onhold" ? (
-                                            <BadgeOnhold>{col}</BadgeOnhold>
-                                        ) : (
-                                            col
-                                        )}
-                                    </TableCell>
-                                );
-                            })}
-                            <TableCell className="font-medium w-1/12 text-center">
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger>
-                                        <MoreHorizontal />
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent>
-                                        <DropdownMenuItem
-                                            onClick={() => handleEdit(program)}
+                {tabledata.length > 0 ? (
+                    tabledata.map((program) => {
+                        const { id, ...programWithoutId } = program;
+                        return (
+                            <TableRow key={id} className="table-fixed">
+                                {Object.values(programWithoutId).map(
+                                    (col, idx) => (
+                                        <TableCell
+                                            key={idx}
+                                            className="font-medium w-1/12 text-center"
                                         >
-                                            <Edit />
-                                            Edit
-                                        </DropdownMenuItem>
-                                        {showDownload && (
-                                            <DropdownMenuItem>
-                                                <Download />
-                                                Download
-                                            </DropdownMenuItem>
-                                        )}
-                                        {showDelete && (
+                                            {col === "approved" ||
+                                            col === "Active" ? (
+                                                <BadgeSuccess>
+                                                    {col}
+                                                </BadgeSuccess>
+                                            ) : col === "pending" ||
+                                              col === "Pending" ? (
+                                                <BadgeWarning>
+                                                    {col}
+                                                </BadgeWarning>
+                                            ) : col === "enrolled" ? (
+                                                <BadgeEnrolled>
+                                                    {col}
+                                                </BadgeEnrolled>
+                                            ) : col === "onhold" ||
+                                              col === "Inactive" ? (
+                                                <BadgeOnhold>{col}</BadgeOnhold>
+                                            ) : col === "Closed" ? (
+                                                <BadgeDanger>{col}</BadgeDanger>
+                                            ) : (
+                                                col
+                                            )}
+                                        </TableCell>
+                                    )
+                                )}
+
+                                <TableCell className="font-medium w-1/12 text-center">
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger>
+                                            <MoreHorizontal />
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent>
                                             <DropdownMenuItem
                                                 onClick={() =>
-                                                    handleDel(program)
+                                                    handleEdit(program)
                                                 }
                                             >
-                                                <Trash />
-                                                Delete
+                                                <Edit />
+                                                Edit
                                             </DropdownMenuItem>
-                                        )}
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
-                            </TableCell>
-                        </TableRow>
-                    );
-                })}
+                                            {showDownload && (
+                                                <DropdownMenuItem>
+                                                    <Download />
+                                                    Download
+                                                </DropdownMenuItem>
+                                            )}
+                                            {showDelete && (
+                                                <DropdownMenuItem
+                                                    onClick={() =>
+                                                        handleDel(program)
+                                                    }
+                                                >
+                                                    <Trash />
+                                                    Delete
+                                                </DropdownMenuItem>
+                                            )}
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
+                                </TableCell>
+                            </TableRow>
+                        );
+                    })
+                ) : (
+                    <TableRow>
+                        <TableCell
+                            colSpan={tablerow.length + 1}
+                            className="text-center py-4 pt-20"
+                        >
+                            <NoData />
+                        </TableCell>
+                    </TableRow>
+                )}
             </TableBody>
         </Table>
     );

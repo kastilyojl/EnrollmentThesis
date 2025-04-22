@@ -8,6 +8,15 @@ import { toast } from "sonner";
 import { Separator } from "@/components/ui/separator";
 
 import {
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+} from "@/components/ui/sheet";
+
+import {
     Table,
     TableBody,
     TableCaption,
@@ -41,7 +50,9 @@ import SearchFilter from "@/components/SearchFilter";
 import FilterDropdown from "@/components/FilterDropdown";
 import useDebouncedSearch from "@/components/utils/useDebounceSearch";
 import { getFormattedDateTime } from "@/components/utils/formatDateTime";
-import { Trash } from "lucide-react";
+import { Download, Trash } from "lucide-react";
+import excel from "../../../assets/excel.png";
+import UploadButton from "@/components/uploadButton";
 
 export default function Subjects({ program = [], subject, filters }) {
     const tableHeader = [
@@ -56,7 +67,6 @@ export default function Subjects({ program = [], subject, filters }) {
         "Lec",
         "Lab",
         "Unit",
-        // "Total",
     ];
 
     const tableAddHeader = [
@@ -71,7 +81,6 @@ export default function Subjects({ program = [], subject, filters }) {
         "Lec",
         "Lab",
         "Unit",
-        // "Total",
     ];
 
     const {
@@ -81,7 +90,6 @@ export default function Subjects({ program = [], subject, filters }) {
         errors,
         delete: onDelete,
     } = useForm({
-        sub: [],
         program_code: "",
         code: "",
         name: "",
@@ -150,7 +158,11 @@ export default function Subjects({ program = [], subject, filters }) {
         onDelete(route("admin.subject.destroy", { id: itemId }), {
             onSuccess: () => {
                 toast("Subject has been deleted", {
-                    description: "Sunday, December 03, 2023 at 9:00 AM",
+                    description: (
+                        <span className="text-gray-900">
+                            {getFormattedDateTime()}
+                        </span>
+                    ),
                 });
                 setDel(false);
             },
@@ -177,42 +189,161 @@ export default function Subjects({ program = [], subject, filters }) {
         });
     };
 
-    const handleSubmit = () => {
-        console.log("Data being sent:", sub);
-        post(
+    // const handleSubmit = () => {
+    //     console.log("Data being sent:", sub);
+    //     post(route("admin.subject.store"), { sub: sub }, {
+    //         onSuccess: () => {
+    //             toast("Subjects has been created", {
+    //                 description: "Sunday, December 03, 2023 at 9:00 AM",
+    //             });
+    //             setAdd(false);
+    //             setData({
+    //                 program_code: "",
+    //                 code: "",
+    //                 name: "",
+    //                 prerequisites: "",
+    //                 period: "",
+    //                 department: "",
+    //                 year_level: "",
+    //                 category: "",
+    //                 lec: "",
+    //                 lab: "",
+    //                 unit: "",
+    //                 total: "",
+    //             });
+    //         },
+    //     });
+    // };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        // First add current form to the `sub` array (if not empty)
+        const requiredFields = [
+            "department",
+            "program_code",
+            "year_level",
+            "period",
+            "category",
+            "name",
+            "code",
+            "prerequisites",
+            "lec",
+            "lab",
+            "unit",
+        ];
+
+        const fieldLabels = {
+            department: "Department",
+            program_code: "Program",
+            year_level: "Year Level",
+            period: "Period",
+            category: "Category",
+            name: "Subject Name",
+            code: "Subject Code",
+            prerequisites: "Prerequisites",
+            lec: "Lec.",
+            lab: "Lab.",
+            unit: "Unit",
+        };
+
+        for (let field of requiredFields) {
+            if (!data[field]) {
+                toast.error(`❗ ${fieldLabels[field]} is required.`, {
+                    description: (
+                        <span className="text-gray-900 mx-4">
+                            Please fill all required fields.
+                        </span>
+                    ),
+                });
+                return;
+            }
+        }
+
+        const isDuplicate = [...sub, ...tableData].some(
+            (subject) =>
+                subject.code.toLowerCase() === data.code.toLowerCase() ||
+                subject.name.toLowerCase() === data.name.toLowerCase()
+        );
+
+        if (isDuplicate) {
+            toast("⚠️ Duplicate Subject", {
+                description: (
+                    <span className=" text-gray-900 mx-4">
+                        A subject with the same code or name already exists.
+                    </span>
+                ),
+            });
+            return;
+        }
+
+        // Add current form data to sub before saving
+        const newSubject = {
+            program_code: data.program_code,
+            code: data.code,
+            name: data.name,
+            prerequisites: data.prerequisites,
+            period: data.period,
+            department: data.department,
+            year_level: data.year_level,
+            category: data.category,
+            lec: data.lec,
+            lab: data.lab,
+            unit: data.unit,
+            total: data.total,
+        };
+
+        const updatedSub = [...sub, newSubject];
+
+        // Update state
+        setSub(updatedSub);
+        setData("sub", updatedSub);
+
+        // Clear the input fields (optional)
+        setData({
+            program_code: "",
+            code: "",
+            name: "",
+            prerequisites: "",
+            period: "",
+            department: "",
+            year_level: "",
+            category: "",
+            lec: "",
+            lab: "",
+            unit: "",
+            total: "",
+        });
+
+        // Now post to server
+        router.post(
             route("admin.subject.store"),
-            { sub: sub },
+            { sub: updatedSub },
             {
                 onSuccess: () => {
-                    toast("Subjects has been created", {
-                        description: "Sunday, December 03, 2023 at 9:00 AM",
+                    toast("✅ Subjects have been saved.", {
+                        description: (
+                            <span className="text-gray-900">
+                                {getFormattedDateTime()}
+                            </span>
+                        ),
                     });
                     setAdd(false);
-                    setData({
-                        program_code: "",
-                        code: "",
-                        name: "",
-                        prerequisites: "",
-                        period: "",
-                        department: "",
-                        year_level: "",
-                        category: "",
-                        lec: "",
-                        lab: "",
-                        unit: "",
-                        total: "",
-                    });
+                    setSub([]); // clear the local sub list after saving
                 },
             }
         );
     };
 
     const handleUpdateSubmit = () => {
-        // console.log("editing program:", itemId.id);
         post(route("admin.subject.update", { id: itemId }), {
             onSuccess: () => {
                 toast("Subject has been updated", {
-                    description: "Sunday, December 03, 2023 at 9:00 AM",
+                    description: (
+                        <span className="text-gray-900">
+                            {getFormattedDateTime()}
+                        </span>
+                    ),
                 });
                 setAdd(false);
                 setData({
@@ -234,15 +365,10 @@ export default function Subjects({ program = [], subject, filters }) {
     };
 
     const [sub, setSub] = useState([]);
-    const addSubject = (newSubject) => {
-        // Take current subjects and add new one
-        setData("sub", [...data.sub, newSubject]);
-    };
 
     const handleSubjectList = (e) => {
         e.preventDefault();
 
-        // Mapping field names to user-friendly labels
         const fieldLabels = {
             department: "Department",
             program_code: "Program",
@@ -257,7 +383,6 @@ export default function Subjects({ program = [], subject, filters }) {
             unit: "Unit",
         };
 
-        // List of required fields
         const requiredFields = [
             "department",
             "program_code",
@@ -272,7 +397,6 @@ export default function Subjects({ program = [], subject, filters }) {
             "unit",
         ];
 
-        // Check if any required field is empty
         for (let field of requiredFields) {
             if (!data[field]) {
                 toast(`❗ ${fieldLabels[field]} is required.`, {
@@ -286,11 +410,7 @@ export default function Subjects({ program = [], subject, filters }) {
             }
         }
 
-        // Check if subject with same code and name already exists in both 'sub' and 'tableData'
-        const isDuplicate = [
-            ...sub, // Subjects added manually
-            ...tableData, // Subjects from the existing list (probably fetched)
-        ].some(
+        const isDuplicate = [...sub, ...tableData].some(
             (subject) =>
                 subject.code.toLowerCase() === data.code.toLowerCase() ||
                 subject.name.toLowerCase() === data.name.toLowerCase()
@@ -308,7 +428,6 @@ export default function Subjects({ program = [], subject, filters }) {
             return;
         }
 
-        // Create new subject object
         const newSubject = {
             program_code: data.program_code,
             code: data.code,
@@ -321,27 +440,17 @@ export default function Subjects({ program = [], subject, filters }) {
             lec: data.lec,
             lab: data.lab,
             unit: data.unit,
+            total: data.total,
         };
 
-        // Update the 'sub' list directly
         setSub([...sub, newSubject]);
         setData("sub", [...sub, newSubject]);
 
-        console.log("Subject List:", sub);
-
-        // Reset form data (optional)
-        setData({
-            code: "",
-            name: "",
-            lec: "",
-            lab: "",
-            unit: "",
-        });
-
-        // Show success toast
         toast("✅️ Subject has been added to the list", {
             description: (
-                <span className="text-gray-900">{getFormattedDateTime()}</span>
+                <span className="text-gray-900">
+                    {new Date().toLocaleString()}
+                </span>
             ),
         });
     };
@@ -407,12 +516,21 @@ export default function Subjects({ program = [], subject, filters }) {
         );
     };
 
+    const handleDownloadFormat = () => {
+        const link = document.createElement("a");
+        link.href = "/storage/app/public/format/Subject.xlsx";
+        link.setAttribute("download", "subject.xlsx");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
     return (
         <Layout>
             <div className="flex items-end justify-between mb-7">
                 <h1 className="text-2xl font-bold">Subject</h1>
             </div>
-            <div className="flex justify-between mb-3">
+            <div className="flex justify-between items-center mb-3">
                 <div className="flex gap-4">
                     <div className="flex items-center gap-2">
                         <SearchFilter
@@ -429,7 +547,31 @@ export default function Subjects({ program = [], subject, filters }) {
                         />
                     </div>
                 </div>
-                <Button onClick={handleAdd}>Create</Button>
+                <div className="flex items-center gap-4">
+                    <Sheet>
+                        <SheetTrigger>
+                            <Button className="bg-green-600 hover:bg-[#307750]">
+                                <img src={excel} className="h-4 w-4" />
+                            </Button>
+                        </SheetTrigger>
+                        <SheetContent>
+                            <SheetHeader>
+                                <SheetTitle>Subject</SheetTitle>
+                                <SheetDescription className="space-y-2">
+                                    <Button
+                                        className="p-7"
+                                        onClick={handleDownloadFormat}
+                                    >
+                                        <Download /> Download Format
+                                    </Button>
+                                    <UploadButton></UploadButton>
+                                </SheetDescription>
+                            </SheetHeader>
+                        </SheetContent>
+                    </Sheet>
+
+                    <Button onClick={handleAdd}>Create</Button>
+                </div>
             </div>
             <div className="border rounded-sm px-4 min-h-96">
                 <TableData
@@ -438,6 +580,7 @@ export default function Subjects({ program = [], subject, filters }) {
                     handleEdit={handleEdit}
                     handleDel={handleDel}
                 />
+
                 {add && (
                     <Dialog open={add} onOpenChange={(open) => setAdd(open)}>
                         <DialogContent
@@ -460,6 +603,54 @@ export default function Subjects({ program = [], subject, filters }) {
                                     }`}
                                 >
                                     <div className="mt-3 grid grid-cols-2 gap-x-8 gap-y-4">
+                                        <div>
+                                            <Label htmlFor="category">
+                                                Category
+                                            </Label>
+                                            <Select
+                                                name="category"
+                                                value={data.category}
+                                                onValueChange={(value) => {
+                                                    setData("category", value);
+
+                                                    if (
+                                                        value ===
+                                                        "Minor Subject"
+                                                    ) {
+                                                        setData(
+                                                            "program_code",
+                                                            "General"
+                                                        );
+                                                    } else {
+                                                        setData(
+                                                            "program_code",
+                                                            ""
+                                                        );
+                                                    }
+                                                }}
+                                            >
+                                                <SelectTrigger className="text-black">
+                                                    <SelectValue placeholder="Select..." />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="Major Subject">
+                                                        Major Subject
+                                                    </SelectItem>
+                                                    <SelectItem value="Minor Subject">
+                                                        Minor Subject
+                                                    </SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                            {errors.category &&
+                                                !data.category && (
+                                                    <InputError
+                                                        message={
+                                                            errors.category
+                                                        }
+                                                        className="text-red-500"
+                                                    />
+                                                )}
+                                        </div>
                                         <div>
                                             <Label htmlFor="department">
                                                 Department
@@ -632,39 +823,6 @@ export default function Subjects({ program = [], subject, filters }) {
                                                 />
                                             )}
                                         </div>
-                                        <div>
-                                            <Label htmlFor="category">
-                                                Category
-                                            </Label>
-                                            <Select
-                                                name="category"
-                                                value={data.category}
-                                                onValueChange={(value) =>
-                                                    setData("category", value)
-                                                }
-                                            >
-                                                <SelectTrigger className="text-black">
-                                                    <SelectValue placeholder="Select..." />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectItem value="Major Subject">
-                                                        Major Subject
-                                                    </SelectItem>
-                                                    <SelectItem value="Minor Subject">
-                                                        Minor Subject
-                                                    </SelectItem>
-                                                </SelectContent>
-                                            </Select>
-                                            {errors.category &&
-                                                !data.category && (
-                                                    <InputError
-                                                        message={
-                                                            errors.category
-                                                        }
-                                                        className="text-red-500"
-                                                    />
-                                                )}
-                                        </div>
 
                                         <div>
                                             <Label htmlFor="name">
@@ -734,15 +892,23 @@ export default function Subjects({ program = [], subject, filters }) {
                                                     <SelectItem value="None">
                                                         None
                                                     </SelectItem>
-                                                    {subject.data.map((sub) => (
-                                                        <SelectItem
-                                                            value={sub.name}
-                                                        >
-                                                            {sub.name}
-                                                        </SelectItem>
-                                                    ))}
+                                                    {subject.data
+                                                        .filter(
+                                                            (sub) =>
+                                                                sub.category ===
+                                                                data.category
+                                                        )
+                                                        .map((sub) => (
+                                                            <SelectItem
+                                                                key={sub.name}
+                                                                value={sub.name}
+                                                            >
+                                                                {sub.name}
+                                                            </SelectItem>
+                                                        ))}
                                                 </SelectContent>
                                             </Select>
+
                                             {errors.prerequisites &&
                                                 !data.prerequisites && (
                                                     <InputError

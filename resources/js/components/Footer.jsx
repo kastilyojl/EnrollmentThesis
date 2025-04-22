@@ -1,3 +1,4 @@
+import { Link } from "@inertiajs/react";
 import React from "react";
 
 export default function Footer({ children, className = "" }) {
@@ -114,21 +115,41 @@ export default function Footer({ children, className = "" }) {
 
                             <ul className="mt-8 space-y-4 text-sm">
                                 <li>
-                                    <a
+                                    <Link
                                         className="text-gray-700  transition hover:text-gray-700/75"
-                                        href="#"
+                                        href={route(
+                                            "landing-page.section.Requirements"
+                                        )}
                                     >
                                         Requirements
-                                    </a>
+                                    </Link>
                                 </li>
 
                                 <li>
-                                    <a
+                                    <Link
                                         className="text-gray-700  transition hover:text-gray-700/75"
-                                        href="#"
+                                        href={route("public.payment.details")}
                                     >
                                         Tuition Fee
-                                    </a>
+                                    </Link>
+                                </li>
+
+                                <li>
+                                    <Link
+                                        className="text-gray-700  transition hover:text-gray-700/75"
+                                        href={route("public.payment.submit")}
+                                    >
+                                        Payment Form
+                                    </Link>
+                                </li>
+
+                                <li>
+                                    <Link
+                                        className="text-gray-700  transition hover:text-gray-700/75"
+                                        href={route("public.admission.guide")}
+                                    >
+                                        Admission Guide
+                                    </Link>
                                 </li>
                             </ul>
                         </div>
@@ -140,22 +161,24 @@ export default function Footer({ children, className = "" }) {
 
                             <ul className="mt-8 space-y-4 text-sm">
                                 <li>
-                                    <a
+                                    <Link
                                         className="text-gray-700  transition hover:text-gray-700/75"
-                                        href="#"
+                                        href={route("landing-page.section.SHS")}
                                     >
                                         Senior High Schoool
-                                    </a>
+                                    </Link>
                                 </li>
 
                                 <li>
-                                    <a
+                                    <Link
                                         className="text-gray-700  transition hover:text-gray-700/75"
-                                        href="#"
+                                        href={route(
+                                            "landing-page.section.College"
+                                        )}
                                     >
                                         {" "}
                                         College{" "}
-                                    </a>
+                                    </Link>
                                 </li>
                             </ul>
                         </div>
@@ -167,20 +190,13 @@ export default function Footer({ children, className = "" }) {
 
                             <ul className="mt-8 space-y-4 text-sm">
                                 <li>
-                                    <a className="text-gray-700  transition hover:text-gray-700/75">
-                                        {" "}
-                                        FAQs{" "}
-                                    </a>
-                                </li>
-
-                                <li>
-                                    <a
+                                    <Link
+                                        href={route("landing-page.section.FAQ")}
                                         className="text-gray-700  transition hover:text-gray-700/75"
-                                        href="#"
                                     >
                                         {" "}
-                                        Support{" "}
-                                    </a>
+                                        FAQs{" "}
+                                    </Link>
                                 </li>
                             </ul>
                         </div>

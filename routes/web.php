@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\BillingController;
 use App\Http\Controllers\Admin\CourseSelectionController;
 use App\Http\Controllers\Admin\CSVController;
 use App\Http\Controllers\Admin\CurriculumController;
+use App\Http\Controllers\Admin\DisplayController;
 use App\Http\Controllers\Admin\EmailController;
 use App\Http\Controllers\Admin\EnrollmentConfirmationController;
 use App\Http\Controllers\Admin\EnrollmentController;
@@ -43,7 +44,6 @@ use Inertia\Inertia;
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
-
 
 // use App\Http\Middleware\VerifyAdminIp;
 
@@ -222,8 +222,18 @@ Route::get('enrollment/final-step', [EnrollmentConfirmationController::class, 'i
 Route::post('enrollment/assign-section', [EnrollmentConfirmationController::class, 'insertStudentSection'])->name('enrollment.insert.section');
 
 Route::prefix('grades')->group(function () {
-    Route::get('/csv', [CSVController::class, 'index'])->name('index.csv');
-    Route::post('/upload-csv', [CSVController::class, 'upload'])->name('upload.csv');
+    // Route::get('/csv', [CSVController::class, 'index'])->name('index.csv');
+    // Route::post('/upload-csv', [CSVController::class, 'upload'])->name('upload.csv');
+    // Route::post('/store', [CSVController::class, 'store'])->name('grades.store');
+    Route::post('/upload-csv-bulk', [CSVController::class, 'bulkUpload'])->name('upload.csv.bulk');
+Route::get('/csv', [CSVController::class, 'index'])->name('index.csv');
+Route::post('/csv/store', [CSVController::class, 'store'])->name('grades.store');
+
+});
+
+Route::prefix('display')->group(function () {
+    Route::get('/display', [DisplayController::class, 'index'])->name('index.display');
+    Route::post('/display/update', [DisplayController::class, 'updateDisplay'])->name('display.update');
 });
 
 Route::prefix('OCR')->group(function () {
