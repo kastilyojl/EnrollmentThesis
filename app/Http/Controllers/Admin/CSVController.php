@@ -120,4 +120,8 @@ class CSVController extends Controller
             return back()->withErrors(['message' => 'Failed to save grades.']);
         }
     }
+
+    public function grade() {
+        return Inertia::render('Admin/Grades/SubmittedGrade');
+    }
 }

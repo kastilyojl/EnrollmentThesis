@@ -438,7 +438,7 @@ export function AppSidebar({ ...props }) {
                     teams={[
                         {
                             name: "Westbridge",
-                            logo: "logo",
+                            logo: GalleryVerticalEnd,
                             plan: "Enrollment System",
                         }, // Replace with actual data
                     ]}

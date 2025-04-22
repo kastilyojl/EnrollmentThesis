@@ -226,9 +226,10 @@ Route::prefix('grades')->group(function () {
     // Route::post('/upload-csv', [CSVController::class, 'upload'])->name('upload.csv');
     // Route::post('/store', [CSVController::class, 'store'])->name('grades.store');
     Route::post('/upload-csv-bulk', [CSVController::class, 'bulkUpload'])->name('upload.csv.bulk');
-Route::get('/csv', [CSVController::class, 'index'])->name('index.csv');
-Route::post('/csv/store', [CSVController::class, 'store'])->name('grades.store');
+    Route::get('/csv', [CSVController::class, 'index'])->name('index.csv');
+    Route::post('/csv/store', [CSVController::class, 'store'])->name('grades.store');
 
+    Route::get('/submitted-grade', [CSVController::class, 'grade'])->name('index.submitted.grade');
 });
 
 Route::prefix('display')->group(function () {

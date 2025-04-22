@@ -243,7 +243,9 @@
 // }
 
 import Layout from "@/components/layout";
+import { Button } from "@/components/ui/button";
 import { router, usePage } from "@inertiajs/react";
+import { Download } from "lucide-react";
 import React, { useState, useEffect } from "react";
 
 export default function CSVTable() {
@@ -380,46 +382,53 @@ export default function CSVTable() {
             </div>
 
             <form onSubmit={handleUpload} encType="multipart/form-data">
-                <input
-                    type="file"
-                    accept=".csv"
-                    multiple
-                    onChange={handleFileChange}
-                    disabled={isProcessing}
-                    className="block w-full text-sm text-gray-500
+                <div className="flex justify-between items-center">
+                    <input
+                        type="file"
+                        accept=".csv"
+                        multiple
+                        onChange={handleFileChange}
+                        disabled={isProcessing}
+                        className="block w-full text-sm text-gray-500
                         file:mr-4 file:py-2 file:px-4
                         file:rounded-md file:border-0
                         file:text-sm file:font-semibold
-                        file:bg-blue-50 file:text-blue-700
-                        hover:file:bg-blue-100"
-                />
+                        file:bg-primary file:text-white
+                        hover:file:bg-blue-700
+                        cursor-pointer"
+                    />
+                    <Button className="">
+                        <Download /> Download Format
+                    </Button>
+                </div>
                 {files.length > 0 && (
-                    <ul className="mt-3 space-y-2 text-sm text-gray-700">
-                        {files.map((file, i) => (
-                            <li
-                                key={i}
-                                className="flex items-center justify-between bg-gray-100 px-3 py-2 rounded"
-                            >
-                                <span>{file.name}</span>
-                                <button
-                                    type="button"
-                                    onClick={() => removeFile(i)}
-                                    className="ml-3 text-red-500 hover:text-red-700 font-bold"
+                    <>
+                        <ul className="mt-3 space-y-2 text-sm text-gray-700">
+                            {files.map((file, i) => (
+                                <li
+                                    key={i}
+                                    className="flex items-center justify-between bg-gray-100 px-3 py-2 rounded"
                                 >
-                                    &times;
-                                </button>
-                            </li>
-                        ))}
-                    </ul>
+                                    <span>{file.name}</span>
+                                    <button
+                                        type="button"
+                                        onClick={() => removeFile(i)}
+                                        className="ml-3 text-red-500 hover:text-red-700 font-bold"
+                                    >
+                                        &times;
+                                    </button>
+                                </li>
+                            ))}
+                        </ul>
+                        <button
+                            type="submit"
+                            className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50"
+                            disabled={isProcessing || files.length === 0}
+                        >
+                            {isProcessing ? "Loading..." : "Preview"}
+                        </button>
+                    </>
                 )}
-
-                <button
-                    type="submit"
-                    className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50"
-                    disabled={isProcessing || files.length === 0}
-                >
-                    {isProcessing ? "Uploading..." : "Upload CSVs"}
-                </button>
             </form>
 
             {tableData.length > 0 ? (
@@ -472,10 +481,10 @@ export default function CSVTable() {
                     <div className="mt-4 flex items-center gap-4">
                         <button
                             onClick={handleSave}
-                            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50"
+                            className="px-4 py-2 bg-primary text-white rounded hover:bg-blue-700 disabled:opacity-50"
                             disabled={isProcessing}
                         >
-                            {isProcessing ? "Saving..." : "Save to Database"}
+                            {isProcessing ? "Saving..." : "Save"}
                         </button>
                         {invalidStudentIds.length > 0 && (
                             <span className="text-sm text-yellow-600">

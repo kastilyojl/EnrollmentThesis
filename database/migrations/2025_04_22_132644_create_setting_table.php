@@ -104,7 +104,7 @@ return new class extends Migration
                 'title' => 'Grades',
                 'items' => [
                     ['title' => 'Upload Grades', 'route' => 'index.csv'],
-                    ['title' => 'Submitted Grades', 'route' => '#'],
+                    ['title' => 'Submitted Grades', 'route' => 'index.submitted.grade'],
                     ['title' => 'Grade Change Requests', 'route' => '#'],
                 ],
             ],
