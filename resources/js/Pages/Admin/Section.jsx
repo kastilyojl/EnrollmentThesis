@@ -539,7 +539,7 @@ export default function Section({ program = [], section = [] }) {
                     <Dialog open={del} onOpenChange={(open) => setDel(open)}>
                         <DialogContent>
                             <DialogHeader>
-                                <DialogTitle>Delete Program</DialogTitle>
+                                <DialogTitle>Delete Section</DialogTitle>
                                 <DialogDescription>
                                     <div className="my-3">
                                         Are you sure to delete this section?

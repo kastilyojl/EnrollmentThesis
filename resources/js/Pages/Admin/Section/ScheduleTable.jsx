@@ -55,9 +55,9 @@ export default function ScheduleTable({
                     <th className="whitespace-nowrap border w-1/12 border-primary px-4 font-bold text-gray-900">
                         Subject
                     </th>
-                    <th className="whitespace-nowrap border w-1/12 border-primary px-4 font-bold text-gray-900">
+                    {/* <th className="whitespace-nowrap border w-1/12 border-primary px-4 font-bold text-gray-900">
                         Adviser
-                    </th>
+                    </th> */}
                     <th className="whitespace-nowrap border w-1/12 border-primary px-4 font-bold text-gray-900">
                         Mon
                     </th>
@@ -98,9 +98,9 @@ export default function ScheduleTable({
                                     <th className=" whitespace-nowrap text-wrap border w-1/12 border-primary px-4 font-medium text-gray-900">
                                         {subject.code}
                                     </th>
-                                    <th className="whitespace-nowrap text-wrap border w-1/12 border-primary px-4 font-medium text-gray-900">
+                                    {/* <th className="whitespace-nowrap text-wrap border w-1/12 border-primary px-4 font-medium text-gray-900">
                                         {subjectSchedule?.prof_name || ""}
-                                    </th>
+                                    </th> */}
 
                                     <th
                                         className={`${

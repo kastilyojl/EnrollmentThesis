@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\Academic_Year;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -67,21 +68,41 @@ class AuthenticatedSessionController extends Controller
         ;}
           
         $request->session()->regenerate();
+
+        $latestAcademicYear = Academic_Year::orderByDesc('id')->first();
     
-        return redirect()->intended(route('dashboard', absolute: false));
+        return redirect()->intended(route('dashboard', ['academic_year_id' => $latestAcademicYear->id]));
     }
 
     /**
      * Destroy an authenticated session.
      */
+    // public function destroy(Request $request): RedirectResponse
+    // {
+    //     Auth::guard('web')->logout();
+
+    //     $request->session()->invalidate();
+
+    //     $request->session()->regenerateToken();
+
+    //     return redirect('/');
+    // }
     public function destroy(Request $request): RedirectResponse
-    {
-        Auth::guard('web')->logout();
+{
+    // Logout the user
+    Auth::guard('web')->logout();
 
-        $request->session()->invalidate();
+    // Invalidate the session to clear any stored data
+    $request->session()->invalidate();
 
-        $request->session()->regenerateToken();
+    // Regenerate the CSRF token
+    $request->session()->regenerateToken();
 
-        return redirect('/');
-    }
+    // Clear the selected year from the session (important to reset academic year selection on next login)
+    $request->session()->forget('selected_year');
+
+    // Redirect to the homepage or login page
+    return redirect('/');
+}
+
 }

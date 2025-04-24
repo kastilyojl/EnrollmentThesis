@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { usePage, router } from "@inertiajs/react";
 import { SidebarTrigger } from "./ui/sidebar";
 import { NavUser } from "@/components/nav-user";
-import { router, usePage } from "@inertiajs/react";
 import {
     Select,
     SelectContent,
@@ -15,63 +15,83 @@ export default function Navbar() {
     const { academic_year } = usePage().props;
     const user = usePage().props.auth.user;
 
+    // Format: "SY: 2024 - 2025"
     const formatYear = (year) =>
         `SY: ${format(new Date(year.start), "yyyy")} - ${format(
             new Date(year.end),
             "yyyy"
         )}`;
 
-    const getLatestAcademicYear = () => {
-        if (academic_year.length > 0) {
-            const sortedYears = [...academic_year].sort((a, b) => {
-                return new Date(b.start) - new Date(a.start);
-            });
-            return formatYear(sortedYears[0]);
-        }
-        return null;
+    // Get the latest academic year by highest ID
+    const getLatestAcademicYearById = () => {
+        if (!academic_year || academic_year.length === 0) return null;
+        const latest = [...academic_year].sort((a, b) => b.id - a.id)[0];
+        return {
+            id: latest.id,
+            label: formatYear(latest),
+        };
     };
 
+    // Initial state: sessionStorage or fallback to latest year
     const [selectedYear, setSelectedYear] = useState(() => {
         if (typeof window !== "undefined") {
-            const storedYear = sessionStorage.getItem("selectedYear");
-            if (storedYear) return storedYear;
+            const stored = sessionStorage.getItem("selectedYear");
+            if (stored) return stored;
         }
-        return getLatestAcademicYear();
+
+        const latest = getLatestAcademicYearById();
+        return latest ? latest.label : "";
     });
 
-    // Handle selecting a year from the dropdown
+    useEffect(() => {
+        const storedYear = sessionStorage.getItem("selectedYear");
+
+        // If the URL already has academic_year_id, no need to trigger a redirect
+        const url = new URL(window.location.href);
+        const hasAcademicYearId = url.searchParams.has("academic_year_id");
+
+        if (!storedYear && academic_year.length > 0 && !hasAcademicYearId) {
+            const latest = getLatestAcademicYearById();
+            if (latest) {
+                sessionStorage.setItem("selectedYear", latest.label);
+                setSelectedYear(latest.label);
+
+                url.searchParams.set("academic_year_id", latest.id);
+
+                router.get(
+                    url.pathname + url.search,
+                    {},
+                    {
+                        preserveState: true,
+                        replace: true,
+                    }
+                );
+            }
+        }
+    }, [academic_year]);
+
+    // Handle dropdown change
     const handleSelectChange = (value) => {
         setSelectedYear(value);
         sessionStorage.setItem("selectedYear", value);
 
-        // Construct the new URL with the current query params
-        const currentUrl = new URL(window.location.href);
-        const currentYear = currentUrl.searchParams.get("year");
-
-        // Get the other query parameters
-        const perPage = currentUrl.searchParams.get("per_page");
-        const search = currentUrl.searchParams.get("search");
-        const role = currentUrl.searchParams.get("role");
-
-        // Only update the `year` query parameter if it has changed
-        if (currentYear !== value) {
-            currentUrl.searchParams.set("year", value);
-        }
-
-        // Rebuild the URL with the current year and other parameters
-        router.get(
-            currentUrl.pathname + currentUrl.search,
-            {
-                per_page: perPage,
-                role: role,
-                search: search,
-                year: value, // Set the selected year here
-            },
-            {
-                preserveState: true,
-                replace: true,
-            }
+        const selected = academic_year.find(
+            (year) => formatYear(year) === value
         );
+
+        if (selected) {
+            const currentUrl = new URL(window.location.href);
+            currentUrl.searchParams.set("academic_year_id", selected.id); // ✅ Use ID again
+
+            router.get(
+                currentUrl.pathname + currentUrl.search,
+                {},
+                {
+                    preserveState: true,
+                    replace: true,
+                }
+            );
+        }
     };
 
     const users = {
@@ -96,13 +116,10 @@ export default function Navbar() {
                         <SelectContent>
                             {academic_year.length > 0 ? (
                                 academic_year.map((year) => {
-                                    const formatted = formatYear(year);
+                                    const label = formatYear(year);
                                     return (
-                                        <SelectItem
-                                            key={year.id}
-                                            value={formatted}
-                                        >
-                                            {formatted}
+                                        <SelectItem key={year.id} value={label}>
+                                            {label}
                                         </SelectItem>
                                     );
                                 })

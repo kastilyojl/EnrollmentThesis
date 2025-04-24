@@ -45,18 +45,27 @@ class AdminApplicationController extends Controller
         }
         
          // Academic year filter
-         if ($request->filled('year')) {
-            $year = str_replace('SY: ', '', $request->year); 
-            [$startYear, $endYear] = explode(' - ', $year);
+        //  if ($request->filled('year')) {
+        //     $year = str_replace('SY: ', '', $request->year); 
+        //     [$startYear, $endYear] = explode(' - ', $year);
 
-            $academic = Academic_Year::whereYear('start', $startYear)
-                ->whereYear('end', $endYear)
-                ->first();
+        //     $academic = Academic_Year::whereYear('start', $startYear)
+        //         ->whereYear('end', $endYear)
+        //         ->first();
+
+        //     if ($academic) {
+        //         $query->whereBetween('created_at', [$academic->start, $academic->end]);
+        //     }
+        // }
+        // Academic year filter using academic_year_id directly
+        if ($request->filled('academic_year_id')) {
+            $academic = Academic_Year::find($request->academic_year_id);
 
             if ($academic) {
                 $query->whereBetween('created_at', [$academic->start, $academic->end]);
             }
         }
+
         
         $student = $query->paginate($perPage);
         

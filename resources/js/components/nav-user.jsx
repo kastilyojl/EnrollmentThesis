@@ -18,10 +18,17 @@ import {
     SidebarMenuItem,
     useSidebar,
 } from "@/components/ui/sidebar";
-import { Link } from "@inertiajs/react";
+import { Link, router } from "@inertiajs/react";
+import { Button } from "@headlessui/react";
 
 export function NavUser({ user }) {
     const { isMobile } = useSidebar();
+
+    const handleLogout = () => {
+        sessionStorage.removeItem("selectedYear");
+        sessionStorage.removeItem("sidebarState");
+        router.post(route("logout"));
+    };
 
     return (
         <SidebarMenu>
@@ -97,12 +104,12 @@ export function NavUser({ user }) {
                             </Link>
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />
-                        <Link href={route("logout")} method="post">
+                        <Button onClick={handleLogout}>
                             <DropdownMenuItem>
                                 <LogOut />
                                 Log out
                             </DropdownMenuItem>
-                        </Link>
+                        </Button>
                     </DropdownMenuContent>
                 </DropdownMenu>
             </SidebarMenuItem>

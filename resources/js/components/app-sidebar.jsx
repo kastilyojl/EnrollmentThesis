@@ -111,12 +111,12 @@ import routeWithYear from "./utils/routeWithYear";
 //                               { title: "Home", url: route("dashboard") },
 //                               {
 //                                   title: "Schedule",
-//                                   url: "",
+//                                   url: route("student.schedule"),
 //                               },
-//                               {
-//                                   title: "Subjects",
-//                                   url: "",
-//                               },
+//                               //   {
+//                               //       title: "Subjects",
+//                               //       url: "",
+//                               //   },
 //                           ],
 //                       },
 //                       {
@@ -125,9 +125,15 @@ import routeWithYear from "./utils/routeWithYear";
 //                           icon: Pen,
 //                           active: true,
 //                           items: [
-//                               { title: "Upload", url: route("index.csv") },
-//                               { title: "List", url: route("ocr") },
-//                               { title: "Request", url: "#" },
+//                               {
+//                                   title: "Upload Grades",
+//                                   url: route("index.csv"),
+//                               },
+//                               {
+//                                   title: "Submitted Grade",
+//                                   url: route("index.submitted.grade"),
+//                               },
+//                               { title: "Grade Change Request", url: "#" },
 //                           ],
 //                       },
 //                   ]
@@ -410,14 +416,23 @@ export function AppSidebar({ ...props }) {
     };
 
     const generateNavItems = () => {
+        const selectedYear = usePage().props.selected_year;
+
         return sidebarDisplay.map((section) => ({
             title: section.title,
-            url: "#", // you can use the first item's route if needed
-            icon: getIcon(section.title), // optional: you can match icons by title
-            items: section.items.map((item) => ({
-                title: item.title,
-                url: item.url || "#",
-            })),
+            url: "#",
+            icon: getIcon(section.title),
+            items: section.items.map((item) => {
+                if (!item.url) return item;
+
+                const url = new URL(item.url, window.location.origin);
+                url.searchParams.set("academic_year_id", selectedYear);
+
+                return {
+                    title: item.title,
+                    url: url.toString().replace(window.location.origin, ""), // Keep it relative
+                };
+            }),
             isActive: expandedSections[section.title] ?? false,
         }));
     };

@@ -47,6 +47,7 @@ import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import SHS from "./Curriculum/SHS";
 import College from "./Curriculum/College";
+import FilterDropdown from "@/components/FilterDropdown";
 
 export default function Curriculum({ program = [] }) {
     const [itemId, setItemId] = useState(null);
@@ -110,9 +111,14 @@ export default function Curriculum({ program = [] }) {
             <div className="flex items-end justify-between mb-7">
                 <h1 className="text-2xl font-bold">Curriculum</h1>
             </div>
-            <div className="flex justify-between mb-3">
+            <div className="flex space-x-4 mb-3">
                 <Input type="text" placeholder="Search" className="w-[300px]" />
-                <Button>Create</Button>
+                <FilterDropdown
+                // currentFilter={dataFilter}
+                // filterData={filterData}
+                // onFilterChange={handleFilterChange}
+                />
+                {/* <Button>Create</Button> */}
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
