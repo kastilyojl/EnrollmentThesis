@@ -518,7 +518,7 @@ export default function Subjects({ program = [], subject, filters }) {
 
     const handleDownloadFormat = () => {
         const link = document.createElement("a");
-        link.href = "/storage/app/public/format/Subject.xlsx";
+        link.href = "/storage/format/Subject.xlsx";
         link.setAttribute("download", "subject.xlsx");
         document.body.appendChild(link);
         link.click();

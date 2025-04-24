@@ -77,6 +77,204 @@ class SubjectController extends Controller
         // }
     }
 
+//     public function storeFromExcel(Request $request)
+// {
+//     $request->validate([
+//         'subjects' => 'required|array',
+//         'subjects.*.department' => 'required|string',
+//         'subjects.*.program_code' => 'required|string',
+//         'subjects.*.year_level' => 'required|string',
+//         'subjects.*.period' => 'required|string',
+//         'subjects.*.category' => 'required|string',
+//         'subjects.*.name' => 'required|string',
+//         'subjects.*.code' => 'required|string',
+//         'subjects.*.prerequisites' => 'required|string',
+//         'subjects.*.lec' => 'required|numeric',
+//         'subjects.*.lab' => 'required|numeric',
+//         'subjects.*.unit' => 'required|numeric',
+//     ]);
+
+//     $subjects = $request->input('subjects');
+//     $duplicates = [];
+//     $successCount = 0;
+
+//     DB::beginTransaction();
+//     try {
+//         foreach ($subjects as $subject) {
+//             // Check for existing subject in database
+//             $existingSubject = Subjects::where('code', $subject['code'])
+//                                     ->orWhere('name', $subject['name'])
+//                                     ->first();
+
+//             if ($existingSubject) {
+//                 $duplicates[] = [
+//                     'code' => $subject['code'],
+//                     'name' => $subject['name'],
+//                     'existing' => $existingSubject->only(['code', 'name', 'program_code'])
+//                 ];
+//                 continue;
+//             }
+
+//             // Create new subject
+//             Subjects::create([
+//                 'department' => $subject['department'],
+//                 'program_code' => $subject['program_code'],
+//                 'year_level' => $subject['year_level'],
+//                 'period' => $subject['period'],
+//                 'category' => $subject['category'],
+//                 'name' => $subject['name'],
+//                 'code' => $subject['code'],
+//                 'prerequisites' => $subject['prerequisites'],
+//                 'lec' => $subject['lec'],
+//                 'lab' => $subject['lab'],
+//                 'unit' => $subject['unit'],
+//                 'total' => $subject['lec'] + $subject['lab']
+//             ]);
+
+//             $successCount++;
+//         }
+
+//         DB::commit();
+
+//         return response()->json([
+//             'success' => true,
+//             'message' => $duplicates ? 'Some subjects were skipped due to duplicates' : 'All subjects uploaded successfully',
+//             'success_count' => $successCount,
+//             'duplicates' => $duplicates
+//         ], $duplicates ? 207 : 200);
+
+//     } catch (\Exception $e) {
+//         DB::rollBack();
+//         return response()->json([
+//             'success' => false,
+//             'error' => 'Database error',
+//             'message' => $e->getMessage()
+//         ], 500);
+//     }
+// }
+
+    // Controller method to store the data
+
+    // public function storeFromExcel(Request $request)
+    // {
+    //     // Extract the subjects from the request
+    //     $subjects = $request->input('sub');
+    
+    //     foreach ($subjects as $subject) {
+    //         // Find the program code by matching the program name from the excel data
+    //         $program = Programs::where('name', $subject['program_name'])->first();
+    
+    //         if ($program) {
+    //             // If the program exists, use the program code
+    //             $programCode = $program->code;
+    //         } else {
+    //             // If the program does not exist, skip this row or handle the error
+    //             // You could also log it or return an error if necessary
+    //             continue;
+    //         }
+    
+    //         // Create the subject record using the program code
+    //         Subjects::create([
+    //             'program_code' => $programCode,
+    //             'category' => $subject['category'],
+    //             'department' => $subject['department'],
+    //             'year_level' => $subject['year_level'],
+    //             'period' => $subject['period'],
+    //             'name' => $subject['name'],
+    //             'code' => $subject['code'],
+    //             'prerequisites' => $subject['prerequisites'],
+    //             'lec' => $subject['lec'],
+    //             'lab' => $subject['lab'],
+    //             'unit' => $subject['unit'],
+    //         ]);
+    //     }
+    
+    //     // Return a success message
+    //     return redirect()->back()->with('message', 'Subjects have been successfully uploaded.');
+    // }
+
+    public function storeFromExcel(Request $request)
+{
+    // Log the incoming request to see the data
+    Log::info($request->all());
+
+    $subjects = $request->input('subjects');
+    $duplicates = [];
+    $successCount = 0;
+
+    DB::beginTransaction();
+    try {
+        foreach ($subjects as $subject) {
+            // Log each subject to ensure it contains program_name
+            Log::info('Processing subject: ', $subject);
+
+            // Look up the program by its name
+            $program = Programs::where('name', $subject['program_code'])->first();
+            Log::info($program);
+            if ($program) {
+                // If the program exists, use the program code
+                $programCode = $program->code;
+            } else {
+                // If the program does not exist, log the error or skip this subject
+                $duplicates[] = [
+                    'program_name' => $subject['program_name'],
+                    'error' => 'Program not found in database',
+                    'subject_code' => $subject['code'],
+                ];
+                continue; // Skip this row as the program doesn't exist
+            }
+
+            
+// ✅ Check for duplicate subject code before insert
+$existingSubject = Subjects::where('code', $subject['code'])->first();
+if ($existingSubject) {
+    $duplicates[] = [
+        'code' => $subject['code'],
+        'name' => $subject['name'],
+        'error' => 'Duplicate subject code',
+    ];
+    continue;
+}
+
+            // Create the subject record using the program code
+            Subjects::create([
+                'program_code' => $programCode,  // Save the program code in the subject record
+                'category' => $subject['category'],
+                'department' => $subject['department'],
+                'year_level' => $subject['year_level'],
+                'period' => $subject['period'],
+                'name' => $subject['name'],
+                'code' => $subject['code'],
+                'prerequisites' => $subject['prerequisites'],
+                'lec' => $subject['lec'],
+                'lab' => $subject['lab'],
+                'unit' => $subject['unit'],
+                'total' => $subject['lec'] + $subject['lab'],  // Assuming total is lec + lab
+            ]);
+
+            $successCount++;
+        }
+
+        DB::commit();
+
+        return response()->json([
+            'success' => true,
+            'message' => $duplicates ? 'Some subjects were skipped due to missing programs' : 'All subjects uploaded successfully',
+            'success_count' => $successCount,
+            'duplicates' => $duplicates
+        ], $duplicates ? 207 : 200);
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return response()->json([
+            'success' => false,
+            'error' => 'Database error',
+            'message' => $e->getMessage()
+        ], 500);
+    }
+}
+    
+
     public function edit(SubjectRequest $request) {
 
         $items = Subjects::where('id', $request->id)->first();

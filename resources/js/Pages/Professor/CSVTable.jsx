@@ -397,9 +397,14 @@ export default function CSVTable() {
                         hover:file:bg-blue-700
                         cursor-pointer"
                     />
-                    <Button className="">
-                        <Download /> Download Format
-                    </Button>
+                    <div className="flex flex-col justify-end items-end space-x-2">
+                        <Button className="start-en">
+                            <Download /> Download Format
+                        </Button>
+                        <p className="text-sm text-gray-600">
+                            Use the provided format to ensure accurate data
+                        </p>
+                    </div>
                 </div>
                 {files.length > 0 && (
                     <>

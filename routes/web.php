@@ -183,6 +183,9 @@ Route::delete('/program/{id}/delete', [ProgramController::class, 'destroy'])->na
 
 Route::get('/subject', [SubjectController::class, 'index'])->name("admin.subject");
 Route::post('/subject/store', [SubjectController::class, 'store'])->name("admin.subject.store");
+
+Route::post('/subject/store-from-excel', [SubjectController::class, 'storeFromExcel'])->name("admin.subject.storeFromExcel");
+
 Route::post('/subject/{id}/update', [SubjectController::class, 'edit'])->name("admin.subject.update");
 Route::delete('/subject/{id}/delete', [SubjectController::class, 'destroy'])->name("admin.subject.destroy");
 Route::post('/subject/assigned', [CourseSelectionController::class, 'store'])->name('admin.course-section.add');

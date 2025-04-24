@@ -21,7 +21,7 @@ return new class extends Migration
 
         DB::table('file_format')->insert([
             'title' => 'Subject',
-            'file' => '../../resources/assets/format/Subject.xlsx', 
+            'file' => "storage/format/Subject.xlsx",
             'created_at' => now(),
             'updated_at' => now(),
         ]);
