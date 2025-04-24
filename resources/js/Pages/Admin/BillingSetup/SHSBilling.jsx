@@ -130,9 +130,17 @@ export default function SHSBilling({ shs_fee = [] }) {
                                         </DropdownMenuTrigger>
                                         <DropdownMenuContent>
                                             <DropdownMenuItem
-                                                onClick={() =>
-                                                    handleEdit(shs_fee)
-                                                }
+                                                // onClick={() =>
+                                                //     handleEdit(shs_fee)
+                                                // }
+                                                onClick={() => {
+                                                    document.activeElement?.blur();
+                                                    setTimeout(
+                                                        () =>
+                                                            handleEdit(shs_fee),
+                                                        0
+                                                    );
+                                                }}
                                             >
                                                 <Edit />
                                                 Edit
@@ -142,9 +150,17 @@ export default function SHSBilling({ shs_fee = [] }) {
                                                 Download
                                             </DropdownMenuItem>
                                             <DropdownMenuItem
-                                                onClick={() =>
-                                                    handleDel(shs_fee)
-                                                }
+                                                // onClick={() =>
+                                                //     handleDel(shs_fee)
+                                                // }
+                                                onClick={() => {
+                                                    document.activeElement?.blur();
+                                                    setTimeout(
+                                                        () =>
+                                                            handleDel(shs_fee),
+                                                        0
+                                                    );
+                                                }}
                                             >
                                                 <Trash />
                                                 Delete

@@ -40,7 +40,7 @@ import FilterDropdown from "@/components/FilterDropdown";
 import useDebouncedSearch from "@/components/utils/useDebounceSearch";
 import { Download } from "lucide-react";
 import excel from "../../../assets/excel.png";
-import UploadButton from "@/components/uploadButton";
+import ProgramExcel from "./Excel/ProgramExcel";
 
 export default function Program({ program, filters }) {
     const tableHeader = [
@@ -251,6 +251,15 @@ export default function Program({ program, filters }) {
         );
     };
 
+    const handleDownloadFormat = () => {
+        const link = document.createElement("a");
+        link.href = "/storage/format/Program.xlsx";
+        link.setAttribute("download", "program.xlsx");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
     return (
         <Layout>
             <div className="flex items-end justify-between mb-7">
@@ -284,10 +293,14 @@ export default function Program({ program, filters }) {
                             <SheetHeader>
                                 <SheetTitle>Program</SheetTitle>
                                 <SheetDescription className="space-y-2">
-                                    <Button className="p-7">
-                                        <Download /> Download Format
+                                    <Button
+                                        className="p-7"
+                                        onClick={handleDownloadFormat}
+                                    >
+                                        <Download />
+                                        Download Format
                                     </Button>
-                                    <UploadButton></UploadButton>
+                                    <ProgramExcel />
                                 </SheetDescription>
                             </SheetHeader>
                         </SheetContent>

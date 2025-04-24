@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Card,
     CardContent,
@@ -58,7 +58,17 @@ export default function OtherBilling({ other_fee = [] }) {
         description: "",
     });
 
+    useEffect(() => {
+        if (!edit && !del) {
+            if (document.body) {
+                document.body.style.pointerEvents = "auto";
+            }
+            document.activeElement?.blur(); // clear any sticky focus
+        }
+    }, [edit, del]);
+
     const handleEdit = (other_fee) => {
+        document.activeElement?.blur();
         setItemId(other_fee);
         setEdit(true);
         setData({
@@ -122,9 +132,19 @@ export default function OtherBilling({ other_fee = [] }) {
                                         </DropdownMenuTrigger>
                                         <DropdownMenuContent>
                                             <DropdownMenuItem
-                                                onClick={() =>
-                                                    handleEdit(other_fee)
-                                                }
+                                                // onClick={() =>
+                                                //     handleEdit(other_fee)
+                                                // }
+                                                onClick={() => {
+                                                    document.activeElement?.blur();
+                                                    setTimeout(
+                                                        () =>
+                                                            handleEdit(
+                                                                other_fee
+                                                            ),
+                                                        0
+                                                    );
+                                                }}
                                             >
                                                 <Edit />
                                                 Edit
@@ -134,9 +154,19 @@ export default function OtherBilling({ other_fee = [] }) {
                                                 Download
                                             </DropdownMenuItem>
                                             <DropdownMenuItem
-                                                onClick={() =>
-                                                    handleDel(other_fee)
-                                                }
+                                                onClick={() => {
+                                                    document.activeElement?.blur();
+                                                    setTimeout(
+                                                        () =>
+                                                            handleDel(
+                                                                other_fee
+                                                            ),
+                                                        0
+                                                    );
+                                                }}
+                                                // onClick={() =>
+                                                //     handleDel(other_fee)
+                                                // }
                                             >
                                                 <Trash />
                                                 Delete
@@ -204,121 +234,114 @@ export default function OtherBilling({ other_fee = [] }) {
                     <NoData />
                 </div>
             )}
-            {edit && (
-                <Dialog open={edit} onOpenChange={(open) => setEdit(open)}>
-                    <DialogContent>
-                        <DialogHeader>
-                            <DialogTitle>Edit Fee</DialogTitle>
-                            <DialogDescription>
-                                <div className="mt-3 grid grid-cols-2 gap-x-8 gap-y-4">
-                                    <div>
-                                        <Label htmlFor="title">Type</Label>
-                                        <Select
-                                            className="h-auto"
-                                            name="payment_type"
-                                            value={data.payment_type}
-                                            onValueChange={(value) =>
-                                                setData("payment_type", value)
-                                            }
-                                        >
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Select" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="fee">
-                                                    Fee
-                                                </SelectItem>
-                                                <SelectItem value="discount">
-                                                    Discount
-                                                </SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
-                                    <div>
-                                        <Label htmlFor="title">Name</Label>
-                                        <Input
-                                            name="name"
-                                            type="text"
-                                            className="text-black"
-                                            value={data.name}
-                                            onChange={(e) =>
-                                                setData("name", e.target.value)
-                                            }
-                                        />
-                                    </div>
-                                    <div>
-                                        <Label htmlFor="amount">Amount</Label>
-                                        <Input
-                                            name="amount"
-                                            type="number"
-                                            className="text-black"
-                                            value={data.amount}
-                                            onChange={(e) =>
-                                                setData(
-                                                    "amount",
-                                                    e.target.value
-                                                )
-                                            }
-                                        />
-                                    </div>
-                                    <div className="col-span-2">
-                                        <Label htmlFor="description">
-                                            Description
-                                        </Label>
-                                        <Textarea
-                                            name="description"
-                                            type="number"
-                                            className="text-black"
-                                            value={data.description}
-                                            onChange={(e) =>
-                                                setData(
-                                                    "description",
-                                                    e.target.value
-                                                )
-                                            }
-                                        />
-                                    </div>
+            <Dialog open={edit} onOpenChange={setEdit}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Edit Fee</DialogTitle>
+                        <DialogDescription>
+                            <div className="mt-3 grid grid-cols-2 gap-x-8 gap-y-4">
+                                <div>
+                                    <Label htmlFor="title">Type</Label>
+                                    <Select
+                                        className="h-auto"
+                                        name="payment_type"
+                                        value={data.payment_type}
+                                        onValueChange={(value) =>
+                                            setData("payment_type", value)
+                                        }
+                                    >
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="fee">
+                                                Fee
+                                            </SelectItem>
+                                            <SelectItem value="discount">
+                                                Discount
+                                            </SelectItem>
+                                        </SelectContent>
+                                    </Select>
                                 </div>
+                                <div>
+                                    <Label htmlFor="title">Name</Label>
+                                    <Input
+                                        name="name"
+                                        type="text"
+                                        className="text-black"
+                                        value={data.name}
+                                        onChange={(e) =>
+                                            setData("name", e.target.value)
+                                        }
+                                    />
+                                </div>
+                                <div>
+                                    <Label htmlFor="amount">Amount</Label>
+                                    <Input
+                                        name="amount"
+                                        type="number"
+                                        className="text-black"
+                                        value={data.amount}
+                                        onChange={(e) =>
+                                            setData("amount", e.target.value)
+                                        }
+                                    />
+                                </div>
+                                <div className="col-span-2">
+                                    <Label htmlFor="description">
+                                        Description
+                                    </Label>
+                                    <Textarea
+                                        name="description"
+                                        type="number"
+                                        className="text-black"
+                                        value={data.description}
+                                        onChange={(e) =>
+                                            setData(
+                                                "description",
+                                                e.target.value
+                                            )
+                                        }
+                                    />
+                                </div>
+                            </div>
+                            <Button
+                                className="mt-3"
+                                onClick={handleUpdateSubmit}
+                            >
+                                Save
+                            </Button>
+                            ;
+                        </DialogDescription>
+                    </DialogHeader>
+                </DialogContent>
+            </Dialog>
+            <Dialog open={del} onOpenChange={(open) => setDel(open)}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Delete Fee</DialogTitle>
+                        <DialogDescription>
+                            <div className="my-3">
+                                Are you sure to delete this fee?
+                            </div>
+                            <div className="flex justify-end gap-2">
                                 <Button
-                                    className="mt-3"
-                                    onClick={handleUpdateSubmit}
+                                    variant="outline"
+                                    onClick={handleSubmitDel}
                                 >
-                                    Save
+                                    Yes
                                 </Button>
-                                ;
-                            </DialogDescription>
-                        </DialogHeader>
-                    </DialogContent>
-                </Dialog>
-            )}{" "}
-            {del && (
-                <Dialog open={del} onOpenChange={(open) => setDel(open)}>
-                    <DialogContent>
-                        <DialogHeader>
-                            <DialogTitle>Delete Fee</DialogTitle>
-                            <DialogDescription>
-                                <div className="my-3">
-                                    Are you sure to delete this fee?
-                                </div>
-                                <div className="flex justify-end gap-2">
-                                    <Button
-                                        variant="outline"
-                                        onClick={handleSubmitDel}
-                                    >
-                                        Yes
-                                    </Button>
-                                    <Button
-                                        className="bg-red-600"
-                                        onClick={() => setDel(false)}
-                                    >
-                                        No
-                                    </Button>
-                                </div>
-                            </DialogDescription>
-                        </DialogHeader>
-                    </DialogContent>
-                </Dialog>
-            )}
+                                <Button
+                                    className="bg-red-600"
+                                    onClick={() => setDel(false)}
+                                >
+                                    No
+                                </Button>
+                            </div>
+                        </DialogDescription>
+                    </DialogHeader>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }

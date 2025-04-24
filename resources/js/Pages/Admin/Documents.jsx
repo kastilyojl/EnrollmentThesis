@@ -2,7 +2,7 @@ import Layout from "@/components/layout";
 import TableData from "@/components/table";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
 import { Label } from "@/components/ui/label";
@@ -121,7 +121,17 @@ export default function Documents({ student, filters }) {
         });
     };
 
+    // useEffect(() => {
+    //     if (!add && !del) {
+    //         if (document.body) {
+    //             document.body.style.pointerEvents = "auto";
+    //         }
+    //         document.activeElement?.blur(); // clear any sticky focus
+    //     }
+    // }, [add, del]);
+
     const handleEdit = (student) => {
+        // document.activeElement?.blur();
         student = document.find((s) => s.id === student.id);
         setItemId(student);
         console.log("student Data", student);

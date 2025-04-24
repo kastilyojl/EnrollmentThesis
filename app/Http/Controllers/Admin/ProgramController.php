@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ProgramRequest;
 use App\Models\Programs;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class ProgramController extends Controller
@@ -52,6 +53,61 @@ class ProgramController extends Controller
         ]);
     }
 
+    public function storeFromExcel(Request $request)
+    {
+        $programs = $request->input('programs'); // assuming front sends 'programs' not 'subjects'
+        $duplicates = [];
+        $successCount = 0;
+    
+        DB::beginTransaction();
+        try {
+            foreach ($programs as $program) {
+    
+                // ❌ Check for duplicate program code
+                $existingProgram = Programs::where('code', $program['code'])->first();
+                if ($existingProgram) {
+                    $duplicates[] = [
+                        'code' => $program['code'],
+                        'name' => $program['name'],
+                        'error' => 'Duplicate program code',
+                    ];
+                    continue;
+                }
+    
+                // ✅ Save program
+                Programs::create([
+                    'code' => $program['code'],
+                    'name' => $program['name'],
+                    'status' => $program['status'] ?? 'Active',
+                    'campus' => $program['campus'],
+                    'duration' => $program['duration'],
+                    'department' => $program['department'],
+                ]);
+    
+                $successCount++;
+            }
+    
+            DB::commit();
+    
+            return response()->json([
+                'success' => true,
+                'message' => $duplicates
+                    ? 'Some programs were skipped due to missing prerequisites or duplicates'
+                    : 'All programs uploaded successfully',
+                'success_count' => $successCount,
+                'duplicates' => $duplicates,
+            ], $duplicates ? 207 : 200);
+    
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'error' => 'Database error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+    
     public function edit(ProgramRequest $request) {
 
         $items = Programs::where('id', $request->id)->first();

@@ -342,7 +342,7 @@ const UploadButton = () => {
             });
 
             if (response.data.duplicates?.length > 0) {
-                toast("❗ Duplicates Found", {
+                toast("Some subjects were skipped", {
                     description: (
                         <div className="text-gray-900 mx-4">
                             <p>
@@ -351,8 +351,13 @@ const UploadButton = () => {
                             </p>
                             <div className="mt-2 max-h-40 overflow-y-auto">
                                 {response.data.duplicates.map((dup, i) => (
-                                    <div key={i} className="py-1">
-                                        • {dup.code} - {dup.name}
+                                    <div key={i} className="py-1 text-red-600">
+                                        • {dup.code ?? "-"} -{" "}
+                                        {dup.name ?? dup.program_name ?? "-"}
+                                        <br />
+                                        <span className="text-sm text-gray-700">
+                                            {dup.error}
+                                        </span>
                                     </div>
                                 ))}
                             </div>
@@ -368,6 +373,7 @@ const UploadButton = () => {
                         </span>
                     ),
                 });
+                setDialogOpen(false);
             }
 
             setDialogOpen(false);

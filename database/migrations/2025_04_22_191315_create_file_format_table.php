@@ -20,10 +20,24 @@ return new class extends Migration
         });
 
         DB::table('file_format')->insert([
-            'title' => 'Subject',
-            'file' => "storage/format/Subject.xlsx",
-            'created_at' => now(),
-            'updated_at' => now(),
+            [
+                'title' => 'Subject',
+                'file' => 'storage/format/Subject.xlsx',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'title' => 'Program',
+                'file' => 'storage/format/Program.xlsx',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'title' => 'Grades',
+                'file' => 'storage/format/Grades.xlsx',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
         ]);
     }
 

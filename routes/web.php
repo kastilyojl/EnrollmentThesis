@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\EmailController;
 use App\Http\Controllers\Admin\EnrollmentConfirmationController;
 use App\Http\Controllers\Admin\EnrollmentController;
 use App\Http\Controllers\Admin\GeneralSettingController;
+use App\Http\Controllers\Admin\GradesController;
 use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\ProgramController;
 use App\Http\Controllers\Admin\SectionController;
@@ -22,6 +23,7 @@ use App\Http\Controllers\PublicController;
 use App\Http\Controllers\Student\ApplicationController;
 use App\Http\Controllers\Student\GeneralController;
 use App\Http\Middleware\VerifyAdminIp;
+use App\Models\Admin\GradeController;
 use App\Models\Campus;
 use App\Models\FAQ;
 use App\Models\Programs;
@@ -178,8 +180,11 @@ Route::prefix('curriculum')->group(function () {
 
 Route::get('/program', [ProgramController::class, 'index'])->name("admin.program");
 Route::post('/program/store', [ProgramController::class, 'store'])->name("admin.program.store");
+Route::post('/program/store-from-excel', [ProgramController::class, 'storeFromExcel'])->name("admin.program.storeFromExcel");
+
 Route::post('/program/{id}/update', [ProgramController::class, 'edit'])->name("admin.program.update");
 Route::delete('/program/{id}/delete', [ProgramController::class, 'destroy'])->name("admin.program.destroy");
+
 
 Route::get('/subject', [SubjectController::class, 'index'])->name("admin.subject");
 Route::post('/subject/store', [SubjectController::class, 'store'])->name("admin.subject.store");
@@ -225,13 +230,15 @@ Route::get('enrollment/final-step', [EnrollmentConfirmationController::class, 'i
 Route::post('enrollment/assign-section', [EnrollmentConfirmationController::class, 'insertStudentSection'])->name('enrollment.insert.section');
 
 Route::prefix('grades')->group(function () {
+    Route::get('/', [GradesController::class, 'index'])->name('upload.grades');
+    Route::post('/store-from-excel', [GradesController::class, 'storeFromExcel'])->name("admin.grades.storeFromExcel");
+
     // Route::get('/csv', [CSVController::class, 'index'])->name('index.csv');
     // Route::post('/upload-csv', [CSVController::class, 'upload'])->name('upload.csv');
     // Route::post('/store', [CSVController::class, 'store'])->name('grades.store');
     Route::post('/upload-csv-bulk', [CSVController::class, 'bulkUpload'])->name('upload.csv.bulk');
     Route::get('/csv', [CSVController::class, 'index'])->name('index.csv');
     Route::post('/csv/store', [CSVController::class, 'store'])->name('grades.store');
-
     Route::get('/submitted-grade', [CSVController::class, 'grade'])->name('index.submitted.grade');
 });
 

@@ -11,7 +11,7 @@
     border-radius: 0.5em;
     overflow: hidden;
     z-index: 1;
-    box-shadow: 4px 8px 10px -3px rgba(0, 0, 0, 0.356);
+    box-shadow: 2px 2px 2px -3px rgba(0, 0, 0, 0.356);
     transition: all 250ms;
     cursor: pointer;
 }
@@ -39,6 +39,6 @@
     transition: all 350ms;
 }
 
-.container-btn-file:hover::before {
-    width: 100%;
+.container-btn-file:hover {
+    background-color: #408b56;
 }

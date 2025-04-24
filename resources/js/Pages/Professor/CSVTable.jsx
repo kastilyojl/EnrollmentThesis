@@ -244,6 +244,7 @@
 
 import Layout from "@/components/layout";
 import { Button } from "@/components/ui/button";
+import UploadButton from "@/components/uploadButton";
 import { router, usePage } from "@inertiajs/react";
 import { Download } from "lucide-react";
 import React, { useState, useEffect } from "react";
@@ -361,7 +362,8 @@ export default function CSVTable() {
 
     return (
         <Layout>
-            <div className="mb-7">
+            <UploadButton />
+            {/* <div className="mb-7">
                 <h1 className="text-2xl font-bold">Upload Grades</h1>
 
                 {success && (
@@ -511,7 +513,7 @@ export default function CSVTable() {
                         </>
                     )}
                 </div>
-            )}
+            )} */}
         </Layout>
     );
 }

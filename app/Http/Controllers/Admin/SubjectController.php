@@ -195,7 +195,6 @@ class SubjectController extends Controller
 
     public function storeFromExcel(Request $request)
 {
-    // Log the incoming request to see the data
     Log::info($request->all());
 
     $subjects = $request->input('subjects');
@@ -205,51 +204,62 @@ class SubjectController extends Controller
     DB::beginTransaction();
     try {
         foreach ($subjects as $subject) {
-            // Log each subject to ensure it contains program_name
             Log::info('Processing subject: ', $subject);
 
-            // Look up the program by its name
+            // Lookup program by name
             $program = Programs::where('name', $subject['program_code'])->first();
-            Log::info($program);
-            if ($program) {
-                // If the program exists, use the program code
-                $programCode = $program->code;
-            } else {
-                // If the program does not exist, log the error or skip this subject
+            if (!$program) {
                 $duplicates[] = [
-                    'program_name' => $subject['program_name'],
+                    'program_name' => $subject['program_code'],
                     'error' => 'Program not found in database',
                     'subject_code' => $subject['code'],
                 ];
-                continue; // Skip this row as the program doesn't exist
+                continue;
             }
 
-            
-// ✅ Check for duplicate subject code before insert
-$existingSubject = Subjects::where('code', $subject['code'])->first();
-if ($existingSubject) {
-    $duplicates[] = [
-        'code' => $subject['code'],
-        'name' => $subject['name'],
-        'error' => 'Duplicate subject code',
-    ];
-    continue;
-}
+            $programCode = $program->code;
 
-            // Create the subject record using the program code
+            // Handle prerequisites
+            $prereqCode = null;
+            if (!empty($subject['prerequisites']) && strtolower(trim($subject['prerequisites'])) !== 'none') {
+                $prerequisiteSubject = Subjects::where('name', $subject['prerequisites'])->first();
+
+                if ($prerequisiteSubject) {
+                    $prereqCode = $prerequisiteSubject->code;
+                } else {
+                    $duplicates[] = [
+                        'code' => $subject['code'],
+                        'name' => $subject['name'],
+                        'error' => "Prerequisite subject '{$subject['prerequisites']}' not found",
+                    ];
+                    continue;
+                }
+            }
+
+            // Check for duplicate subject code
+            $existingSubject = Subjects::where('code', $subject['code'])->first();
+            if ($existingSubject) {
+                $duplicates[] = [
+                    'code' => $subject['code'],
+                    'name' => $subject['name'],
+                    'error' => 'Duplicate subject code',
+                ];
+                continue;
+            }
+
+            // Save subject
             Subjects::create([
-                'program_code' => $programCode,  // Save the program code in the subject record
+                'program_code' => $programCode,
                 'category' => $subject['category'],
                 'department' => $subject['department'],
                 'year_level' => $subject['year_level'],
                 'period' => $subject['period'],
                 'name' => $subject['name'],
                 'code' => $subject['code'],
-                'prerequisites' => $subject['prerequisites'],
+                'prerequisites' => $prereqCode, // now using code of subject
                 'lec' => $subject['lec'],
                 'lab' => $subject['lab'],
                 'unit' => $subject['unit'],
-                'total' => $subject['lec'] + $subject['lab'],  // Assuming total is lec + lab
             ]);
 
             $successCount++;
@@ -259,9 +269,11 @@ if ($existingSubject) {
 
         return response()->json([
             'success' => true,
-            'message' => $duplicates ? 'Some subjects were skipped due to missing programs' : 'All subjects uploaded successfully',
+            'message' => $duplicates
+                ? 'Some subjects were skipped due to missing programs, prerequisites, or duplicates'
+                : 'All subjects uploaded successfully',
             'success_count' => $successCount,
-            'duplicates' => $duplicates
+            'duplicates' => $duplicates,
         ], $duplicates ? 207 : 200);
 
     } catch (\Exception $e) {
@@ -273,7 +285,7 @@ if ($existingSubject) {
         ], 500);
     }
 }
-    
+
 
     public function edit(SubjectRequest $request) {
 

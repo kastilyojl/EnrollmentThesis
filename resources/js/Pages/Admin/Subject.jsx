@@ -52,7 +52,7 @@ import useDebouncedSearch from "@/components/utils/useDebounceSearch";
 import { getFormattedDateTime } from "@/components/utils/formatDateTime";
 import { Download, Trash } from "lucide-react";
 import excel from "../../../assets/excel.png";
-import UploadButton from "@/components/uploadButton";
+import SubjectExcel from "./Excel/SubjectExcel";
 
 export default function Subjects({ program = [], subject, filters }) {
     const tableHeader = [
@@ -564,7 +564,7 @@ export default function Subjects({ program = [], subject, filters }) {
                                     >
                                         <Download /> Download Format
                                     </Button>
-                                    <UploadButton></UploadButton>
+                                    <SubjectExcel />
                                 </SheetDescription>
                             </SheetHeader>
                         </SheetContent>

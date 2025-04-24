@@ -91,9 +91,15 @@ export default function TableData({
                                         </DropdownMenuTrigger>
                                         <DropdownMenuContent>
                                             <DropdownMenuItem
-                                                onClick={() =>
-                                                    handleEdit(program)
-                                                }
+                                                onClick={() => {
+                                                    // Defer to let Dropdown close before Dialog opens
+                                                    document.activeElement?.blur();
+                                                    setTimeout(
+                                                        () =>
+                                                            handleEdit(program),
+                                                        0
+                                                    );
+                                                }}
                                             >
                                                 <Edit />
                                                 Edit
@@ -106,9 +112,16 @@ export default function TableData({
                                             )}
                                             {showDelete && (
                                                 <DropdownMenuItem
-                                                    onClick={() =>
-                                                        handleDel(program)
-                                                    }
+                                                    onClick={() => {
+                                                        document.activeElement?.blur();
+                                                        setTimeout(
+                                                            () =>
+                                                                handleDel(
+                                                                    program
+                                                                ),
+                                                            0
+                                                        );
+                                                    }}
                                                 >
                                                     <Trash />
                                                     Delete

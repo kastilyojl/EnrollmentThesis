@@ -180,11 +180,21 @@ export default function CollegeBilling({ college_fee = [] }) {
                                                     </DropdownMenuTrigger>
                                                     <DropdownMenuContent>
                                                         <DropdownMenuItem
-                                                            onClick={() =>
-                                                                handleProgramEdit(
-                                                                    college_fee
-                                                                )
-                                                            }
+                                                            // onClick={() =>
+                                                            //     handleProgramEdit(
+                                                            //         college_fee
+                                                            //     )
+                                                            // }
+                                                            onClick={() => {
+                                                                document.activeElement?.blur();
+                                                                setTimeout(
+                                                                    () =>
+                                                                        handleProgramEdit(
+                                                                            college_fee
+                                                                        ),
+                                                                    0
+                                                                );
+                                                            }}
                                                         >
                                                             <Edit />
                                                             Edit
@@ -194,11 +204,21 @@ export default function CollegeBilling({ college_fee = [] }) {
                                                             Download
                                                         </DropdownMenuItem>
                                                         <DropdownMenuItem
-                                                            onClick={() =>
-                                                                handleDel(
-                                                                    college_fee
-                                                                )
-                                                            }
+                                                            // onClick={() =>
+                                                            //     handleDel(
+                                                            //         college_fee
+                                                            //     )
+                                                            // }
+                                                            onClick={() => {
+                                                                document.activeElement?.blur();
+                                                                setTimeout(
+                                                                    () =>
+                                                                        handleDel(
+                                                                            college_fee
+                                                                        ),
+                                                                    0
+                                                                );
+                                                            }}
                                                         >
                                                             <Trash />
                                                             Delete
@@ -330,11 +350,21 @@ export default function CollegeBilling({ college_fee = [] }) {
                                                     </DropdownMenuTrigger>
                                                     <DropdownMenuContent>
                                                         <DropdownMenuItem
-                                                            onClick={() =>
-                                                                handleUnitEdit(
-                                                                    college_fee
-                                                                )
-                                                            }
+                                                            // onClick={() =>
+                                                            //     handleUnitEdit(
+                                                            //         college_fee
+                                                            //     )
+                                                            // }
+                                                            onClick={() => {
+                                                                document.activeElement?.blur();
+                                                                setTimeout(
+                                                                    () =>
+                                                                        handleUnitEdit(
+                                                                            college_fee
+                                                                        ),
+                                                                    0
+                                                                );
+                                                            }}
                                                         >
                                                             <Edit />
                                                             Edit
@@ -344,11 +374,21 @@ export default function CollegeBilling({ college_fee = [] }) {
                                                             Download
                                                         </DropdownMenuItem>
                                                         <DropdownMenuItem
-                                                            onClick={() =>
-                                                                handleDel(
-                                                                    college_fee
-                                                                )
-                                                            }
+                                                            // onClick={() =>
+                                                            //     handleDel(
+                                                            //         college_fee
+                                                            //     )
+                                                            // }
+                                                            onClick={() => {
+                                                                document.activeElement?.blur();
+                                                                setTimeout(
+                                                                    () =>
+                                                                        handleDel(
+                                                                            college_fee
+                                                                        ),
+                                                                    0
+                                                                );
+                                                            }}
                                                         >
                                                             <Trash />
                                                             Delete
