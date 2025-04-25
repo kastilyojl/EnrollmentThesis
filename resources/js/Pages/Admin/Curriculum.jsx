@@ -137,9 +137,15 @@ export default function Curriculum({ program = [] }) {
                                         </DropdownMenuTrigger>
                                         <DropdownMenuContent>
                                             <DropdownMenuItem
-                                                onClick={() =>
-                                                    handleEdit(program)
-                                                }
+                                                onClick={() => {
+                                                    // Defer to let Dropdown close before Dialog opens
+                                                    document.activeElement?.blur();
+                                                    setTimeout(
+                                                        () =>
+                                                            handleEdit(program),
+                                                        0
+                                                    );
+                                                }}
                                             >
                                                 <View />
                                                 View
@@ -148,10 +154,10 @@ export default function Curriculum({ program = [] }) {
                                                 <Download />
                                                 Download
                                             </DropdownMenuItem>
-                                            <DropdownMenuItem>
+                                            {/* <DropdownMenuItem>
                                                 <Trash />
                                                 Delete
-                                            </DropdownMenuItem>
+                                            </DropdownMenuItem> */}
                                         </DropdownMenuContent>
                                     </DropdownMenu>
                                 </div>

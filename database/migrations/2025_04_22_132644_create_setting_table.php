@@ -104,8 +104,8 @@ return new class extends Migration
                 'title' => 'Grades',
                 'items' => [
                     ['title' => 'Upload Grades', 'route' => 'upload.grades'],
-                    ['title' => 'Submitted Grades', 'route' => 'index.submitted.grade'],
-                    ['title' => 'Grade Change Requests', 'route' => '#'],
+                    ['title' => 'Submitted Grades', 'route' => 'index.submitted.grade.admin'],
+                    ['title' => 'Grade Change Requests', 'route' => 'index.change.grade.admin'],
                 ],
             ],
             [
@@ -162,9 +162,8 @@ return new class extends Migration
             [
                 'title' => 'Grades',
                 'items' => [
-                    ['title' => 'Upload', 'route' => 'professor.upload.grades'],
-                    ['title' => 'List', 'route' => 'professor.grades.list'],
-                    ['title' => 'Request', 'route' => 'professor.grade.requests'],
+                    ['title' => 'Upload Grades', 'route' => 'upload.grades'],
+                    ['title' => 'Submitted Grades', 'route' => 'index.submitted.grade.professor'],
                 ],
             ],
         ];

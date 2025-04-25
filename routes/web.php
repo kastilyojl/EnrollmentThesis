@@ -231,7 +231,14 @@ Route::post('enrollment/assign-section', [EnrollmentConfirmationController::clas
 
 Route::prefix('grades')->group(function () {
     Route::get('/', [GradesController::class, 'index'])->name('upload.grades');
+    Route::post('/grade/edit-request', [GradesController::class, 'editRequest'])->name('prof.request.edit.grade');
     Route::post('/store-from-excel', [GradesController::class, 'storeFromExcel'])->name("admin.grades.storeFromExcel");
+    Route::post('/admin/grades/update-status/{id}', [GradesController::class, 'updateGradeStatus'])->name("update.grade.status");;
+    Route::get('/submitted-professor-grade', [GradesController::class, 'submittedGradeProfessor'])->name('index.submitted.grade.professor');
+    Route::get('/submitted-admin-grade', [GradesController::class, 'submittedGradeAdmin'])->name('index.submitted.grade.admin');
+    Route::get('/change-admin-grade', [GradesController::class, 'changeGradeAdmin'])->name('index.change.grade.admin');
+    Route::get('/change-prof-grade', [GradesController::class, 'changeGradeProf'])->name('index.change.grade.professor');
+
 
     // Route::get('/csv', [CSVController::class, 'index'])->name('index.csv');
     // Route::post('/upload-csv', [CSVController::class, 'upload'])->name('upload.csv');
@@ -239,7 +246,7 @@ Route::prefix('grades')->group(function () {
     Route::post('/upload-csv-bulk', [CSVController::class, 'bulkUpload'])->name('upload.csv.bulk');
     Route::get('/csv', [CSVController::class, 'index'])->name('index.csv');
     Route::post('/csv/store', [CSVController::class, 'store'])->name('grades.store');
-    Route::get('/submitted-grade', [CSVController::class, 'grade'])->name('index.submitted.grade');
+    // Route::get('/submitted-grade', [CSVController::class, 'grade'])->name('index.submitted.grade');
 });
 
 Route::prefix('display')->group(function () {
