@@ -3,30 +3,43 @@ import React from "react";
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
     TableHead,
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import SearchFilter from "@/components/SearchFilter";
+import FilterDropdown from "@/components/FilterDropdown";
+import { Button } from "@/components/ui/button";
+import Toggle from "@/components/Toggle";
 
-export default function SubmittedGrade() {
+export default function SubmittedGrade({ grades = [], gradeSidebarEnabled }) {
     return (
         <Layout>
             <div className="flex items-end justify-between mb-7">
                 <h1 className="text-2xl font-bold">Submitted Grade</h1>
             </div>
 
-            <div className="flex items-center gap-2">
-                <Table className="w-full">
-                    <TableCaption>A list of student grades.</TableCaption>
+            <div className="flex justify-between gap-4 mb-4">
+                <div className="flex items-center gap-2">
+                    <SearchFilter />
+                    <FilterDropdown />
+                </div>
+                <div className="flex items-center gap-2 font-medium text-lg">
+                    <Toggle enabled={gradeSidebarEnabled} />
+                    Student View
+                </div>
+            </div>
+
+            <div className="w-full overflow-x-auto rounded-lg border">
+                <Table className="w-full table-fixed">
                     <TableHeader>
                         <TableRow>
                             <TableHead className="w-[14.28%] text-center">
                                 Student ID
                             </TableHead>
                             <TableHead className="w-[14.28%] text-center">
-                                Name
+                                Student Name
                             </TableHead>
                             <TableHead className="w-[14.28%] text-center">
                                 Year Level
@@ -46,309 +59,46 @@ export default function SubmittedGrade() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        <TableRow>
-                            <TableCell className="w-[14.28%] text-center font-medium">
-                                C-01
-                            </TableCell>
-                            <TableCell className="w-[14.28%] text-center">
-                                John Lester B. Castillo
-                            </TableCell>
-                            <TableCell className="w-[14.28%] text-center">
-                                4th Year
-                            </TableCell>
-                            <TableCell className="w-[14.28%] text-center">
-                                BSCS
-                            </TableCell>
-                            <TableCell className="w-[14.28%] text-center">
-                                2nd Semester
-                            </TableCell>
-                            <TableCell className="w-[14.28%] text-center">
-                                1.5
-                            </TableCell>
-                            <TableCell className="w-[14.28%] text-center text-green-600">
-                                Passed
-                            </TableCell>
-                        </TableRow>
-
-                        <TableRow>
-                            <TableCell className="text-center font-medium">
-                                C-02
-                            </TableCell>
-                            <TableCell className="text-center">
-                                Maria Isabel Dela Cruz
-                            </TableCell>
-                            <TableCell className="text-center">
-                                3rd Year
-                            </TableCell>
-                            <TableCell className="text-center">BSIT</TableCell>
-                            <TableCell className="text-center">
-                                2nd Semester
-                            </TableCell>
-                            <TableCell className="text-center">2.25</TableCell>
-                            <TableCell className="text-center text-green-600">
-                                Passed
-                            </TableCell>
-                        </TableRow>
-
-                        <TableRow>
-                            <TableCell className="text-center font-medium">
-                                C-03
-                            </TableCell>
-                            <TableCell className="text-center">
-                                Mark Anthony Reyes
-                            </TableCell>
-                            <TableCell className="text-center">
-                                2nd Year
-                            </TableCell>
-                            <TableCell className="text-center">BSCS</TableCell>
-                            <TableCell className="text-center">
-                                2nd Semester
-                            </TableCell>
-                            <TableCell className="text-center">3.25</TableCell>
-                            <TableCell className="text-center text-red-600">
-                                Failed
-                            </TableCell>
-                        </TableRow>
-
-                        <TableRow>
-                            <TableCell className="text-center font-medium">
-                                C-04
-                            </TableCell>
-                            <TableCell className="text-center">
-                                Angela Marie Santos
-                            </TableCell>
-                            <TableCell className="text-center">
-                                1st Year
-                            </TableCell>
-                            <TableCell className="text-center">BSIT</TableCell>
-                            <TableCell className="text-center">
-                                2nd Semester
-                            </TableCell>
-                            <TableCell className="text-center">2.0</TableCell>
-                            <TableCell className="text-center text-green-600">
-                                Passed
-                            </TableCell>
-                        </TableRow>
-
-                        <TableRow>
-                            <TableCell className="text-center font-medium">
-                                C-05
-                            </TableCell>
-                            <TableCell className="text-center">
-                                Christian Velasco
-                            </TableCell>
-                            <TableCell className="text-center">
-                                3rd Year
-                            </TableCell>
-                            <TableCell className="text-center">BSCS</TableCell>
-                            <TableCell className="text-center">
-                                2nd Semester
-                            </TableCell>
-                            <TableCell className="text-center">3.5</TableCell>
-                            <TableCell className="text-center text-red-600">
-                                Failed
-                            </TableCell>
-                        </TableRow>
-
-                        <TableRow>
-                            <TableCell className="text-center font-medium">
-                                C-06
-                            </TableCell>
-                            <TableCell className="text-center">
-                                Ellaine Ramos
-                            </TableCell>
-                            <TableCell className="text-center">
-                                2nd Year
-                            </TableCell>
-                            <TableCell className="text-center">BSIS</TableCell>
-                            <TableCell className="text-center">
-                                2nd Semester
-                            </TableCell>
-                            <TableCell className="text-center">1.75</TableCell>
-                            <TableCell className="text-center text-green-600">
-                                Passed
-                            </TableCell>
-                        </TableRow>
-
-                        <TableRow>
-                            <TableCell className="text-center font-medium">
-                                C-07
-                            </TableCell>
-                            <TableCell className="text-center">
-                                Joseph Villanueva
-                            </TableCell>
-                            <TableCell className="text-center">
-                                4th Year
-                            </TableCell>
-                            <TableCell className="text-center">BSIT</TableCell>
-                            <TableCell className="text-center">
-                                2nd Semester
-                            </TableCell>
-                            <TableCell className="text-center">2.5</TableCell>
-                            <TableCell className="text-center text-green-600">
-                                Passed
-                            </TableCell>
-                        </TableRow>
-
-                        <TableRow>
-                            <TableCell className="text-center font-medium">
-                                C-08
-                            </TableCell>
-                            <TableCell className="text-center">
-                                Lianne Cortez
-                            </TableCell>
-                            <TableCell className="text-center">
-                                1st Year
-                            </TableCell>
-                            <TableCell className="text-center">BSCS</TableCell>
-                            <TableCell className="text-center">
-                                2nd Semester
-                            </TableCell>
-                            <TableCell className="text-center">3.0</TableCell>
-                            <TableCell className="text-center text-green-600">
-                                Passed
-                            </TableCell>
-                        </TableRow>
-
-                        <TableRow>
-                            <TableCell className="text-center font-medium">
-                                C-09
-                            </TableCell>
-                            <TableCell className="text-center">
-                                Rafael Aquino
-                            </TableCell>
-                            <TableCell className="text-center">
-                                2nd Year
-                            </TableCell>
-                            <TableCell className="text-center">BSIS</TableCell>
-                            <TableCell className="text-center">
-                                2nd Semester
-                            </TableCell>
-                            <TableCell className="text-center">4.0</TableCell>
-                            <TableCell className="text-center text-red-600">
-                                Failed
-                            </TableCell>
-                        </TableRow>
-
-                        <TableRow>
-                            <TableCell className="text-center font-medium">
-                                C-10
-                            </TableCell>
-                            <TableCell className="text-center">
-                                Samantha Uy
-                            </TableCell>
-                            <TableCell className="text-center">
-                                3rd Year
-                            </TableCell>
-                            <TableCell className="text-center">BSIT</TableCell>
-                            <TableCell className="text-center">
-                                2nd Semester
-                            </TableCell>
-                            <TableCell className="text-center">1.25</TableCell>
-                            <TableCell className="text-center text-green-600">
-                                Passed
-                            </TableCell>
-                        </TableRow>
-
-                        <TableRow>
-                            <TableCell className="text-center font-medium">
-                                C-11
-                            </TableCell>
-                            <TableCell className="text-center">
-                                Bryan Garcia
-                            </TableCell>
-                            <TableCell className="text-center">
-                                1st Year
-                            </TableCell>
-                            <TableCell className="text-center">BSCS</TableCell>
-                            <TableCell className="text-center">
-                                2nd Semester
-                            </TableCell>
-                            <TableCell className="text-center">3.75</TableCell>
-                            <TableCell className="text-center text-red-600">
-                                Failed
-                            </TableCell>
-                        </TableRow>
-
-                        <TableRow>
-                            <TableCell className="text-center font-medium">
-                                C-12
-                            </TableCell>
-                            <TableCell className="text-center">
-                                Julia Navarro
-                            </TableCell>
-                            <TableCell className="text-center">
-                                2nd Year
-                            </TableCell>
-                            <TableCell className="text-center">BSIS</TableCell>
-                            <TableCell className="text-center">
-                                2nd Semester
-                            </TableCell>
-                            <TableCell className="text-center">2.0</TableCell>
-                            <TableCell className="text-center text-green-600">
-                                Passed
-                            </TableCell>
-                        </TableRow>
-
-                        <TableRow>
-                            <TableCell className="text-center font-medium">
-                                C-13
-                            </TableCell>
-                            <TableCell className="text-center">
-                                Miguel De Leon
-                            </TableCell>
-                            <TableCell className="text-center">
-                                4th Year
-                            </TableCell>
-                            <TableCell className="text-center">BSCS</TableCell>
-                            <TableCell className="text-center">
-                                2nd Semester
-                            </TableCell>
-                            <TableCell className="text-center">3.2</TableCell>
-                            <TableCell className="text-center text-red-600">
-                                Failed
-                            </TableCell>
-                        </TableRow>
-
-                        <TableRow>
-                            <TableCell className="text-center font-medium">
-                                C-14
-                            </TableCell>
-                            <TableCell className="text-center">
-                                Denise Tan
-                            </TableCell>
-                            <TableCell className="text-center">
-                                3rd Year
-                            </TableCell>
-                            <TableCell className="text-center">BSIT</TableCell>
-                            <TableCell className="text-center">
-                                2nd Semester
-                            </TableCell>
-                            <TableCell className="text-center">1.0</TableCell>
-                            <TableCell className="text-center text-green-600">
-                                Passed
-                            </TableCell>
-                        </TableRow>
-
-                        <TableRow>
-                            <TableCell className="text-center font-medium">
-                                C-15
-                            </TableCell>
-                            <TableCell className="text-center">
-                                James Lim
-                            </TableCell>
-                            <TableCell className="text-center">
-                                2nd Year
-                            </TableCell>
-                            <TableCell className="text-center">BSIS</TableCell>
-                            <TableCell className="text-center">
-                                2nd Semester
-                            </TableCell>
-                            <TableCell className="text-center">2.75</TableCell>
-                            <TableCell className="text-center text">
-                                Passed
-                            </TableCell>
-                        </TableRow>
+                        {grades.length > 0 ? (
+                            grades.map((grade) => (
+                                <TableRow key={grade.id}>
+                                    <TableCell className="text-center">
+                                        {grade.student_id}
+                                    </TableCell>
+                                    <TableCell className="text-center">
+                                        {grade.student_name}
+                                    </TableCell>
+                                    <TableCell className="text-center">
+                                        {grade.year_level}
+                                    </TableCell>
+                                    <TableCell className="text-center">
+                                        {grade.program}
+                                    </TableCell>
+                                    <TableCell className="text-center">
+                                        {grade.semester}
+                                    </TableCell>
+                                    <TableCell className="text-center">
+                                        {grade.grade}
+                                    </TableCell>
+                                    <TableCell
+                                        className={`text-center font-medium ${
+                                            grade.status.toLowerCase() ===
+                                            "passed"
+                                                ? "text-green-600"
+                                                : "text-red-600"
+                                        }`}
+                                    >
+                                        {grade.status}
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell colSpan={7} className="text-center">
+                                    No submitted grades found.
+                                </TableCell>
+                            </TableRow>
+                        )}
                     </TableBody>
                 </Table>
             </div>

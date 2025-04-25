@@ -384,8 +384,10 @@ export default function ApplicationForm({ program = [], academic_year = [] }) {
                                             program
                                                 .filter(
                                                     (programs) =>
+                                                        programs.status ===
+                                                            "Active" &&
                                                         data.department ===
-                                                        programs.department
+                                                            programs.department
                                                 )
                                                 .map((programs) => (
                                                     <option
@@ -396,7 +398,9 @@ export default function ApplicationForm({ program = [], academic_year = [] }) {
                                                     </option>
                                                 ))
                                         ) : (
-                                            <p>No Available Program</p>
+                                            <option disabled>
+                                                No Available Program
+                                            </option>
                                         )
                                     ) : (
                                         <option disabled>
@@ -404,6 +408,7 @@ export default function ApplicationForm({ program = [], academic_year = [] }) {
                                         </option>
                                     )}
                                 </select>
+
                                 {errors.program && !data.program && (
                                     <InputError message={errors.program} />
                                 )}

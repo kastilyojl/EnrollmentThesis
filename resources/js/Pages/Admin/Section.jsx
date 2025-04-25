@@ -204,7 +204,7 @@ export default function Section({ program = [], section = [] }) {
                         placeholder="Search"
                         className="w-[300px]"
                     />
-                    <div className="text-white">
+                    {/* <div className="text-white">
                         <DropdownMenu>
                             <DropdownMenuTrigger className="bg-primary flex px-2 py-1 rounded-md">
                                 Filter
@@ -221,7 +221,7 @@ export default function Section({ program = [], section = [] }) {
                                 <DropdownMenuItem>Criminology</DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
-                    </div>
+                    </div> */}
                 </div>
                 <Button onClick={handleAdd}>Create</Button>
             </div>
@@ -279,20 +279,24 @@ export default function Section({ program = [], section = [] }) {
                                         {section.year_level}
                                     </TableCell>
                                     <TableCell className="font-medium text-center">
-                                        {program
-                                            .map((program) => {
-                                                return program.subjects.filter(
+                                        {
+                                            program
+                                                .filter(
+                                                    (prog) =>
+                                                        prog.code ===
+                                                        section.program_code
+                                                )
+                                                .flatMap(
+                                                    (prog) => prog.subjects
+                                                )
+                                                .filter(
                                                     (subject) =>
                                                         subject.year_level ===
                                                             section.year_level &&
                                                         subject.period ===
                                                             section.semester
-                                                ).length;
-                                            })
-                                            .reduce(
-                                                (total, count) => total + count,
-                                                0
-                                            )}
+                                                ).length
+                                        }
                                     </TableCell>
                                     <TableCell className="flex">
                                         <Edit
@@ -320,7 +324,11 @@ export default function Section({ program = [], section = [] }) {
                                                 </div>
 
                                                 <ScheduleTable
-                                                    program={program}
+                                                    program={program.filter(
+                                                        (prog) =>
+                                                            prog.code ===
+                                                            section.program_code
+                                                    )}
                                                     section={section}
                                                     setItemId={setItemId}
                                                     setSectionItem={

@@ -199,10 +199,10 @@ export default function CollegeBilling({ college_fee = [] }) {
                                                             <Edit />
                                                             Edit
                                                         </DropdownMenuItem>
-                                                        <DropdownMenuItem>
+                                                        {/* <DropdownMenuItem>
                                                             <Download />
                                                             Download
-                                                        </DropdownMenuItem>
+                                                        </DropdownMenuItem> */}
                                                         <DropdownMenuItem
                                                             // onClick={() =>
                                                             //     handleDel(

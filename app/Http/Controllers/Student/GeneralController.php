@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
 use App\Models\College_Billing;
+use App\Models\DisplaySetting;
 use App\Models\Other_Billing;
 use App\Models\Schedule;
 use App\Models\Section;
@@ -39,15 +40,43 @@ class GeneralController extends Controller
     }
 
     public function grades()
-    {
-        $user = Auth::user();
-    
-        $documents = $user->studentInfo()->with('documents')->first();
+{
+    $user = auth()->user();
 
-        return Inertia::render('Dashboard/Student/Grades', [
-            'student' => $documents,
-        ]);
+    $studentInfo = $user->studentInfo;
+
+    if (!$studentInfo) {
+        dd('No student info found for user', $user->id);
     }
+
+    $grades = $studentInfo->grades;
+
+    if ($grades->isEmpty()) {
+        dd('No grades found for student_info_id', $studentInfo->student_id);
+    }
+
+    // If grades exist, proceed
+    $mappedGrades = $grades->map(function ($grade) {
+        return [
+            'id' => $grade->id,
+            'subject' => $grade->subject,
+            'semester' => $grade->semester,
+            'year_level' => $grade->year_level,
+            'grade' => $grade->grade,
+            'status' => $grade->status,
+        ];
+    });
+
+    $settings = DisplaySetting::first();
+
+    return Inertia::render('Dashboard/Student/Grades', [
+        'grades' => $mappedGrades,
+        'gradeSidebarEnabled' => $settings?->grade_sidebar ?? false,
+    ]);
+}
+
+
+    
 
     public function enrollment() {
         return Inertia::render('Dashboard/Student/Enrollment');
@@ -104,6 +133,49 @@ class GeneralController extends Controller
         return Inertia::render('Dashboard/Student/Schedule', [
             'student' => $subjects, 'schedule' => $schedule
         ]);
+    }
+
+    public function evaluation()
+{
+    $user = auth()->user();
+
+    $studentInfo = $user->studentInfo()->with([
+        'documents',
+        'grades',
+        'paymentVerification'
+    ])->firstOrFail();
+
+    $grades = $studentInfo->grades;
+
+    // Map and calculate average
+    $mappedGrades = $grades->map(function ($grade) {
+        return [
+            'id' => $grade->id,
+            'subject' => $grade->subject,
+            'semester' => $grade->semester,
+            'year_level' => $grade->year_level,
+            'grade' => $grade->grade,
+            'status' => $grade->status,
+        ];
+    });
+
+    $averageGrade = $grades->isNotEmpty()
+        ? round($grades->pluck('grade')->avg(), 2)
+        : null;
+
+    return Inertia::render('Dashboard/Student/Evaluation', [
+        'student' => $studentInfo,
+        'grades' => $mappedGrades,
+        'averageGrade' => $averageGrade,
+        'department' => $studentInfo->department, // 👈 Add this
+    ]);
+}
+
+
+
+    
+    public function paymentForm() {
+        return Inertia::render('Dashboard/Student/PaymentForm');
     }
     
 }

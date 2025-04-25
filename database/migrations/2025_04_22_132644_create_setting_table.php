@@ -137,7 +137,7 @@ return new class extends Migration
                     ['title' => 'Enrollment', 'route' => 'student.enrollment'],
                     ['title' => 'Documents', 'route' => 'student.documents'],
                     ['title' => 'Grades', 'route' => 'student.grades'],
-                    ['title' => 'Evaluation', 'route' => '#'],
+                    ['title' => 'Evaluation', 'route' => 'student.evaluation'],
                 ],
             ],
             [
@@ -145,6 +145,7 @@ return new class extends Migration
                 'items' => [
                     ['title' => 'Payment Plan', 'route' => 'student.payment.plan'],
                     ['title' => 'Payment History', 'route' => 'student.payment.transaction'],
+                    ['title' => 'Payment Form', 'route' => 'student.payment.form'],
                 ],
             ],
         ];

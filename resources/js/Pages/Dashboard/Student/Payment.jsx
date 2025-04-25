@@ -23,15 +23,24 @@ export default function Payment() {
         setEnlarge((prev) => !prev);
     };
 
-    const paymentVerifications = Array.isArray(student.payment_verification)
+    const paymentVerifications = Array.isArray(student?.payment_verification)
         ? student.payment_verification
-        : [student.payment_verification];
+        : student?.payment_verification
+        ? [student.payment_verification]
+        : [];
+
+    const getImagePath = (path) => {
+        if (!path) return "";
+        const fileName = path.split("/").pop();
+        return `${enrollmentUrl}/private-files/${fileName}`;
+    };
 
     return (
         <Layout>
             <div className="flex items-end justify-between mb-7">
-                <h1 className="text-2xl font-bold">Payment</h1>
+                <h1 className="text-2xl font-bold">Payment Transaction</h1>
             </div>
+
             <div className="space-y-4">
                 <Table>
                     <TableCaption>
@@ -50,40 +59,40 @@ export default function Payment() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {paymentVerifications?.map((payment, index) => (
+                        {paymentVerifications.map((payment, index) => (
                             <TableRow key={index} className="table-fixed">
-                                <TableCell className="w-1/12">
-                                    {payment.purpose}
+                                <TableCell>
+                                    {payment?.purpose ?? "N/A"}
                                 </TableCell>
-                                <TableCell className="w-1/12">
-                                    {payment.semester}
+                                <TableCell>
+                                    {payment?.semester ?? "N/A"}
                                 </TableCell>
-                                <TableCell className="w-1/12">
-                                    {payment.reference}
+                                <TableCell>
+                                    {payment?.reference ?? "N/A"}
                                 </TableCell>
-                                <TableCell className="w-1/12">
-                                    {payment.amount}
+                                <TableCell>
+                                    {payment?.amount ?? "N/A"}
                                 </TableCell>
-                                <TableCell className="w-1/12">
+                                <TableCell>
                                     {payment?.payment_receipt && !enlarge ? (
                                         <img
                                             onClick={enlargePhoto}
-                                            src={`${enrollmentUrl}/private-files/${payment.payment_receipt
-                                                .split("/")
-                                                .pop()}`}
+                                            src={getImagePath(
+                                                payment.payment_receipt
+                                            )}
                                             alt="Payment Receipt"
-                                            className={`transition-all duration-300 cursor-pointer max-w-[100px] max-h-[100px]`}
+                                            className="transition-all duration-300 cursor-pointer max-w-[100px] max-h-[100px]"
                                         />
                                     ) : null}
                                 </TableCell>
-                                <TableCell className="w-1/12">
-                                    {payment.status === "approved" ? (
+                                <TableCell>
+                                    {payment?.status === "approved" ? (
                                         <BadgeSuccess>
                                             {payment.status}
                                         </BadgeSuccess>
                                     ) : (
                                         <BadgeWarning>
-                                            {payment.status}
+                                            {payment?.status ?? "Pending"}
                                         </BadgeWarning>
                                     )}
                                 </TableCell>
@@ -99,9 +108,9 @@ export default function Payment() {
                     className="fixed top-0 left-0 right-0 bottom-0 bg-black bg-opacity-50 z-40"
                 >
                     <img
-                        src={`${enrollmentUrl}/private-files/${paymentVerifications[0]?.payment_receipt
-                            .split("/")
-                            .pop()}`}
+                        src={getImagePath(
+                            paymentVerifications[0]?.payment_receipt
+                        )}
                         alt="Enlarged Payment Receipt"
                         className="max-h-[90vh] max-w-[90vw] absolute top-0 left-0 right-0 bottom-0 m-auto z-50 cursor-pointer"
                     />

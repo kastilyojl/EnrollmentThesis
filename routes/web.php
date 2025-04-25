@@ -125,6 +125,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard/payment/plan', [GeneralController::class, 'plan'])->name('student.payment.plan');
     Route::get('/dashboard/subjects', [GeneralController::class, 'subjects'])->name('student.subject');
     Route::get('/dashboard/student/schedule', [GeneralController::class, 'schedule'])->name('student.schedule');
+    Route::get('/dashboard/student/evaluation', [GeneralController::class, 'evaluation'])->name('student.evaluation');
+    Route::get('/dashboard/student/payment', [GeneralController::class, 'paymentForm'])->name('student.payment.form');
 
     // Professor
 
@@ -238,6 +240,7 @@ Route::prefix('grades')->group(function () {
     Route::get('/submitted-admin-grade', [GradesController::class, 'submittedGradeAdmin'])->name('index.submitted.grade.admin');
     Route::get('/change-admin-grade', [GradesController::class, 'changeGradeAdmin'])->name('index.change.grade.admin');
     Route::get('/change-prof-grade', [GradesController::class, 'changeGradeProf'])->name('index.change.grade.professor');
+    Route::post('/display-settings/grade-sidebar', [DisplayController::class, 'toggleGradeSidebar'])->name('toggle.grade.sidebar');
 
 
     // Route::get('/csv', [CSVController::class, 'index'])->name('index.csv');

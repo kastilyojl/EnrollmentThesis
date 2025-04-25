@@ -149,10 +149,10 @@ export default function OtherBilling({ other_fee = [] }) {
                                                 <Edit />
                                                 Edit
                                             </DropdownMenuItem>
-                                            <DropdownMenuItem>
+                                            {/* <DropdownMenuItem>
                                                 <Download />
                                                 Download
-                                            </DropdownMenuItem>
+                                            </DropdownMenuItem> */}
                                             <DropdownMenuItem
                                                 onClick={() => {
                                                     document.activeElement?.blur();

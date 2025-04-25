@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\DisplaySetting;
 use App\Models\GradeEditRequest;
 use App\Models\Grades;
 use App\Models\Student_Info;
@@ -104,10 +105,43 @@ public function submittedGradeProfessor()
     ]);
 }
     
+public function submittedGradeAdmin()
+{
+    // Get all grades with student and personal info
+    $grades = Grades::with([
+        'studentInfo',
+        'studentInfo.personalInfo'
+    ])->get();
 
-    public function submittedGradeAdmin() {
-        return Inertia::render('Admin/Grades/SubmittedGrade');
-    }
+    $mappedGrades = $grades->map(function ($grade) {
+        $studentInfo = $grade->studentInfo;
+        $personalInfo = $studentInfo ? $studentInfo->personalInfo : null;
+
+        return [
+            'id' => $grade->id,
+            'sender_id' => $grade->sender_id,
+            'student_id' => $grade->student_info_id,
+            'student_name' => $personalInfo
+                ? $personalInfo->first_name . ' ' . $personalInfo->last_name
+                : 'Unknown',
+            'year_level' => $grade->year_level,
+            'program' => $studentInfo ? $studentInfo->program : 'N/A',
+            'semester' => $grade->semester,
+            'subject' => $grade->subject,
+            'grade' => $grade->grade,
+            'status' => $grade->status,
+        ];
+    });
+
+    // Just grab the first row from the settings table
+    $settings = DisplaySetting::first();
+
+    return Inertia::render('Admin/Grades/SubmittedGrade', [
+        'grades' => $mappedGrades,
+        'gradeSidebarEnabled' => $settings?->grade_sidebar ?? false,
+    ]);
+}
+
 
     public function storeFromExcel(Request $request)
     {

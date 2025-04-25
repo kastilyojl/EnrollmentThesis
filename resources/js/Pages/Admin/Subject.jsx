@@ -579,6 +579,7 @@ export default function Subjects({ program = [], subject, filters }) {
                     tabledata={tableData}
                     handleEdit={handleEdit}
                     handleDel={handleDel}
+                    showDownload={false}
                 />
 
                 {add && (
@@ -719,7 +720,7 @@ export default function Subjects({ program = [], subject, filters }) {
                                                                     }
                                                                 >
                                                                     {
-                                                                        program.code
+                                                                        program.name
                                                                     }
                                                                 </SelectItem>
                                                             );

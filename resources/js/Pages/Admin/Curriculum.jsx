@@ -113,74 +113,72 @@ export default function Curriculum({ program = [] }) {
             </div>
             <div className="flex space-x-4 mb-3">
                 <Input type="text" placeholder="Search" className="w-[300px]" />
-                <FilterDropdown
+                {/* <FilterDropdown
                 // currentFilter={dataFilter}
                 // filterData={filterData}
                 // onFilterChange={handleFilterChange}
                 />
-                {/* <Button>Create</Button> */}
+                <Button>Create</Button> */}
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {program.map((program) => (
-                    <Card
-                        key={program.id}
-                        className="w-full text-sm odd:bg-gray-100 space-y-2"
-                    >
-                        <CardHeader className="w-full">
-                            <CardTitle className="text-md text-primary flex justify-between">
-                                <File className="h-10 w-10" />
-                                <div>
-                                    <DropdownMenu>
-                                        <DropdownMenuTrigger>
-                                            <MoreHorizontal className="h-5" />
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent>
-                                            <DropdownMenuItem
-                                                onClick={() => {
-                                                    // Defer to let Dropdown close before Dialog opens
-                                                    document.activeElement?.blur();
-                                                    setTimeout(
-                                                        () =>
-                                                            handleEdit(program),
-                                                        0
-                                                    );
-                                                }}
-                                            >
-                                                <View />
-                                                View
-                                            </DropdownMenuItem>
-                                            <DropdownMenuItem>
-                                                <Download />
-                                                Download
-                                            </DropdownMenuItem>
-                                            {/* <DropdownMenuItem>
-                                                <Trash />
-                                                Delete
-                                            </DropdownMenuItem> */}
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>
-                                </div>
-                            </CardTitle>
-                        </CardHeader>
-                        <Separator />
-                        <CardContent className="space-y-2">
-                            <p className="text-gray-600 flex justify-between">
-                                code:
-                                <span className="text-black text-end text-wrap">
-                                    {program.code}
-                                </span>
-                            </p>
+                {program
+                    .filter(
+                        (program) => program.code?.toLowerCase() !== "general"
+                    )
+                    .map((program) => (
+                        <Card
+                            key={program.id}
+                            className="w-full text-sm odd:bg-gray-100 space-y-2"
+                        >
+                            <CardHeader className="w-full">
+                                <CardTitle className="text-md text-primary flex justify-between">
+                                    <File className="h-10 w-10" />
+                                    <div>
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger>
+                                                <MoreHorizontal className="h-5" />
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent>
+                                                <DropdownMenuItem
+                                                    onClick={() => {
+                                                        document.activeElement?.blur();
+                                                        setTimeout(
+                                                            () =>
+                                                                handleEdit(
+                                                                    program
+                                                                ),
+                                                            0
+                                                        );
+                                                    }}
+                                                >
+                                                    <View />
+                                                    View
+                                                </DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                    </div>
+                                </CardTitle>
+                            </CardHeader>
+                            <Separator />
+                            <CardContent className="space-y-2">
+                                <p className="text-gray-600 flex justify-between">
+                                    code:
+                                    <span className="text-black text-end text-wrap">
+                                        {program.code}
+                                    </span>
+                                </p>
 
-                            <p className="text-gray-600 flex justify-between">
-                                name:
-                                <span className="text-black text-end text-wrap">
-                                    {program.name}
-                                </span>
-                            </p>
-                        </CardContent>
-                    </Card>
-                ))}
+                                <p className="text-gray-600 flex justify-between">
+                                    name:
+                                    <span className="text-black text-end text-wrap">
+                                        {program.name}
+                                    </span>
+                                </p>
+                            </CardContent>
+                        </Card>
+                    ))}
+
                 {edit && (
                     <Dialog open={edit} onOpenChange={(open) => setEdit(open)}>
                         {program

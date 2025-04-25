@@ -14,17 +14,30 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class AdminApplicationController extends Controller
 {
-        public function index(Request $request)
+    public function index(Request $request)
     {
+        
+    // Count total students
+    $totalStudents = Student_Info::count();
+    Log::info("Total students in database: ".$totalStudents);
+    
+    // Get first few students with relationships
+    $sampleStudents = Student_Info::with('users', 'personalInfo', 'guardian')
+                        ->limit(5)
+                        ->get()
+                        ->toArray();
+    Log::info("Sample students: ".json_encode($sampleStudents));
         $perPage = $request->input('per_page', session('rows_per_page', 10));
         
         session(['rows_per_page' => $perPage]);
 
         $query = Student_Info::with('users', 'personalInfo', 'guardian');
+        
 
         if ($request->has('search') && !empty($request->search)) {
             $query->whereHas('personalInfo', function($q) use ($request) {
@@ -58,6 +71,7 @@ class AdminApplicationController extends Controller
         //     }
         // }
         // Academic year filter using academic_year_id directly
+
         if ($request->filled('academic_year_id')) {
             $academic = Academic_Year::find($request->academic_year_id);
 
@@ -68,6 +82,7 @@ class AdminApplicationController extends Controller
 
         
         $student = $query->paginate($perPage);
+        Log::info($student);
         
         return Inertia::render('Admin/Application', [
             'student' => $student,

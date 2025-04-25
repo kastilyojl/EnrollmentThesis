@@ -50,14 +50,14 @@ export default function Documents({ student, filters }) {
         delete: onDelete,
     } = useForm({
         id: "",
-        form_138A: "",
-        form_137: "",
-        good_moral: "",
-        psa: "",
-        pic_2x2: "",
-        ctc_transferee: "",
-        grade_transferee: "",
-        f137_transferee: "",
+        form_138A: false,
+        form_137: false,
+        good_moral: false,
+        psa: false,
+        pic_2x2: false,
+        ctc_transferee: false,
+        grade_transferee: false,
+        f137_transferee: false,
         doc_status: "",
     });
 
@@ -73,15 +73,14 @@ export default function Documents({ student, filters }) {
         classified_as: student?.classified_as || "",
         status: student?.status || "",
 
-        form_138A: student.documents?.form_138A || "",
-        form_137: student.documents?.form_137 || "",
-        good_moral: student.documents?.good_moral || "",
-        psa: student.documents?.psa || "",
-        pic_2x2: student.documents?.pic_2x2 || "",
-
-        ctc_transferee: student.documents?.ctc_transferee || "",
-        grade_transferee: student.documents?.grade_transferee || "",
-        f137_transferee: student.documents?.f137_transferee || "",
+        form_138A: Boolean(student.documents?.form_138A) || false,
+        form_137: Boolean(student.documents?.form_137) || false,
+        good_moral: Boolean(student.documents?.good_moral) || false,
+        psa: Boolean(student.documents?.psa) || false,
+        pic_2x2: Boolean(student.documents?.pic_2x2) || false,
+        ctc_transferee: Boolean(student.documents?.ctc_transferee) || false,
+        grade_transferee: Boolean(student.documents?.grade_transferee) || false,
+        f137_transferee: Boolean(student.documents?.f137_transferee) || false,
         doc_status: student.documents?.status || "",
     }));
 
@@ -131,10 +130,8 @@ export default function Documents({ student, filters }) {
     // }, [add, del]);
 
     const handleEdit = (student) => {
-        // document.activeElement?.blur();
         student = document.find((s) => s.id === student.id);
         setItemId(student);
-        console.log("student Data", student);
         setData({
             id: student.id,
 
@@ -148,18 +145,16 @@ export default function Documents({ student, filters }) {
             year_level: student.year_level,
             classified_as: student.classified_as,
             status: student.status,
-
-            form_138A: student.form_138A,
-            form_137: student.form_137,
-            good_moral: student.good_moral,
-            psa: student.psa,
-            pic_2x2: student.pic_2x2,
-
-            ctc_transferee: student.ctc_transferee,
-            grade_transferee: student.grade_transferee,
-            f137_transferee: student.f137_transferee,
+            // ... other fields ...
+            form_138A: Boolean(student.form_138A),
+            form_137: Boolean(student.form_137),
+            good_moral: Boolean(student.good_moral),
+            psa: Boolean(student.psa),
+            pic_2x2: Boolean(student.pic_2x2),
+            ctc_transferee: Boolean(student.ctc_transferee),
+            grade_transferee: Boolean(student.grade_transferee),
+            f137_transferee: Boolean(student.f137_transferee),
         });
-
         setAdd(true);
     };
 
@@ -367,7 +362,7 @@ export default function Documents({ student, filters }) {
                                             </h1>
                                             <div className="flow-root border border-customBlue py-3 shadow-xs">
                                                 <dl className="-my-3 grid md:grid-cols-2 gap-x-4 divide-y divide-customBlue text-sm">
-                                                    <div className="grid grid-cols-1 gap-1 p-3  sm:grid-cols-[60%_20%_20%] sm:gap-4">
+                                                    <div className="grid grid-cols-1 gap-1 p-3 sm:grid-cols-[60%_20%_20%] sm:gap-4">
                                                         <dt className="font-medium text-gray-900">
                                                             Form 138A / Report
                                                             Card (original copy)
@@ -376,60 +371,43 @@ export default function Documents({ student, filters }) {
                                                             <RadioGroup
                                                                 value={
                                                                     data.form_138A
+                                                                        ? "1"
+                                                                        : "0"
                                                                 }
                                                                 onValueChange={(
                                                                     value
                                                                 ) =>
                                                                     setData(
                                                                         "form_138A",
-                                                                        value
+                                                                        value ===
+                                                                            "1"
                                                                     )
                                                                 }
                                                                 className="flex justify-center"
                                                             >
                                                                 <div className="flex items-center space-x-2">
                                                                     <RadioGroupItem
-                                                                        name="form_138A"
-                                                                        value={
-                                                                            1
-                                                                        }
+                                                                        value="1"
+                                                                        id="form_138A-true"
                                                                         checked={
                                                                             data.form_138A ===
-                                                                            1
-                                                                        }
-                                                                        onValueChange={(
-                                                                            value
-                                                                        ) =>
-                                                                            setData(
-                                                                                "form_138A",
-                                                                                value
-                                                                            )
+                                                                            true
                                                                         }
                                                                     />
-                                                                    <Label htmlFor="option-one">
+                                                                    <Label htmlFor="form_138A-true">
                                                                         ✔️
                                                                     </Label>
                                                                 </div>
                                                                 <div className="flex items-center space-x-2">
                                                                     <RadioGroupItem
-                                                                        name="form_138A"
-                                                                        value={
-                                                                            0
-                                                                        }
+                                                                        value="0"
+                                                                        id="form_138A-false"
                                                                         checked={
                                                                             data.form_138A ===
-                                                                            0
-                                                                        }
-                                                                        onValueChange={(
-                                                                            value
-                                                                        ) =>
-                                                                            setData(
-                                                                                "form_138A",
-                                                                                value
-                                                                            )
+                                                                            false
                                                                         }
                                                                     />
-                                                                    <Label htmlFor="option-two">
+                                                                    <Label htmlFor="form_138A-false">
                                                                         ❌
                                                                     </Label>
                                                                 </div>
@@ -437,7 +415,7 @@ export default function Documents({ student, filters }) {
                                                         </dd>
                                                     </div>
 
-                                                    <div className="grid grid-cols-1 gap-1 p-3  sm:grid-cols-[60%_20%_20%] sm:gap-4">
+                                                    <div className="grid grid-cols-1 gap-1 p-3 sm:grid-cols-[60%_20%_20%] sm:gap-4">
                                                         <dt className="font-medium text-gray-900">
                                                             Form 137 (original
                                                             copy)
@@ -446,60 +424,43 @@ export default function Documents({ student, filters }) {
                                                             <RadioGroup
                                                                 value={
                                                                     data.form_137
+                                                                        ? "1"
+                                                                        : "0"
                                                                 }
                                                                 onValueChange={(
                                                                     value
                                                                 ) =>
                                                                     setData(
                                                                         "form_137",
-                                                                        value
+                                                                        value ===
+                                                                            "1"
                                                                     )
                                                                 }
                                                                 className="flex justify-center"
                                                             >
                                                                 <div className="flex items-center space-x-2">
                                                                     <RadioGroupItem
-                                                                        name="form_137"
-                                                                        value={
-                                                                            1
-                                                                        }
+                                                                        value="1"
+                                                                        id="form_137-true"
                                                                         checked={
                                                                             data.form_137 ===
-                                                                            1
-                                                                        }
-                                                                        onValueChange={(
-                                                                            value
-                                                                        ) =>
-                                                                            setData(
-                                                                                "form_137",
-                                                                                value
-                                                                            )
+                                                                            true
                                                                         }
                                                                     />
-                                                                    <Label htmlFor="option-one">
+                                                                    <Label htmlFor="form_137-true">
                                                                         ✔️
                                                                     </Label>
                                                                 </div>
                                                                 <div className="flex items-center space-x-2">
                                                                     <RadioGroupItem
-                                                                        name="form_137"
-                                                                        value={
-                                                                            0
-                                                                        }
+                                                                        value="0"
+                                                                        id="form_137-false"
                                                                         checked={
                                                                             data.form_137 ===
-                                                                            0
-                                                                        }
-                                                                        onValueChange={(
-                                                                            value
-                                                                        ) =>
-                                                                            setData(
-                                                                                "form_137",
-                                                                                value
-                                                                            )
+                                                                            false
                                                                         }
                                                                     />
-                                                                    <Label htmlFor="option-two">
+                                                                    <Label htmlFor="form_137-false">
                                                                         ❌
                                                                     </Label>
                                                                 </div>
@@ -507,7 +468,7 @@ export default function Documents({ student, filters }) {
                                                         </dd>
                                                     </div>
 
-                                                    <div className="grid grid-cols-1 gap-1 p-3  sm:grid-cols-[60%_20%_20%] sm:gap-4">
+                                                    <div className="grid grid-cols-1 gap-1 p-3 sm:grid-cols-[60%_20%_20%] sm:gap-4">
                                                         <dt className="font-medium text-gray-900">
                                                             Certificate of Good
                                                             Moral (original
@@ -517,60 +478,43 @@ export default function Documents({ student, filters }) {
                                                             <RadioGroup
                                                                 value={
                                                                     data.good_moral
+                                                                        ? "1"
+                                                                        : "0"
                                                                 }
                                                                 onValueChange={(
                                                                     value
                                                                 ) =>
                                                                     setData(
                                                                         "good_moral",
-                                                                        value
+                                                                        value ===
+                                                                            "1"
                                                                     )
                                                                 }
                                                                 className="flex justify-center"
                                                             >
                                                                 <div className="flex items-center space-x-2">
                                                                     <RadioGroupItem
-                                                                        name="good_moral"
-                                                                        value={
-                                                                            1
-                                                                        }
+                                                                        value="1"
+                                                                        id="good_moral-true"
                                                                         checked={
                                                                             data.good_moral ===
-                                                                            1
-                                                                        }
-                                                                        onValueChange={(
-                                                                            value
-                                                                        ) =>
-                                                                            setData(
-                                                                                "good_moral",
-                                                                                value
-                                                                            )
+                                                                            true
                                                                         }
                                                                     />
-                                                                    <Label htmlFor="option-one">
+                                                                    <Label htmlFor="good_moral-true">
                                                                         ✔️
                                                                     </Label>
                                                                 </div>
                                                                 <div className="flex items-center space-x-2">
                                                                     <RadioGroupItem
-                                                                        name="good_moral"
-                                                                        value={
-                                                                            0
-                                                                        }
+                                                                        value="0"
+                                                                        id="good_moral-false"
                                                                         checked={
                                                                             data.good_moral ===
-                                                                            0
-                                                                        }
-                                                                        onValueChange={(
-                                                                            value
-                                                                        ) =>
-                                                                            setData(
-                                                                                "good_moral",
-                                                                                value
-                                                                            )
+                                                                            false
                                                                         }
                                                                     />
-                                                                    <Label htmlFor="option-two">
+                                                                    <Label htmlFor="good_moral-false">
                                                                         ❌
                                                                     </Label>
                                                                 </div>
@@ -578,7 +522,7 @@ export default function Documents({ student, filters }) {
                                                         </dd>
                                                     </div>
 
-                                                    <div className="grid grid-cols-1 gap-1 p-3  sm:grid-cols-[60%_20%_20%] sm:gap-4">
+                                                    <div className="grid grid-cols-1 gap-1 p-3 sm:grid-cols-[60%_20%_20%] sm:gap-4">
                                                         <dt className="font-medium text-gray-900">
                                                             PSA Birth
                                                             Certificate (photo
@@ -586,60 +530,45 @@ export default function Documents({ student, filters }) {
                                                         </dt>
                                                         <dd className="text-gray-700 sm:col-span-2">
                                                             <RadioGroup
-                                                                value={data.psa}
+                                                                value={
+                                                                    data.psa
+                                                                        ? "1"
+                                                                        : "0"
+                                                                }
                                                                 onValueChange={(
                                                                     value
                                                                 ) =>
                                                                     setData(
                                                                         "psa",
-                                                                        value
+                                                                        value ===
+                                                                            "1"
                                                                     )
                                                                 }
                                                                 className="flex justify-center"
                                                             >
                                                                 <div className="flex items-center space-x-2">
                                                                     <RadioGroupItem
-                                                                        name="psa"
-                                                                        value={
-                                                                            1
-                                                                        }
+                                                                        value="1"
+                                                                        id="psa-true"
                                                                         checked={
                                                                             data.psa ===
-                                                                            1
-                                                                        }
-                                                                        onValueChange={(
-                                                                            value
-                                                                        ) =>
-                                                                            setData(
-                                                                                "psa",
-                                                                                value
-                                                                            )
+                                                                            true
                                                                         }
                                                                     />
-                                                                    <Label htmlFor="option-one">
+                                                                    <Label htmlFor="psa-true">
                                                                         ✔️
                                                                     </Label>
                                                                 </div>
                                                                 <div className="flex items-center space-x-2">
                                                                     <RadioGroupItem
-                                                                        name="psa"
-                                                                        value={
-                                                                            0
-                                                                        }
+                                                                        value="0"
+                                                                        id="psa-false"
                                                                         checked={
                                                                             data.psa ===
-                                                                            0
-                                                                        }
-                                                                        onValueChange={(
-                                                                            value
-                                                                        ) =>
-                                                                            setData(
-                                                                                "psa",
-                                                                                value
-                                                                            )
+                                                                            false
                                                                         }
                                                                     />
-                                                                    <Label htmlFor="option-two">
+                                                                    <Label htmlFor="psa-false">
                                                                         ❌
                                                                     </Label>
                                                                 </div>
@@ -647,76 +576,57 @@ export default function Documents({ student, filters }) {
                                                         </dd>
                                                     </div>
 
-                                                    <div className="grid grid-cols-1 gap-1 p-3  sm:grid-cols-[60%_20%_20%] sm:gap-4">
+                                                    <div className="grid grid-cols-1 gap-1 p-3 sm:grid-cols-[60%_20%_20%] sm:gap-4">
                                                         <dt className="font-medium text-gray-900">
                                                             1pc. Passport Size
                                                             picture (white
                                                             background)
                                                         </dt>
                                                         <dd className="text-gray-700 sm:col-span-2">
-                                                            <dd className="text-gray-700 sm:col-span-2">
-                                                                <RadioGroup
-                                                                    value={
-                                                                        data.pic_2x2
-                                                                    }
-                                                                    onValueChange={(
-                                                                        value
-                                                                    ) =>
-                                                                        setData(
-                                                                            "pic_2x2",
-                                                                            value
-                                                                        )
-                                                                    }
-                                                                    className="flex justify-center"
-                                                                >
-                                                                    <div className="flex items-center space-x-2">
-                                                                        <RadioGroupItem
-                                                                            name="pic_2x2"
-                                                                            value={
-                                                                                1
-                                                                            }
-                                                                            checked={
-                                                                                data.pic_2x2 ===
-                                                                                1
-                                                                            }
-                                                                            onValueChange={(
-                                                                                value
-                                                                            ) =>
-                                                                                setData(
-                                                                                    "pic_2x2",
-                                                                                    value
-                                                                                )
-                                                                            }
-                                                                        />
-                                                                        <Label htmlFor="option-one">
-                                                                            ✔️
-                                                                        </Label>
-                                                                    </div>
-                                                                    <div className="flex items-center space-x-2">
-                                                                        <RadioGroupItem
-                                                                            name="pic_2x2"
-                                                                            value={
-                                                                                0
-                                                                            }
-                                                                            checked={
-                                                                                data.pic_2x2 ===
-                                                                                0
-                                                                            }
-                                                                            onValueChange={(
-                                                                                value
-                                                                            ) =>
-                                                                                setData(
-                                                                                    "pic_2x2",
-                                                                                    value
-                                                                                )
-                                                                            }
-                                                                        />
-                                                                        <Label htmlFor="option-two">
-                                                                            ❌
-                                                                        </Label>
-                                                                    </div>
-                                                                </RadioGroup>
-                                                            </dd>
+                                                            <RadioGroup
+                                                                value={
+                                                                    data.pic_2x2
+                                                                        ? "1"
+                                                                        : "0"
+                                                                }
+                                                                onValueChange={(
+                                                                    value
+                                                                ) =>
+                                                                    setData(
+                                                                        "pic_2x2",
+                                                                        value ===
+                                                                            "1"
+                                                                    )
+                                                                }
+                                                                className="flex justify-center"
+                                                            >
+                                                                <div className="flex items-center space-x-2">
+                                                                    <RadioGroupItem
+                                                                        value="1"
+                                                                        id="pic_2x2-true"
+                                                                        checked={
+                                                                            data.pic_2x2 ===
+                                                                            true
+                                                                        }
+                                                                    />
+                                                                    <Label htmlFor="pic_2x2-true">
+                                                                        ✔️
+                                                                    </Label>
+                                                                </div>
+                                                                <div className="flex items-center space-x-2">
+                                                                    <RadioGroupItem
+                                                                        value="0"
+                                                                        id="pic_2x2-false"
+                                                                        checked={
+                                                                            data.pic_2x2 ===
+                                                                            false
+                                                                        }
+                                                                    />
+                                                                    <Label htmlFor="pic_2x2-false">
+                                                                        ❌
+                                                                    </Label>
+                                                                </div>
+                                                            </RadioGroup>
                                                         </dd>
                                                     </div>
                                                 </dl>
@@ -729,7 +639,7 @@ export default function Documents({ student, filters }) {
                                             </h1>
                                             <div className="flow-root border border-customBlue py-3 shadow-xs">
                                                 <dl className="-my-3 grid md:grid-cols-2 gap-x-4 divide-y divide-customBlue text-sm">
-                                                    <div className="grid grid-cols-1 gap-1 p-3  sm:grid-cols-[60%_20%_20%] sm:gap-4">
+                                                    <div className="grid grid-cols-1 gap-1 p-3 sm:grid-cols-[60%_20%_20%] sm:gap-4">
                                                         <dt className="font-medium text-gray-900">
                                                             Honorabol Dismissal
                                                             / Certificate of
@@ -740,67 +650,51 @@ export default function Documents({ student, filters }) {
                                                             <RadioGroup
                                                                 value={
                                                                     data.ctc_transferee
+                                                                        ? "1"
+                                                                        : "0"
                                                                 }
                                                                 onValueChange={(
                                                                     value
                                                                 ) =>
                                                                     setData(
                                                                         "ctc_transferee",
-                                                                        value
+                                                                        value ===
+                                                                            "1"
                                                                     )
                                                                 }
                                                                 className="flex justify-center"
                                                             >
                                                                 <div className="flex items-center space-x-2">
                                                                     <RadioGroupItem
-                                                                        name="ctc_transferee"
-                                                                        value={
-                                                                            1
-                                                                        }
+                                                                        value="1"
+                                                                        id="ctc_transferee-true"
                                                                         checked={
                                                                             data.ctc_transferee ===
-                                                                            1
-                                                                        }
-                                                                        onValueChange={(
-                                                                            value
-                                                                        ) =>
-                                                                            setData(
-                                                                                "ctc_transferee",
-                                                                                value
-                                                                            )
+                                                                            true
                                                                         }
                                                                     />
-                                                                    <Label htmlFor="option-one">
+                                                                    <Label htmlFor="ctc_transferee-true">
                                                                         ✔️
                                                                     </Label>
                                                                 </div>
                                                                 <div className="flex items-center space-x-2">
                                                                     <RadioGroupItem
-                                                                        name="ctc_transferee"
-                                                                        value={
-                                                                            0
-                                                                        }
+                                                                        value="0"
+                                                                        id="ctc_transferee-false"
                                                                         checked={
                                                                             data.ctc_transferee ===
-                                                                            0
-                                                                        }
-                                                                        onValueChange={(
-                                                                            value
-                                                                        ) =>
-                                                                            setData(
-                                                                                "ctc_transferee",
-                                                                                value
-                                                                            )
+                                                                            false
                                                                         }
                                                                     />
-                                                                    <Label htmlFor="option-two">
+                                                                    <Label htmlFor="ctc_transferee-false">
                                                                         ❌
                                                                     </Label>
                                                                 </div>
                                                             </RadioGroup>
                                                         </dd>
                                                     </div>
-                                                    <div className="grid grid-cols-1 gap-1 p-3  sm:grid-cols-[60%_20%_20%] sm:gap-4">
+
+                                                    <div className="grid grid-cols-1 gap-1 p-3 sm:grid-cols-[60%_20%_20%] sm:gap-4">
                                                         <dt className="font-medium text-gray-900">
                                                             Copy of Grades
                                                             (original copy)
@@ -809,60 +703,43 @@ export default function Documents({ student, filters }) {
                                                             <RadioGroup
                                                                 value={
                                                                     data.grade_transferee
+                                                                        ? "1"
+                                                                        : "0"
                                                                 }
                                                                 onValueChange={(
                                                                     value
                                                                 ) =>
                                                                     setData(
                                                                         "grade_transferee",
-                                                                        value
+                                                                        value ===
+                                                                            "1"
                                                                     )
                                                                 }
                                                                 className="flex justify-center"
                                                             >
                                                                 <div className="flex items-center space-x-2">
                                                                     <RadioGroupItem
-                                                                        name="grade_transferee"
-                                                                        value={
-                                                                            1
-                                                                        }
+                                                                        value="1"
+                                                                        id="grade_transferee-true"
                                                                         checked={
                                                                             data.grade_transferee ===
-                                                                            1
-                                                                        }
-                                                                        onValueChange={(
-                                                                            value
-                                                                        ) =>
-                                                                            setData(
-                                                                                "grade_transferee",
-                                                                                value
-                                                                            )
+                                                                            true
                                                                         }
                                                                     />
-                                                                    <Label htmlFor="option-one">
+                                                                    <Label htmlFor="grade_transferee-true">
                                                                         ✔️
                                                                     </Label>
                                                                 </div>
                                                                 <div className="flex items-center space-x-2">
                                                                     <RadioGroupItem
-                                                                        name="grade_transferee"
-                                                                        value={
-                                                                            0
-                                                                        }
+                                                                        value="0"
+                                                                        id="grade_transferee-false"
                                                                         checked={
                                                                             data.grade_transferee ===
-                                                                            0
-                                                                        }
-                                                                        onValueChange={(
-                                                                            value
-                                                                        ) =>
-                                                                            setData(
-                                                                                "grade_transferee",
-                                                                                value
-                                                                            )
+                                                                            false
                                                                         }
                                                                     />
-                                                                    <Label htmlFor="option-two">
+                                                                    <Label htmlFor="grade_transferee-false">
                                                                         ❌
                                                                     </Label>
                                                                 </div>
@@ -870,7 +747,7 @@ export default function Documents({ student, filters }) {
                                                         </dd>
                                                     </div>
 
-                                                    <div className="grid grid-cols-1 gap-1 p-3  sm:grid-cols-[60%_20%_20%] sm:gap-4">
+                                                    <div className="grid grid-cols-1 gap-1 p-3 sm:grid-cols-[60%_20%_20%] sm:gap-4">
                                                         <dt className="font-medium text-gray-900">
                                                             F137 (original copy
                                                             addressed to
@@ -880,60 +757,43 @@ export default function Documents({ student, filters }) {
                                                             <RadioGroup
                                                                 value={
                                                                     data.f137_transferee
+                                                                        ? "1"
+                                                                        : "0"
                                                                 }
                                                                 onValueChange={(
                                                                     value
                                                                 ) =>
                                                                     setData(
                                                                         "f137_transferee",
-                                                                        value
+                                                                        value ===
+                                                                            "1"
                                                                     )
                                                                 }
                                                                 className="flex justify-center"
                                                             >
                                                                 <div className="flex items-center space-x-2">
                                                                     <RadioGroupItem
-                                                                        name="f137_transferee"
-                                                                        value={
-                                                                            1
-                                                                        }
+                                                                        value="1"
+                                                                        id="f137_transferee-true"
                                                                         checked={
                                                                             data.f137_transferee ===
-                                                                            1
-                                                                        }
-                                                                        onValueChange={(
-                                                                            value
-                                                                        ) =>
-                                                                            setData(
-                                                                                "f137_transferee",
-                                                                                value
-                                                                            )
+                                                                            true
                                                                         }
                                                                     />
-                                                                    <Label htmlFor="option-one">
+                                                                    <Label htmlFor="f137_transferee-true">
                                                                         ✔️
                                                                     </Label>
                                                                 </div>
                                                                 <div className="flex items-center space-x-2">
                                                                     <RadioGroupItem
-                                                                        name="f137_transferee"
-                                                                        value={
-                                                                            0
-                                                                        }
+                                                                        value="0"
+                                                                        id="f137_transferee-false"
                                                                         checked={
                                                                             data.f137_transferee ===
-                                                                            0
-                                                                        }
-                                                                        onValueChange={(
-                                                                            value
-                                                                        ) =>
-                                                                            setData(
-                                                                                "f137_transferee",
-                                                                                value
-                                                                            )
+                                                                            false
                                                                         }
                                                                     />
-                                                                    <Label htmlFor="option-two">
+                                                                    <Label htmlFor="f137_transferee-false">
                                                                         ❌
                                                                     </Label>
                                                                 </div>

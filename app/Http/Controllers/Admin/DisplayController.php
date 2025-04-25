@@ -79,6 +79,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\DisplaySetting;
 use App\Models\SidebarSection;
 use App\Models\SidebarSectionStudent;
 use App\Models\SidebarSectionProfessor;
@@ -219,5 +220,23 @@ public function updateDisplay(Request $request)
 
     return redirect()->back()->with('success', 'Sidebar display settings updated successfully.');
 }
+
+    public function toggleGradeSidebar(Request $request)
+    {
+        $request->validate([
+            'enabled' => 'required|boolean',
+        ]);
+
+        $settings = DisplaySetting::first(); // or per-user: DisplaySettings::where('user_id', auth()->id())->first()
+
+        if (!$settings) {
+            $settings = DisplaySetting::create([
+                'grade_sidebar' => $request->enabled,
+            ]);
+        } else {
+            $settings->grade_sidebar = $request->enabled;
+            $settings->save();
+        }
+ }
 
 }
