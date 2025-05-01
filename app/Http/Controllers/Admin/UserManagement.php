@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Academic_Year;
 use App\Models\User;
+use App\Models\Users_IDFormat;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
@@ -65,7 +66,8 @@ class UserManagement extends Controller
     }
 
     public function createUser() {
-        return Inertia::render('Admin/UserManagement/CreateUser');
+        $id_format = Users_IDFormat::where('user_type','admin')->first();
+        return Inertia::render('Admin/UserManagement/CreateUser', ['id_format' => $id_format]);
     }
 
     public function destroyUser($id) {

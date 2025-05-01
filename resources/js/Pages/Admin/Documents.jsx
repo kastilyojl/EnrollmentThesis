@@ -32,6 +32,7 @@ import FilterDropdown from "@/components/FilterDropdown";
 import RowPerPage from "@/components/RowPerPage";
 import Pagination from "@/components/Pagination";
 import useDebouncedSearch from "@/components/utils/useDebounceSearch";
+import { getFormattedDateTime } from "@/components/utils/formatDateTime";
 
 export default function Documents({ student, filters }) {
     const tableHeader = [
@@ -113,21 +114,16 @@ export default function Documents({ student, filters }) {
         onDelete(route("admin.documents.destroy", { id: itemId }), {
             onSuccess: () => {
                 toast("Documents has been deleted", {
-                    description: "Sunday, December 03, 2023 at 9:00 AM",
+                    description: (
+                        <span className="text-gray-900">
+                            {getFormattedDateTime()}
+                        </span>
+                    ),
                 });
                 setDel(false);
             },
         });
     };
-
-    // useEffect(() => {
-    //     if (!add && !del) {
-    //         if (document.body) {
-    //             document.body.style.pointerEvents = "auto";
-    //         }
-    //         document.activeElement?.blur(); // clear any sticky focus
-    //     }
-    // }, [add, del]);
 
     const handleEdit = (student) => {
         student = document.find((s) => s.id === student.id);
@@ -145,7 +141,7 @@ export default function Documents({ student, filters }) {
             year_level: student.year_level,
             classified_as: student.classified_as,
             status: student.status,
-            // ... other fields ...
+
             form_138A: Boolean(student.form_138A),
             form_137: Boolean(student.form_137),
             good_moral: Boolean(student.good_moral),
@@ -161,8 +157,12 @@ export default function Documents({ student, filters }) {
     const handleSubmit = () => {
         post(route("admin.program.store"), {
             onSuccess: () => {
-                toast("Program has been created", {
-                    description: "Sunday, December 03, 2023 at 9:00 AM",
+                toast("SProgram has been created", {
+                    description: (
+                        <span className="text-gray-900">
+                            {getFormattedDateTime()}
+                        </span>
+                    ),
                 });
                 setAdd(false);
                 setData({
@@ -185,7 +185,11 @@ export default function Documents({ student, filters }) {
             {
                 onSuccess: () => {
                     toast("Documents has been updated", {
-                        description: "Sunday, December 03, 2023 at 9:00 AM",
+                        description: (
+                            <span className="text-gray-900">
+                                {getFormattedDateTime()}
+                            </span>
+                        ),
                     });
 
                     setAdd(false);

@@ -10,6 +10,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import BadgeSuccess from "@/components/BadgeSuccess";
 
 export default function Subject() {
     const { student } = usePage().props;
@@ -30,6 +31,7 @@ export default function Subject() {
                     <TableHeader>
                         <TableRow>
                             <TableHead>Subject Code</TableHead>
+                            <TableHead>Subject Name</TableHead>
                             <TableHead>Status</TableHead>
                         </TableRow>
                     </TableHeader>
@@ -40,7 +42,20 @@ export default function Subject() {
                                     <TableCell className="font-medium">
                                         {subject.subject_code}
                                     </TableCell>
-                                    <TableCell>{subject.status}</TableCell>
+                                    <TableCell className="font-medium">
+                                        {subject.subject?.name || "N/A"}
+                                    </TableCell>
+
+                                    <TableCell>
+                                        {subject.status.toLowerCase() ===
+                                        "enroll" ? (
+                                            <BadgeSuccess>
+                                                {subject.status}
+                                            </BadgeSuccess>
+                                        ) : (
+                                            subject.status
+                                        )}
+                                    </TableCell>
                                 </TableRow>
                             ))
                         ) : (

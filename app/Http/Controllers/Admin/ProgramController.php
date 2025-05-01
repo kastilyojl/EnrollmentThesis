@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProgramRequest;
+use App\Models\AuditTrailCurriculum;
 use App\Models\Programs;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -42,20 +43,34 @@ class ProgramController extends Controller
     }
 
     public function store(ProgramRequest $request) {
-       
-        Programs::create([
-            'code'=>$request->code,
-            'name'=>$request->name,
-            'status' => $request->status,
-            'campus' => $request->campus,
-            'duration' => $request->duration,
-            'department' => $request->department,
-        ]);
+        DB::beginTransaction();
+    
+        try {
+            Programs::create([
+                'code' => $request->code,
+                'name' => $request->name,
+                'status' => $request->status,
+                'campus' => $request->campus,
+                'duration' => $request->duration,
+                'department' => $request->department,
+            ]);
+    
+            AuditTrailCurriculum::create([
+                'description' => $request->code . " has been created",
+                'user' => auth()->id(),
+            ]);
+    
+            DB::commit();
+    
+        } catch (\Exception $e) {
+            DB::rollBack();
+            
+        }
     }
-
+    
     public function storeFromExcel(Request $request)
     {
-        $programs = $request->input('programs'); // assuming front sends 'programs' not 'subjects'
+        $programs = $request->input('programs');
         $duplicates = [];
         $successCount = 0;
     
@@ -63,7 +78,6 @@ class ProgramController extends Controller
         try {
             foreach ($programs as $program) {
     
-                // ❌ Check for duplicate program code
                 $existingProgram = Programs::where('code', $program['code'])->first();
                 if ($existingProgram) {
                     $duplicates[] = [
@@ -74,7 +88,6 @@ class ProgramController extends Controller
                     continue;
                 }
     
-                // ✅ Save program
                 Programs::create([
                     'code' => $program['code'],
                     'name' => $program['name'],
@@ -82,6 +95,11 @@ class ProgramController extends Controller
                     'campus' => $program['campus'],
                     'duration' => $program['duration'],
                     'department' => $program['department'],
+                ]);
+
+                AuditTrailCurriculum::create([
+                    'description' => $program['code'] . " has been created",
+                    'user' => auth()->id(),
                 ]);
     
                 $successCount++;
@@ -109,19 +127,41 @@ class ProgramController extends Controller
     }
     
     public function edit(ProgramRequest $request) {
+        DB::beginTransaction();
+        try {
+            $items = Programs::where('id', $request->id)->first();
+            $items->update([
+                'code'=>$request->code,
+                'name'=>$request->name,
+                'status' => $request->status,
+                'campus' => $request->campus,
+                'duration' => $request->duration,
+                'department' => $request->department,
+            ]);
 
-        $items = Programs::where('id', $request->id)->first();
-        $items->update([
-            'code'=>$request->code,
-            'name'=>$request->name,
-            'status' => $request->status,
-            'campus' => $request->campus,
-            'duration' => $request->duration,
-            'department' => $request->department,
-        ]);
+            AuditTrailCurriculum::create([
+                'description' => $request->code . " has been updated",
+                'user' => auth()->id(),
+            ]);
+    
+            DB::commit();
+    
+        } catch (\Exception $e) {
+            DB::rollBack();
+        }
+
+      
     }
 
     public function destroy($id) {
-        Programs::findOrFail($id)->delete();
+        $program = Programs::findOrFail($id);
+    
+        AuditTrailCurriculum::create([
+            'description' => $program->code . " has been deleted",
+            'user' => auth()->id(),
+        ]);
+    
+        $program->delete();
     }
+    
 }

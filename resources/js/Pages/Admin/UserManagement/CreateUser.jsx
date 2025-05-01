@@ -15,15 +15,23 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import { getFormattedDateTime } from "@/components/utils/formatDateTime";
+import { useEffect } from "react";
 
-export default function CreateUser() {
+export default function CreateUser({ id_format = [] }) {
     const { data, setData, post, processing, errors, reset } = useForm({
+        custom_id: "",
         name: "",
         email: "",
         role: "",
         password: "",
         password_confirmation: "",
     });
+
+    useEffect(() => {
+        if (id_format?.id_format) {
+            setData("custom_id", id_format.id_format);
+        }
+    }, [id_format]);
 
     const submit = (e) => {
         e.preventDefault();
@@ -61,6 +69,24 @@ export default function CreateUser() {
                             autoComplete="name"
                             isFocused={true}
                             onChange={(e) => setData("name", e.target.value)}
+                            required
+                        />
+
+                        <InputError message={errors.name} className="mt-2" />
+                    </div>
+                    <div>
+                        <Label htmlFor="custom_id">ID</Label>
+
+                        <Input
+                            id="custom_id"
+                            name="custom_id"
+                            value={data.custom_id || id_format?.id_format}
+                            className="mt-1 block w-full"
+                            autoComplete="custom_id"
+                            isFocused={true}
+                            onChange={(e) =>
+                                setData("custom_id", e.target.value)
+                            }
                             required
                         />
 

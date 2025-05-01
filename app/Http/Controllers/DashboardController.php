@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AuditTrailCurriculum;
+use App\Models\AuditTrailEnrollment;
+use App\Models\AuditTrailStudent;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Programs;
@@ -13,14 +16,12 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $user = Auth::user();  // Get the authenticated user.
+        $user = Auth::user(); 
 
-        // If no authenticated user, handle appropriately (e.g., redirect or error message).
         if (!$user) {
             return redirect()->route('login')->with('error', 'Please login to access the dashboard.');
         }
 
-        // Count data for the dashboard
         $adminCount = $this->getUserCount(['super admin', 'accounting', 'registrar']);
         $professorCount = $this->getUserCount(['professor']);
         $studentCount = $this->getUserCount(['student']);
@@ -30,7 +31,6 @@ class DashboardController extends Controller
         $shsEnrolledCount = $this->getEnrolledCountByDepartment('SHS');
         $collegeEnrolledCount = $this->getEnrolledCountByDepartment('College');
 
-        // Return data to the Inertia view
         return Inertia::render('Dashboard', [
             'auth' => [
                 'user' => $user,
@@ -62,7 +62,6 @@ class DashboardController extends Controller
         ]);
     }
 
-    // Helper functions to simplify and make the code more maintainable.
 
     private function getUserCount(array $roles)
     {
@@ -96,4 +95,41 @@ class DashboardController extends Controller
                             ->take(20) 
                             ->get();
     }
+
+    public function AuditTrail(Request $request) {
+        
+        $curriculumAuditTrail = AuditTrailCurriculum::orderBy('created_at', 'desc')->take(50)->get();
+        $enrollmentAuditTrail = AuditTrailEnrollment::orderBy('created_at', 'desc')->take(50)->get();
+        $studentAuditTrail = AuditTrailStudent::orderBy('created_at', 'desc')->take(50)->get();
+      
+        $curriculumAuditTrail = $curriculumAuditTrail->map(function ($item) {
+            $user = User::find($item->user);
+            $item->user_name = $user ? $user->name : 'Unknown';
+            $item->user_role = $user ? $user->role : 'Unknown';
+            return $item;
+        });
+    
+        $enrollmentAuditTrail = $enrollmentAuditTrail->map(function ($item) {
+            $user = User::find($item->user);
+            $item->user_name = $user ? $user->name : 'Unknown';
+            $item->user_role = $user ? $user->role : 'Unknown';
+            return $item;
+        });
+    
+        $studentAuditTrail = $studentAuditTrail->map(function ($item) {
+            $user = User::find($item->user);
+            $item->user_name = $user ? $user->name : 'Unknown';
+            $item->user_role = $user ? $user->role : 'Unknown';
+            return $item;
+        });
+    
+        return Inertia::render('Dashboard/Admin/AuditTrail', [
+            'curriculum_audit_trail' => $curriculumAuditTrail,
+            'enrollment_audit_trail' => $enrollmentAuditTrail,
+            'student_audit_trail' => $studentAuditTrail,
+        ]);
+    }
+    
+    
+    
 }

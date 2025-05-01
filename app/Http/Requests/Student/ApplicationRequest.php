@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Student;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class ApplicationRequest extends FormRequest
 {
@@ -21,8 +22,22 @@ class ApplicationRequest extends FormRequest
      */
     public function rules(): array
     {
+        // Get the student ID from route parameters if it exists (for updates)
+        $studentId = $this->route('id');
+        $userId = null;
+        
+        // If this is an update, get the associated user ID
+        if ($studentId) {
+            $studentInfo = \App\Models\Student_Info::find($studentId);
+            $userId = $studentInfo ? $studentInfo->users_id : null;
+        }
+
         return [
-            'email' => 'required|email|unique:users,email',
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('users', 'email')->ignore($userId)
+            ],
 
             // student_info table
             'department' => 'required|string|max:50',
@@ -56,6 +71,18 @@ class ApplicationRequest extends FormRequest
             'guardian_name' => 'nullable|string|max:255',
             'guardian_relationship' => 'nullable|string|max:255',
             'guardian_phone' => 'nullable|string|max:50',
+        ];
+    }
+
+    /**
+     * Get custom messages for validator errors.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'email.unique' => 'This email is already associated with another account.',
         ];
     }
 }

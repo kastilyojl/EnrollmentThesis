@@ -195,27 +195,50 @@ export default function ApplicationForm({ program = [], academic_year = [] }) {
                                     name="school_year"
                                     id="school_year"
                                     value={data.school_year}
-                                    onChange={(e) =>
-                                        setData("school_year", e.target.value)
-                                    }
+                                    onChange={(e) => {
+                                        const selectedAcadYear =
+                                            academic_year.find(
+                                                (acad_year) =>
+                                                    `${format(
+                                                        new Date(
+                                                            acad_year.start
+                                                        ),
+                                                        "yyyy"
+                                                    )}-${format(
+                                                        new Date(acad_year.end),
+                                                        "yyyy"
+                                                    )}` === e.target.value
+                                            );
+                                        setData(
+                                            "school_year",
+                                            `${format(
+                                                new Date(
+                                                    selectedAcadYear.start
+                                                ),
+                                                "yyyy"
+                                            )}-${format(
+                                                new Date(selectedAcadYear.end),
+                                                "yyyy"
+                                            )}`
+                                        );
+                                    }}
                                     className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-1 focus:-outline-offset-1 focus:outline-indigo-600 sm:text-sm/6"
                                 >
                                     <option hidden>Select</option>
                                     {academic_year.map((acad_year, index) => {
+                                        const schoolYear = `${format(
+                                            new Date(acad_year.start),
+                                            "yyyy"
+                                        )}-${format(
+                                            new Date(acad_year.end),
+                                            "yyyy"
+                                        )}`;
                                         return (
                                             <option
                                                 key={index}
-                                                value={acad_year.id}
+                                                value={schoolYear}
                                             >
-                                                {format(
-                                                    new Date(acad_year.start),
-                                                    "yyyy"
-                                                )}{" "}
-                                                {" - "}
-                                                {format(
-                                                    new Date(acad_year.end),
-                                                    "yyyy"
-                                                )}
+                                                {schoolYear}
                                             </option>
                                         );
                                     })}
@@ -544,9 +567,10 @@ export default function ApplicationForm({ program = [], academic_year = [] }) {
                                     }
                                     className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-1 focus:-outline-offset-1 focus:outline-indigo-600 sm:text-sm/6"
                                 />
-                                {errors.email && !data.email && (
-                                    <InputError message={errors.email} />
-                                )}
+                                {errors.email ||
+                                    (!data.email && (
+                                        <InputError message={errors.email} />
+                                    ))}
                             </div>
                         </div>
                     </div>

@@ -1,12 +1,5 @@
 import ApplicationLogo from "@/components/ApplicationLogo";
-import Container from "@/Components/Container";
-import FileInput from "@/Components/FileInput";
 import InputError from "@/Components/InputError";
-import InputLabel from "@/Components/InputLabel";
-import LoadingSpinner from "@/components/LoadingSpinner";
-import PrimaryButton from "@/Components/PrimaryButton";
-import SelectInput from "@/Components/SelectInput";
-import TextInput from "@/Components/TextInput";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -89,7 +82,6 @@ export default function TuitionFee({ program = [] }) {
             onSubmit={handleSubmit}
             encType="multipart/form-data"
         >
-            {/* {spinner && <LoadingSpinner />} */}
             <div className="flex items-center">
                 <ApplicationLogo className="h-16" />{" "}
                 <span className="text-2xl font-bold">WITI</span>

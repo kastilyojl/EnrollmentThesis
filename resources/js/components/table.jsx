@@ -75,7 +75,8 @@ export default function TableData({
                                             ) : col === "onhold" ||
                                               col === "Inactive" ? (
                                                 <BadgeOnhold>{col}</BadgeOnhold>
-                                            ) : col === "Closed" ? (
+                                            ) : col === "Closed" ||
+                                              col === "reject" ? (
                                                 <BadgeDanger>{col}</BadgeDanger>
                                             ) : (
                                                 col

@@ -49,7 +49,7 @@ class Student_Info extends Model
 
     public function paymentVerification() 
     {
-        return $this->hasOne(Payment_Verification::class, 'student_info_id', 'student_id');
+        return $this->hasMany(Payment_Verification::class, 'student_info_id', 'student_id');
     }
 
     public function sectionStudent() 

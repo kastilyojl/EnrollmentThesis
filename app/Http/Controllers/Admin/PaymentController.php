@@ -11,6 +11,7 @@ use App\Models\Other_Billing;
 use App\Models\Payment_Details;
 use App\Models\Payment_Verification;
 use App\Models\Programs;
+use App\Models\Student_Fees;
 use App\Models\Student_Info;
 use App\Models\Student_Subjects;
 use App\Models\Subjects;
@@ -80,29 +81,88 @@ class PaymentController extends Controller
 
         // Admin
 
-        public function indexPayment() {
-            $payment = Payment_Verification::all();
-            return Inertia::render('Admin/Payment', ['payment'=>$payment]);
+        public function indexPayment(Request $request) {
+            $perPage = $request->input('per_page', session('rows_per_page', 10));
+        
+            session(['rows_per_page' => $perPage]);
+
+            $query = Payment_Verification::query();
+
+            if ($request->has('search') && !empty($request->search)) {
+                $searchTerm = $request->search; 
+                $query->where(function($q) use ($searchTerm) {
+                    $q->where('student_info_id', 'like', "%{$searchTerm}%")
+                      ->orWhere('name', 'like', "%{$searchTerm}%")
+                      ->orWhere('email', 'like', "%{$searchTerm}%")
+                      ->orWhere('reference', 'like', "%{$searchTerm}%");
+                });
+            }
+                    
+            if ($request->has('filter') && $request->filter && $request->filter !== 'All') {
+                $query->where(function($q) use ($request) {
+                    $q->where('semester', $request->filter)
+                      ->orWhere('year_level', $request->filter)
+                      ->orWhere('purpose', $request->filter);
+                    });
+                }
+
+            $payment = $query->paginate($perPage);
+
+            return Inertia::render('Admin/Payment', ['payment'=>$payment, 
+            'filters' => $request->only(['search', 'filter', 'per_page'])]);
         }
 
-        public function edit(PaymentVerification $request) {
-            $items = Payment_Verification::where('id', $request->id)->first();
-                
-                $items->update([
-                    'name' => $request->name,
-                    'year_level' => $request->year_level,
-                    'program' => $request->program,
-                    'email' => $request->email,
-                    'purpose' => $request->purpose,
-                    'semester' => $request->semester,
-                    'amount' => $request->amount,
-                    'reference' => $request->reference,
-                    'status' => $request->status,
-                ]);
+        public function edit(PaymentVerification $request) 
+        {
+            $paymentVerification = Payment_Verification::findOrFail($request->id);
+            
+            $paymentVerification->update([
+                'name' => $request->name,
+                'year_level' => $request->year_level,
+                'program' => $request->program,
+                'email' => $request->email,
+                'purpose' => $request->purpose,
+                'semester' => $request->semester,
+                'amount' => $request->amount,
+                'reference' => $request->reference,
+                'status' => $request->status,
+            ]);
 
-                // if($request->status === 'Approved' || $request->status === 'approved') {
-                //     return redirect()->route('send.email.payment.verified', ['id' => $items]);
-                // }
+            
+            if ($request->status === 'approved') {
+            
+                $studentFee = Student_Fees::where([
+                    'student_info_id' => $paymentVerification->student_info_id,
+                    'year_level' => $paymentVerification->year_level,
+                    'semester' => $paymentVerification->semester
+                ])->first();
+
+                if ($studentFee) {
+                
+                    $updateData = [
+                        'amount_paid' => $studentFee->amount_paid + $paymentVerification->amount,
+                        'status' => $this->calculatePaymentStatus(
+                            $studentFee->total_amount,
+                            $studentFee->amount_paid + $paymentVerification->amount
+                        ),
+                        'payment_verification_id' => $paymentVerification->id
+                    ];
+
+                
+                    $studentFee->update($updateData);
+                }
+            }
+
+        }
+
+        protected function calculatePaymentStatus($totalAmount, $amountPaid)
+        {
+            if ($amountPaid >= $totalAmount) {
+                return 'paid';
+            } elseif ($amountPaid > 0) {
+                return 'partially_paid';
+            }
+            return 'pending';
         }
 
         public function showImage($filename) {
@@ -114,42 +174,142 @@ class PaymentController extends Controller
             return response()->file($path);
             }
 
+
         public function destroy($id) {
             Payment_Verification::findOrFail($id)->delete();
         }
 
-        public function indexAssignFee() {
-            $student = Student_Info::with('users','personalInfo', 'documents', 'guardian', 'paymentVerification')->whereHas('documents')
-                    ->whereHas('paymentVerification')
-                    ->get();
+
+        public function indexAssignFee(Request $request) {
+            $perPage = $request->input('per_page', session('rows_per_page', 10));
+        
+            session(['rows_per_page' => $perPage]);
+
+            $query = Student_Info::with('users','personalInfo', 'documents', 'guardian', 'paymentVerification')->whereHas('documents')
+                    ->whereHas('paymentVerification');
+             
+
+            if ($request->has('search') && !empty($request->search)) {
+                $query->whereHas('personalInfo', function($q) use ($request) {
+                    $q->where('first_name', 'like', "%{$request->search}%")
+                    ->orWhere('last_name', 'like', "%{$request->search}%")
+                    ->orWhere('student_info_id', 'like', "%{$request->search}%");                    
+                });
+            }
+                    
+            if ($request->has('filter') && $request->filter && $request->filter !== 'All') {
+                $query->where(function($q) use ($request) {
+                    $q->where('semester', $request->filter)
+                      ->orWhere('year_level', $request->filter);
+                    });
+                }
+
+            $student = $query->paginate($perPage);
             
             $college_fee = College_Billing::all();
             $subjects = Subjects::all();
             $other_fee = Other_Billing::all();
             $student_subjects = Student_Subjects::all();
-            return Inertia::render('Admin/AssigningFee', ['student'=>$student, 'college_fee'=>$college_fee, 'subjects'=>$subjects, 'other_fee' => $other_fee, 'student_subjects' => $student_subjects]);
+           
+
+            return Inertia::render('Admin/AssigningFee', ['student'=>$student, 
+            'college_fee'=>$college_fee, 
+            'subjects'=>$subjects, 
+            'other_fee' => $other_fee, 
+            'student_subjects' => $student_subjects,
+            'filters' => $request->only(['search', 'filter', 'per_page'])]);
         }
-
+        
         public function storePaymentDetails(Request $request)
-{
-    $paymentDetails = $request->input('paymentDetails');
+        {
+            $paymentDetails = $request->input('paymentDetails');
+            
+            if (empty($paymentDetails)) {
+                return response()->json(['error' => 'No payment details provided'], 400);
+            }
 
-    Log::info('Received Payment Details:', $paymentDetails);
+            $firstPayment = $paymentDetails[0];
+            $studentInfo = Student_Info::where('student_id', $firstPayment['student_info_id'])->first();
 
-    foreach ($paymentDetails as $paymentDetail) {
-        Log::info('Payment Detail:', $paymentDetail);
+            if (!$studentInfo) {
+                Log::error('Student Info not found for student_id:', [$firstPayment['student_info_id']]);
+                return response()->json(['error' => 'Student not found'], 404);
+            }
 
-        Payment_Details::create([
-            'student_info_id' => $paymentDetail['student_info_id'],
-            'fee_type' => $paymentDetail['fee_type'],
-            'fee_id' => $paymentDetail['fee_id'],
-            'amount' => $paymentDetail['amount'],
-        ]);
-    }
+            $totalFees = 0;
+            $totalDiscounts = 0;
+
+            foreach ($paymentDetails as $paymentDetail) {
+                if ($paymentDetail['amount'] < 0) {
+                    $totalDiscounts += abs($paymentDetail['amount']);
+                } else {
+                    $totalFees += $paymentDetail['amount'];
+                }
+            }
+
+            $netTotal = $totalFees - $totalDiscounts;
+
+            if ($netTotal < 0) {
+                return response()->json(['error' => 'Discounts cannot exceed total fees'], 400);
+            }
+
+            foreach ($paymentDetails as $paymentDetail) {
+                Payment_Details::create([
+                    'student_info_id' => $paymentDetail['student_info_id'],
+                    'fee_type' => $paymentDetail['fee_type'],
+                    'year_level' => $studentInfo->year_level,
+                    'semester' => $studentInfo->semester,
+                    'fee_id' => $paymentDetail['fee_id'],
+                    'amount' => $paymentDetail['amount'],
+                ]);
+            }
+
+            $approvedPayments = Payment_Verification::where([
+                'student_info_id' => $studentInfo->student_id,
+                'year_level' => $studentInfo->year_level,
+                'semester' => $studentInfo->semester,
+                'status' => 'approved'
+            ])->get();
+
+            if ($approvedPayments->isEmpty()) {
+                Student_Fees::updateOrCreate(
+                    [
+                        'student_info_id' => $studentInfo->student_id,
+                        'year_level' => $studentInfo->year_level,
+                        'semester' => $studentInfo->semester,
+                    ],
+                    [
+                        'status' => 'pending',
+                        'total_amount' => $netTotal,
+                        'amount_paid' => 0,
+                        'discounts' => $totalDiscounts,
+                    ]
+                );
+            }
+
+            else {
+                foreach ($approvedPayments as $payment) {
+                    Student_Fees::create([
+                        'student_info_id' => $studentInfo->student_id,
+                        'year_level' => $studentInfo->year_level,
+                        'semester' => $studentInfo->semester,
+                        'status' => 'partially_paid',
+                        'total_amount' => $netTotal,
+                        'amount_paid' => $payment->amount,
+                        'discounts' => $totalDiscounts,
+                        'payment_verification_id' => $payment->id, 
+                    ]);
+                }
+            }
+
+        }        
+
 }
+
+        
 
         
 
         
            
-}
+

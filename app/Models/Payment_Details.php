@@ -14,6 +14,8 @@ class Payment_Details extends Model
         'student_info_id',
         'fee_type',
         'fee_id',
+        'year_level',
+        'semester',
         'amount'
     ];
 

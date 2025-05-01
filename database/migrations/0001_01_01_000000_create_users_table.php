@@ -14,6 +14,7 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+            $table->string('custom_id')->unique()->nullable();
             $table->string('name');
             $table->string('email')->unique();
             $table->string('role');
@@ -24,7 +25,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        DB::table('users')->insert([
+        $userId = DB::table('users')->insert([
             'name' => 'John Lester Castillo',
             'email' => 'castillojlb0922@gmail.com',
             'role' => 'super admin',

@@ -1,9 +1,6 @@
 import Layout from "@/components/layout";
-import TableData from "@/components/table";
-import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { toast } from "sonner";
-import { useForm } from "@inertiajs/react";
+import { router, useForm } from "@inertiajs/react";
 
 import {
     DialogDescription,
@@ -13,15 +10,6 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
     Table,
     TableBody,
@@ -31,21 +19,26 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { Edit, Filter } from "lucide-react";
+import { Edit } from "lucide-react";
 import BadgeSuccess from "@/components/BadgeSuccess";
 import BadgeWarning from "@/components/BadgeWarning";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import SchoolFeeDetails from "./Admission/SchoolFeeDetails";
+import SearchFilter from "@/components/SearchFilter";
+import FilterDropdown from "@/components/FilterDropdown";
+import RowPerPage from "@/components/RowPerPage";
+import useDebouncedSearch from "@/components/utils/useDebounceSearch";
+import Pagination from "@/components/Pagination";
+import NoData from "@/components/no-data";
 
 export default function AssignFee({
-    student = [],
+    student,
     college_fee = [],
     other_fee = [],
     subjects = [],
     student_subjects = [],
+    filters,
 }) {
     const {
         data,
@@ -61,7 +54,7 @@ export default function AssignFee({
         amount_paid: "",
     });
 
-    const studentData = student.map((students) => ({
+    const studentData = student.data.map((students) => ({
         // student info
         id: students.id,
         users_id: students.users_id,
@@ -106,8 +99,6 @@ export default function AssignFee({
         unit: subject.unit,
     }));
 
-    console.log("Subjects", subject);
-
     const student_subject = student_subjects
         .filter(
             (studentSubject) =>
@@ -125,11 +116,9 @@ export default function AssignFee({
                 student_info_id: studentSubject.student_info_id,
                 subject_code: studentSubject.subject_code,
                 subject_status: studentSubject.status,
-                unit: subjectInfo ? subjectInfo.unit : null, // Safely access unit
+                unit: subjectInfo ? subjectInfo.unit : null,
             };
         });
-
-    console.log("Student Subjects", student_subject);
 
     const subject_unit = subjects
         .filter((subject) => subject.code === student_subject.subject_code)
@@ -138,8 +127,6 @@ export default function AssignFee({
             code: subject.code,
             unit: subject.unit,
         }));
-
-    console.log("Subject unit: ", subject_unit);
 
     const totalUnits = student_subjects.reduce((total, subject) => {
         return total + subject.unit;
@@ -151,91 +138,11 @@ export default function AssignFee({
     const [create, setCreate] = useState(false);
     const [selectedSubjects, setSelectedSubjects] = useState([]);
 
-    const handleSubjectToggle = (subject) => {
-        setSelectedSubjects((prevSelected) => {
-            const isSelected = prevSelected.some(
-                (selectedSubject) => selectedSubject.id === subject.id
-            );
-
-            let updatedSelectedSubjects;
-
-            if (isSelected) {
-                updatedSelectedSubjects = prevSelected.filter(
-                    (selectedSubject) => selectedSubject.id !== subject.id
-                );
-            } else {
-                updatedSelectedSubjects = [...prevSelected, subject];
-            }
-
-            // Sync with data object
-            setData({
-                ...data,
-                selectedSubjects: updatedSelectedSubjects,
-            });
-
-            return updatedSelectedSubjects;
-        });
-    };
-
-    const handleSubmit = () => {
-        const selectedSubjectsDetails = selectedSubjects.map((subject) => ({
-            student_info_id: data.student_id,
-            subject_code: subject.code,
-            status: "enrolled",
-        }));
-
-        console.log(
-            "Selected Subjects Details (Transformed):",
-            selectedSubjectsDetails
-        );
-
-        console.log("Payload Being Sent:", {
-            selectedSubjects: selectedSubjectsDetails,
-        });
-
-        console.log("Selected Subjects", selectedSubjects);
-
-        post(
-            route("admin.course-section.add"),
-
-            {
-                onSuccess: () => {
-                    console.log("Success Trigger");
-                    toast("Bill has been created", {
-                        description: "Sunday, December 03, 2023 at 9:00 AM",
-                    });
-                    setAdd(false);
-                    setSelectedSubjects([]);
-                },
-
-                onError: () => {
-                    toast.error("Failed to assign courses.");
-                },
-            }
-        );
-    };
-
-    const handleCreate = () => {
-        setCreate((prev) => !prev);
-    };
-
-    // const handleAdd = () => {
-    //     setItemId(null);
-    //     setAdd(true);
-    //     setData({
-    //         code: "",
-    //         name: "",
-    //         department: "",
-    //         duration: "",
-    //         campus: "",
-    //         status: "",
-    //     });
-    // };
-
     const handleEdit = (student) => {
         student = studentData.find((s) => s.id === student.id);
+        console.log("Student ", student);
         setItemId(student);
-        console.log("student Data", student);
+        console.log("Item ID ", itemId);
         setData({
             id: student.id,
             email: student.email,
@@ -263,18 +170,71 @@ export default function AssignFee({
         setAdd(true);
     };
 
-    const handleUpdateSubmit = () => {
-        post(route("admin.application.update", { id: itemId }), {
-            onSuccess: () => {
-                toast("Student Application has been updated", {
-                    description: "Sunday, December 03, 2023 at 9:00 AM",
-                });
-                setAdd(false);
-                setData({
-                    status: "",
-                });
+    const filterData = {
+        Department: ["1st Semester", "2nd Semester"],
+        Year: [
+            "Grade 11",
+            "Grade 12",
+            "1st Year",
+            "2nd Year",
+            "3rd Year",
+            "4th Year",
+        ],
+    };
+
+    const [search, setSearch] = useState(filters?.search || "");
+    const [dataFilter, setDataFilter] = useState("All");
+    const [perPage, setPerPage] = useState(filters?.per_page || 10);
+
+    const { triggerSearch } = useDebouncedSearch({
+        routeName: "admin.assign-fee.index",
+        filterKey: "filter",
+        filterValue: dataFilter,
+        perPage,
+    });
+
+    const handleSearchChange = (val) => {
+        setSearch(val);
+        triggerSearch(val);
+    };
+
+    const year = sessionStorage.getItem("selectedYear");
+
+    const handleFilterChange = (filterValue) => {
+        setDataFilter(filterValue);
+        router.get(
+            route("admin.assign-fee.index"),
+            {
+                search: "",
+                filter: filterValue === "All" ? "" : filterValue,
+                per_page: perPage,
+                year,
             },
-        });
+            {
+                preserveState: true,
+                replace: true,
+            }
+        );
+    };
+
+    const clearAllFilters = () => {
+        const year = sessionStorage.getItem("selectedYear");
+        setSearch("");
+        setDataFilter("All");
+
+        router.get(
+            route("admin.assign-fee.index"),
+            {
+                search: "",
+                filter: "",
+                per_page: perPage,
+                year: year || "",
+            },
+            {
+                preserveState: true,
+                replace: true,
+            }
+        );
     };
 
     return (
@@ -283,33 +243,22 @@ export default function AssignFee({
                 <h1 className="text-2xl font-bold">Fees Selection</h1>
             </div>
             <div className="flex justify-between mb-3">
-                <div className="flex gap-4">
-                    <Input
-                        type="text"
-                        placeholder="Search"
-                        className="w-[300px]"
+                <div className="flex items-center gap-2">
+                    <SearchFilter
+                        searchValue={search}
+                        onSearchChange={handleSearchChange}
+                        onSearchSubmit={triggerSearch}
+                        onClearFilters={clearAllFilters}
+                        showClearButton={search || dataFilter !== "All"}
                     />
-                    <div className="text-white">
-                        <DropdownMenu>
-                            <DropdownMenuTrigger className="bg-primary flex px-2 py-1 rounded-md">
-                                Filter
-                                <Filter className="h-5 ml-2" />
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent className="bg-customBlue text-white">
-                                <DropdownMenuItem>
-                                    Computer Science
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                    Information System
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>Tourism</DropdownMenuItem>
-                                <DropdownMenuItem>Criminology</DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    </div>
+                    <FilterDropdown
+                        currentFilter={dataFilter}
+                        filterData={filterData}
+                        onFilterChange={handleFilterChange}
+                    />
                 </div>
             </div>
-            <div className="border rounded-sm px-4">
+            <div className="border rounded-sm px-4 min-h-96">
                 <Table>
                     <TableHeader>
                         <TableRow className="table-fixed">
@@ -328,78 +277,73 @@ export default function AssignFee({
                             <TableHead className="w-1/12 text-center">
                                 No. of Units
                             </TableHead>
-                            <TableHead className="w-1/12 text-center">
-                                Payment
-                            </TableHead>
+
                             <TableHead className="w-1/12 text-center"></TableHead>
                         </TableRow>
                     </TableHeader>
 
                     <TableBody>
-                        {studentData.map((student) => {
-                            const totalUnits = student_subject
-                                .filter(
-                                    (subject) =>
-                                        subject.student_info_id ===
-                                        student.student_id
-                                )
-                                .reduce(
-                                    (sum, subject) => sum + (subject.unit || 0),
-                                    0
-                                );
+                        {studentData.length > 0 ? (
+                            studentData.map((student) => {
+                                const totalUnits = student_subject
+                                    .filter(
+                                        (subject) =>
+                                            subject.student_info_id ===
+                                            student.student_id
+                                    )
+                                    .reduce(
+                                        (sum, subject) =>
+                                            sum + (subject.unit || 0),
+                                        0
+                                    );
 
-                            return (
-                                <TableRow
-                                    key={student.id}
-                                    className="table-fixed"
+                                return (
+                                    <TableRow
+                                        key={student.id}
+                                        className="table-fixed"
+                                    >
+                                        <TableCell className="w-1/12 font-medium text-center">
+                                            {student.first_name +
+                                                " " +
+                                                student.middle_name +
+                                                " " +
+                                                student.last_name}
+                                        </TableCell>
+                                        <TableCell className="w-1/12 font-medium text-center">
+                                            {student.year_level}
+                                        </TableCell>
+                                        <TableCell className="w-1/12 font-medium text-center">
+                                            {student.program}
+                                        </TableCell>
+                                        <TableCell className="w-1/12 font-medium text-center">
+                                            {student.semester}
+                                        </TableCell>
+                                        <TableCell className="w-1/12 font-medium text-center">
+                                            {totalUnits}
+                                        </TableCell>
+                                        <TableCell className="w-1/12 font-medium text-center">
+                                            <div className="flex justify-center">
+                                                <Edit
+                                                    className="h-5 text-primary cursor-pointer"
+                                                    onClick={() =>
+                                                        handleEdit(student)
+                                                    }
+                                                />
+                                            </div>
+                                        </TableCell>
+                                    </TableRow>
+                                );
+                            })
+                        ) : (
+                            <TableRow>
+                                <TableCell
+                                    colSpan={6}
+                                    className="text-center py-4 pt-20"
                                 >
-                                    <TableCell className="w-1/12 font-medium text-center">
-                                        {student.first_name +
-                                            " " +
-                                            student.middle_name +
-                                            " " +
-                                            student.last_name}
-                                    </TableCell>
-                                    <TableCell className="w-1/12 font-medium text-center">
-                                        {student.year_level}
-                                    </TableCell>
-                                    <TableCell className="w-1/12 font-medium text-center">
-                                        {student.program}
-                                    </TableCell>
-                                    <TableCell className="w-1/12 font-medium text-center">
-                                        {student.semester}
-                                    </TableCell>
-                                    <TableCell className="w-1/12 font-medium text-center">
-                                        {totalUnits}
-                                    </TableCell>{" "}
-                                    <TableCell className="w-1/12 font-medium text-center">
-                                        {student.payment_status ===
-                                        "approved" ? (
-                                            <BadgeSuccess>
-                                                {student.payment_status}
-                                            </BadgeSuccess>
-                                        ) : student.payment_status ===
-                                          "pending" ? (
-                                            <BadgeWarning>
-                                                {student.payment_status}
-                                            </BadgeWarning>
-                                        ) : (
-                                            student.payment_status
-                                        )}
-                                    </TableCell>
-                                    <TableCell className="w-1/12 font-medium text-center">
-                                        <div className="flex justify-center">
-                                            <Edit
-                                                className="h-5 text-primary cursor-pointer"
-                                                onClick={() =>
-                                                    handleEdit(student)
-                                                }
-                                            />
-                                        </div>
-                                    </TableCell>
-                                </TableRow>
-                            );
-                        })}
+                                    <NoData />
+                                </TableCell>
+                            </TableRow>
+                        )}
                     </TableBody>
                 </Table>
                 {add && (
@@ -417,7 +361,7 @@ export default function AssignFee({
                                 <h1>Select Fee</h1>
                                 <ScrollArea className="h-[500px]">
                                     <SchoolFeeDetails
-                                        student={student}
+                                        student={itemId}
                                         college_fee={college_fee}
                                         other_fee={other_fee}
                                         setAdd={setAdd}
@@ -427,6 +371,14 @@ export default function AssignFee({
                         </DialogContent>
                     </Dialog>
                 )}
+            </div>
+            <div className="flex justify-between pt-2">
+                <RowPerPage
+                    filters={filters}
+                    routeName={"admin.assign-fee.index"}
+                    dataFilter={dataFilter}
+                />
+                <Pagination links={student.links} />
             </div>
         </Layout>
     );

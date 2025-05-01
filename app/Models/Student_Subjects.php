@@ -20,4 +20,10 @@ class Student_Subjects extends Model
     {
         return $this->belongsTo(Student_Info::class, 'student_info_id', 'student_id');
     }
+
+    public function subject()
+    {
+        return $this->belongsTo(Subjects::class, 'subject_code', 'code');
+    }
+
 }

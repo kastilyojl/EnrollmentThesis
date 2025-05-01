@@ -1,688 +1,488 @@
 import Layout from "@/components/layout";
-import TableData from "@/components/table";
-import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { useForm } from "@inertiajs/react";
-
-import {
-    DialogDescription,
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog";
-
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { router, useForm } from "@inertiajs/react";
+import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
     TableHead,
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { Edit, Filter } from "lucide-react";
+import { Edit } from "lucide-react";
 import BadgeSuccess from "@/components/BadgeSuccess";
 import BadgeWarning from "@/components/BadgeWarning";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { getFormattedDateTime } from "@/components/utils/formatDateTime";
+import SearchFilter from "@/components/SearchFilter";
+import FilterDropdown from "@/components/FilterDropdown";
+import useDebouncedSearch from "@/components/utils/useDebounceSearch";
+import RowPerPage from "@/components/RowPerPage";
+import Pagination from "@/components/Pagination";
 
-export default function AssignCourse({
-    student = [],
-    college_fee = [],
-    other_fee = [],
-    subjects = [],
-}) {
-    const tableHeader = [
-        "Name",
-        "Year Level",
-        "Program",
-        "Semester",
-        "Application",
-        "Documents",
-        "Payment",
-    ];
-
-    const {
-        data,
-        setData,
-        post,
-        errors,
-        delete: onDelete,
-    } = useForm({
-        id: "",
-        student_info_id: "",
-        subject_code: "",
-        status: "",
-        // selectedSubjects: [],
-    });
-
-    const studentData = student.map((students) => ({
-        // student info
-        id: students.id,
-        student_id: students.student_id,
-        department: students.department,
-        school_year: students.school_year,
-        semester: students.semester,
-        branch: students.branch,
-        year_level: students.year_level,
-        program: students.program,
-        classified_as: students.classified_as,
-        last_school_attended: students.last_school_attended,
-        last_school_address: students.last_school_address,
-        email: students.users.email,
-        status: students.status,
-        // personal info
-        first_name: students.personal_info.first_name,
-        last_name: students.personal_info.last_name,
-        middle_name: students.personal_info.middle_name,
-        address: students.personal_info.address,
-        birth_date: students.personal_info.birth_date,
-        birth_place: students.personal_info.birth_place,
-        civil_status: students.personal_info.civil_status,
-        gender: students.personal_info.gender,
-        religion: students.personal_info.religion,
-        // guardian
-        father_name: students.guardian.father_name,
-        father_occupation: students.guardian.father_occupation,
-        father_phone: students.guardian.father_phone,
-        mother_name: students.guardian.mother_name,
-        mother_phone: students.guardian.mother_phone,
-        mother_occupation: students.guardian.mother_occupation,
-        guardian_name: students.guardian.guardian_name,
-        guardian_relationship: students.guardian.guardian_relationship,
-        guardian_phone: students.guardian.guardian_phone,
-
-        // documents
-        doc_status: students.documents.status,
-        form_138A: students.documents.form_138A,
-        form_137: students.documents.form_137,
-        good_moral: students.documents.good_moral,
-        psa: students.documents.psa,
-        pic_2x2: students.documents.pic_2x2,
-        ctc_transferee: students.documents.ctc_transferee,
-        grade_transferee: students.documents.grade_transferee,
-        f137_transferee: students.documents.f137_transferee,
-
-        // payment
-        payment_status: students.payment_verification.status,
-        payment_verification_name: students.payment_verification.name,
-        payment_verification_email: students.payment_verification.email,
-        payment_purpose: students.payment_verification.purpose,
-        payment_semester: students.payment_verification.semester,
-        payment_reference: students.payment_verification.reference,
-        payment_amount: students.payment_verification.amount,
-        payment_receipt: students.payment_verification.payment_receipt,
-        payment_created_at: students.payment_verification.created_at,
-    }));
-
-    const tableData = studentData.map((student) => ({
+export default function AssignCourse({ student = [], subjects = [], filters }) {
+    // Student data processing
+    const studentData = student.data.map((student) => ({
         id: student.id,
-        name:
-            student.first_name +
-            " " +
-            student.middle_name +
-            " " +
-            student.last_name,
-        year_level: student.year_level,
+        student_id: student.student_id,
         program: student.program,
         semester: student.semester,
+        year_level: student.year_level,
+        first_name: student.personal_info?.first_name || "",
+        middle_name: student.personal_info?.middle_name || "",
+        last_name: student.personal_info?.last_name || "",
         status: student.status,
-        doc_status: student.doc_status,
-        payment_status: student.payment_status,
+        doc_status: student.documents?.status,
+        payment_status: student.payment_verification?.[0]?.status || "pending",
     }));
 
-    const [itemId, setItemId] = useState(null);
-    const [add, setAdd] = useState(false);
-    const [del, setDel] = useState(false);
-    const [create, setCreate] = useState(false);
+    const { data, setData, post } = useForm({
+        id: "",
+        student_id: "",
+        program: "",
+        semester: "",
+        year_level: "",
+        subjects: [],
+    });
+
     const [selectedSubjects, setSelectedSubjects] = useState([]);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [currentStudent, setCurrentStudent] = useState(null);
+
+    const getFilteredSubjects = () => {
+        if (!data.year_level) return subjects || [];
+        return (subjects || []).filter(
+            (subject) =>
+                subject.year_level === data.year_level &&
+                subject.deleted_at === null
+        );
+    };
 
     const handleSubjectToggle = (subject) => {
-        setSelectedSubjects((prevSelected) => {
-            const isSelected = prevSelected.some(
-                (selectedSubject) => selectedSubject.id === subject.id
+        setSelectedSubjects((prev) => {
+            const isSelected = prev.some((s) => s.id === subject.id);
+            const updated = isSelected
+                ? prev.filter((s) => s.id !== subject.id)
+                : [...prev, subject];
+
+            setData(
+                "subjects",
+                updated.map((s) => ({
+                    subject_code: s.code,
+                    status: "enrolled",
+                }))
             );
 
-            let updatedSelectedSubjects;
-
-            if (isSelected) {
-                updatedSelectedSubjects = prevSelected.filter(
-                    (selectedSubject) => selectedSubject.id !== subject.id
-                );
-            } else {
-                updatedSelectedSubjects = [...prevSelected, subject];
-            }
-
-            // Sync with data object
-            setData({
-                ...data,
-                selectedSubjects: updatedSelectedSubjects,
-            });
-
-            return updatedSelectedSubjects;
+            return updated;
         });
     };
 
     const handleSubmit = () => {
-        const selectedSubjectsDetails = selectedSubjects.map((subject) => ({
-            student_info_id: data.student_id,
-            subject_code: subject.code,
-            status: "enrolled",
-        }));
+        const payload = {
+            student_id: data.student_id,
+            selectedSubjects: selectedSubjects.map((subject) => ({
+                code: subject.code,
+            })),
+        };
 
-        console.log(
-            "Selected Subjects Details (Transformed):",
-            selectedSubjectsDetails
-        );
-
-        console.log("Payload Being Sent:", {
-            selectedSubjects: selectedSubjectsDetails,
-        });
-
-        console.log("Selected Subjects", selectedSubjects);
-
-        post(
-            route("admin.course-section.add"),
-
-            {
-                onSuccess: () => {
-                    toast("Courses Assigned to student", {
-                        description: "Sunday, December 03, 2023 at 9:00 AM",
-                    });
-                    setAdd(false);
-                    setSelectedSubjects([]);
-                },
-
-                onError: () => {
-                    toast.error("Failed to assign courses.");
-                },
-            }
-        );
-    };
-
-    const handleCreate = () => {
-        setCreate((prev) => !prev);
-    };
-
-    const handleDel = (student) => {
-        setItemId(student);
-        setDel(true);
-    };
-
-    const handleSubmitDel = () => {
-        console.log("Delete id", itemId.id);
-        onDelete(route("admin.program.destroy", { id: itemId }), {
+        post(route("admin.course-section.add"), payload, {
             onSuccess: () => {
-                toast("Program has been deleted", {
-                    description: "Sunday, December 03, 2023 at 9:00 AM",
+                toast("Courses assigned successfully", {
+                    description: (
+                        <span className="text-gray-900">
+                            {getFormattedDateTime()}
+                        </span>
+                    ),
                 });
-                setDel(false);
+                setIsDialogOpen(false);
+                setSelectedSubjects([]);
+            },
+            onError: (errors) => {
+                toast.error("Failed to assign courses", {
+                    description: Object.values(errors).join("\n"),
+                });
             },
         });
     };
 
     const handleEdit = (student) => {
-        student = studentData.find((s) => s.id === student.id);
-        setItemId(student);
-        console.log("student Data", student);
+        setCurrentStudent(student);
         setData({
             id: student.id,
-            email: student.email,
             student_id: student.student_id,
-            department: student.department,
-            year_level: student.year_level,
-            semester: student.semester,
-            school_year: student.school_year,
-            branch: student.branch,
             program: student.program,
-            classified_as: student.classified_as,
-            last_school_attended: student.last_school_attended,
-            last_school_address: student.last_school_address,
-            status: student.status,
-
-            name:
-                student.first_name +
-                " " +
-                student.middle_name +
-                " " +
-                student.last_name,
+            semester: student.semester,
+            year_level: student.year_level,
+            subjects: [],
         });
 
-        setAdd(true);
+        const filteredSubjects = subjects.filter(
+            (subject) =>
+                subject.year_level === student.year_level &&
+                subject.period === student.semester
+        );
+
+        const autoSelectedSubjects = filteredSubjects.map((subject) => ({
+            id: subject.id,
+            code: subject.code,
+            name: subject.name,
+        }));
+
+        setSelectedSubjects(autoSelectedSubjects);
+        setData(
+            "subjects",
+            autoSelectedSubjects.map((s) => ({
+                subject_code: s.code,
+                status: "enrolled",
+            }))
+        );
+        setIsDialogOpen(true);
     };
 
-    const handleUpdateSubmit = () => {
-        post(route("admin.application.update", { id: itemId }), {
-            onSuccess: () => {
-                toast("Student Application has been updated", {
-                    description: "Sunday, December 03, 2023 at 9:00 AM",
-                });
-                setAdd(false);
-                setData({
-                    status: "",
-                });
+    useEffect(() => {
+        if (selectedSubjects.length > 0) {
+            setData(
+                "subjects",
+                selectedSubjects.map((s) => ({
+                    subject_code: s.code,
+                    status: "enrolled",
+                }))
+            );
+        }
+    }, [selectedSubjects, setData]);
+
+    const SubjectTableSection = ({ category }) => {
+        const filteredSubjects = getFilteredSubjects().filter(
+            (subject) => subject.category === category
+        );
+
+        return (
+            <div className="border rounded-md p-3 mb-4">
+                <h3 className="font-medium text-md mb-3">
+                    {category} Subjects
+                </h3>
+                {filteredSubjects.length > 0 ? (
+                    <ScrollArea className="h-[100px]">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            {filteredSubjects.map((subject) => (
+                                <div
+                                    key={subject.id}
+                                    className="border rounded-md p-4"
+                                >
+                                    <div className="flex items-center">
+                                        <Checkbox
+                                            checked={selectedSubjects.some(
+                                                (s) => s.id === subject.id
+                                            )}
+                                            onCheckedChange={() =>
+                                                handleSubjectToggle(subject)
+                                            }
+                                            className="mr-3"
+                                        />
+                                        <div>
+                                            <h4 className="font-medium text-sm">
+                                                {subject.name}
+                                            </h4>
+                                            <p className="text-sm text-gray-600">
+                                                Code: {subject.code} | Units:{" "}
+                                                {subject.unit} | {subject.lec}L/
+                                                {subject.lab}LAB
+                                            </p>
+                                            {subject.prerequisites && (
+                                                <p className="text-xs text-gray-500 mt-1">
+                                                    Prerequisites:{" "}
+                                                    {subject.prerequisites}
+                                                </p>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </ScrollArea>
+                ) : (
+                    <p className="text-gray-500 py-4">
+                        No {category.toLowerCase()} subjects available
+                    </p>
+                )}
+                <div className="text-xs text-gray-500 mt-2">
+                    Showing {filteredSubjects.length} {category.toLowerCase()}{" "}
+                    subjects
+                </div>
+            </div>
+        );
+    };
+
+    const filterData = {
+        Year: [
+            "Grade 11",
+            "Grade 12",
+            "1st Year",
+            "2nd Year",
+            "3rd Year",
+            "4th Year",
+        ],
+        Classified_As: ["1st Semester", "2nd Semester"],
+    };
+
+    const [search, setSearch] = useState(filters?.search || "");
+    const [dataFilter, setDataFilter] = useState("All");
+    const [perPage, setPerPage] = useState(filters?.per_page || 10);
+
+    const { triggerSearch } = useDebouncedSearch({
+        routeName: "admin.course.selection",
+        filterKey: "filter",
+        filterValue: dataFilter,
+        perPage,
+    });
+
+    const handleSearchChange = (val) => {
+        setSearch(val);
+        triggerSearch(val);
+    };
+
+    const year = sessionStorage.getItem("selectedYear");
+
+    const handleFilterChange = (filterValue) => {
+        setDataFilter(filterValue);
+        router.get(
+            route("admin.course.selection"),
+            {
+                search: "",
+                filter: filterValue === "All" ? "" : filterValue,
+                per_page: perPage,
+                year,
             },
-        });
+            {
+                preserveState: true,
+                replace: true,
+            }
+        );
+    };
+
+    const clearAllFilters = () => {
+        const year = sessionStorage.getItem("selectedYear");
+        setSearch("");
+        setDataFilter("All");
+
+        router.get(
+            route("admin.course.selection"),
+            {
+                search: "",
+                filter: "",
+                per_page: perPage,
+                year: year || "",
+            },
+            {
+                preserveState: true,
+                replace: true,
+            }
+        );
     };
 
     return (
         <Layout>
             <div className="flex items-end justify-between mb-7">
-                <h1 className="text-2xl font-bold">Course Selection</h1>
+                <h1 className="text-2xl font-bold">Course Assignment</h1>
             </div>
             <div className="flex justify-between mb-3">
-                <div className="flex gap-4">
-                    <Input
-                        type="text"
-                        placeholder="Search"
-                        className="w-[300px]"
+                <div className="flex items-center gap-2">
+                    <SearchFilter
+                        searchValue={search}
+                        onSearchChange={handleSearchChange}
+                        onSearchSubmit={triggerSearch}
+                        onClearFilters={clearAllFilters}
+                        showClearButton={search || dataFilter !== "All"}
                     />
-                    <div className="text-white">
-                        <DropdownMenu>
-                            <DropdownMenuTrigger className="bg-primary flex px-2 py-1 rounded-md">
-                                Filter
-                                <Filter className="h-5 ml-2" />
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent className="bg-customBlue text-white">
-                                <DropdownMenuItem>
-                                    Computer Science
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                    Information System
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>Tourism</DropdownMenuItem>
-                                <DropdownMenuItem>Criminology</DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    </div>
+                    <FilterDropdown
+                        currentFilter={dataFilter}
+                        filterData={filterData}
+                        onFilterChange={handleFilterChange}
+                    />
                 </div>
             </div>
-            <div className="border rounded-sm px-4">
+
+            <div className="border rounded-lg overflow-hidden min-h-96">
                 <Table>
                     <TableHeader>
-                        <TableRow className="table-fixed">
-                            <TableHead className="w-1/12 text-center">
-                                Name
+                        <TableRow>
+                            <TableHead className="text-center">
+                                Student
                             </TableHead>
-                            <TableHead className="w-1/12 text-center">
-                                Year Level
-                            </TableHead>
-                            <TableHead className="w-1/12 text-center">
+                            <TableHead className="text-center">
                                 Program
                             </TableHead>
-                            <TableHead className="w-1/12 text-center">
+                            <TableHead className="text-center">
+                                Year Level
+                            </TableHead>
+                            <TableHead className="text-center">
                                 Semester
                             </TableHead>
-                            <TableHead className="w-1/12 text-center">
-                                Application
+                            <TableHead className="text-center">
+                                Admission
                             </TableHead>
-                            <TableHead className="w-1/12 text-center">
-                                Document
+                            <TableHead className="text-center">
+                                Documents
                             </TableHead>
-                            <TableHead className="w-1/12 text-center">
+                            <TableHead className="text-center">
                                 Payment
                             </TableHead>
-                            <TableHead className="w-1/12 text-center"></TableHead>
+                            <TableHead className="text-center">
+                                Actions
+                            </TableHead>
                         </TableRow>
                     </TableHeader>
-
                     <TableBody>
-                        {studentData.map((student) => {
-                            return (
-                                <TableRow
-                                    key={student.id}
-                                    className="table-fixed"
-                                >
-                                    <TableCell className="w-1/12 font-medium text-center">
-                                        {student.first_name +
-                                            " " +
-                                            student.middle_name +
-                                            " " +
-                                            student.last_name}
-                                    </TableCell>
-                                    <TableCell className="w-1/12 font-medium text-center">
-                                        {student.year_level}
-                                    </TableCell>
-                                    <TableCell className="w-1/12 font-medium text-center">
-                                        {student.program}
-                                    </TableCell>
-                                    <TableCell className="w-1/12 font-medium text-center">
-                                        {student.semester}
-                                    </TableCell>
-                                    <TableCell className="w-1/12 font-medium text-center">
-                                        {student.status === "approved" ? (
-                                            <BadgeSuccess>
-                                                {student.status}
-                                            </BadgeSuccess>
-                                        ) : student.status === "pending" ? (
-                                            <BadgeWarning>
-                                                {student.status}
-                                            </BadgeWarning>
-                                        ) : (
-                                            student.status
-                                        )}
-                                    </TableCell>
-                                    <TableCell className="w-1/12 font-medium text-center">
-                                        {student.doc_status === "approved" ? (
-                                            <BadgeSuccess>
-                                                {student.doc_status}
-                                            </BadgeSuccess>
-                                        ) : student.doc_status === "pending" ? (
-                                            <BadgeWarning>
-                                                {student.doc_status}
-                                            </BadgeWarning>
-                                        ) : (
-                                            student.doc_status
-                                        )}
-                                    </TableCell>
-
-                                    <TableCell className="w-1/12 font-medium text-center">
-                                        {student.payment_status ===
-                                        "approved" ? (
-                                            <BadgeSuccess>
-                                                {student.payment_status}
-                                            </BadgeSuccess>
-                                        ) : student.payment_status ===
-                                          "pending" ? (
-                                            <BadgeWarning>
-                                                {student.payment_status}
-                                            </BadgeWarning>
-                                        ) : (
-                                            student.payment_status
-                                        )}
-                                    </TableCell>
-                                    <TableCell className="w-1/12 font-medium text-center">
-                                        <div className="flex justify-center">
-                                            <Edit
-                                                className="h-5 text-primary cursor-pointer"
-                                                onClick={() =>
-                                                    handleEdit(student)
-                                                }
-                                            />
-                                        </div>
-                                    </TableCell>
-                                </TableRow>
-                            );
-                        })}
+                        {studentData.map((student) => (
+                            <TableRow key={student.id}>
+                                <TableCell className="text-center">
+                                    {student.first_name} {student.middle_name}{" "}
+                                    {student.last_name}
+                                </TableCell>
+                                <TableCell className="text-center">
+                                    {student.program}
+                                </TableCell>
+                                <TableCell className="text-center">
+                                    {student.year_level}
+                                </TableCell>
+                                <TableCell className="text-center">
+                                    {student.semester}
+                                </TableCell>
+                                <TableCell className="text-center">
+                                    {student.status === "approved" ? (
+                                        <BadgeSuccess>
+                                            {student.status}
+                                        </BadgeSuccess>
+                                    ) : (
+                                        <BadgeWarning>
+                                            {student.status}
+                                        </BadgeWarning>
+                                    )}
+                                </TableCell>
+                                <TableCell className="text-center">
+                                    {student.doc_status === "approved" ? (
+                                        <BadgeSuccess>
+                                            {student.doc_status}
+                                        </BadgeSuccess>
+                                    ) : (
+                                        <BadgeWarning>
+                                            {student.doc_status}
+                                        </BadgeWarning>
+                                    )}
+                                </TableCell>
+                                <TableCell className="text-center">
+                                    {student.payment_status === "approved" ? (
+                                        <BadgeSuccess>
+                                            {student.payment_status}
+                                        </BadgeSuccess>
+                                    ) : (
+                                        <BadgeWarning>
+                                            {student.payment_status}
+                                        </BadgeWarning>
+                                    )}
+                                </TableCell>
+                                <TableCell className="text-center">
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => handleEdit(student)}
+                                    >
+                                        <Edit className="h-4 w-4" />
+                                    </Button>
+                                </TableCell>
+                            </TableRow>
+                        ))}
                     </TableBody>
                 </Table>
-                {add && (
-                    <Dialog open={add} onOpenChange={(open) => setAdd(open)}>
-                        <DialogContent className="max-w-6xl h-[600px]">
-                            <DialogHeader>
-                                <Label>
-                                    <span>{data.name}</span>
-                                </Label>
-                                <Label>
-                                    <span>
-                                        {data.year_level} {data.program}
-                                    </span>
-                                </Label>
-                                <h1>Select Course</h1>
-                                <div className="grid grid-cols-[70%_30%] gap-4">
-                                    <div className="grid grid-rows-2 h-full">
-                                        <div className="overflow-x-auto">
-                                            <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
-                                                <thead className="ltr:text-left rtl:text-right">
-                                                    <tr>
-                                                        <th className="whitespace-nowrap px-4 py-1 font-medium text-gray-900">
-                                                            Major
-                                                        </th>
-                                                    </tr>
-                                                </thead>
-
-                                                <tbody className="divide-y divide-gray-200">
-                                                    <ScrollArea className="h-[200px]">
-                                                        {subjects
-                                                            .filter(
-                                                                (subject) =>
-                                                                    subject.year_level ===
-                                                                        data.year_level &&
-                                                                    subject.period ===
-                                                                        data.semester &&
-                                                                    subject.category ===
-                                                                        "Major Subject"
-                                                            )
-                                                            .map(
-                                                                (
-                                                                    subject,
-                                                                    index,
-                                                                    array
-                                                                ) => {
-                                                                    // We are processing every two subjects in one row
-                                                                    const subject1 =
-                                                                        subject; // First subject
-                                                                    const subject2 =
-                                                                        array[
-                                                                            index +
-                                                                                1
-                                                                        ]; // Second subject (if exists)
-
-                                                                    return (
-                                                                        index %
-                                                                            2 ===
-                                                                            0 && (
-                                                                            <tr
-                                                                                className="table-fixed"
-                                                                                key={
-                                                                                    subject1.code
-                                                                                }
-                                                                            >
-                                                                                {/* First Subject Checkbox */}
-                                                                                <td className="whitespace-nowrap px-4 py-1 font-medium text-gray-900">
-                                                                                    <Checkbox
-                                                                                        checked={selectedSubjects.some(
-                                                                                            (
-                                                                                                selectedSubject
-                                                                                            ) =>
-                                                                                                selectedSubject.id ===
-                                                                                                subject1.id
-                                                                                        )}
-                                                                                        onCheckedChange={() =>
-                                                                                            handleSubjectToggle(
-                                                                                                subject1
-                                                                                            )
-                                                                                        }
-                                                                                    />
-                                                                                </td>
-                                                                                <td className="whitespace-nowrap px-4 py-1 font-medium text-gray-900">
-                                                                                    {
-                                                                                        subject1.name
-                                                                                    }
-                                                                                </td>
-
-                                                                                {/* Second Subject Checkbox */}
-                                                                                {subject2 && (
-                                                                                    <>
-                                                                                        <td className="whitespace-nowrap px-4 py-1 font-medium text-gray-900">
-                                                                                            <Checkbox
-                                                                                                checked={selectedSubjects.some(
-                                                                                                    (
-                                                                                                        selectedSubject
-                                                                                                    ) =>
-                                                                                                        selectedSubject.id ===
-                                                                                                        subject2.id
-                                                                                                )}
-                                                                                                onCheckedChange={() =>
-                                                                                                    handleSubjectToggle(
-                                                                                                        subject2
-                                                                                                    )
-                                                                                                }
-                                                                                            />
-                                                                                        </td>
-                                                                                        <td className="whitespace-nowrap px-4 py-1 font-medium text-gray-900">
-                                                                                            {
-                                                                                                subject2.name
-                                                                                            }
-                                                                                        </td>
-                                                                                    </>
-                                                                                )}
-                                                                            </tr>
-                                                                        )
-                                                                    );
-                                                                }
-                                                            )}
-                                                    </ScrollArea>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <div className="overflow-x-auto">
-                                            <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
-                                                <thead className="ltr:text-left rtl:text-right">
-                                                    <tr>
-                                                        <th className="whitespace-nowrap px-4 py-1 font-medium text-gray-900">
-                                                            Minor
-                                                        </th>
-                                                    </tr>
-                                                </thead>
-
-                                                <tbody className="divide-y divide-gray-200">
-                                                    <ScrollArea className="h-[200px]">
-                                                        {subjects
-                                                            .filter(
-                                                                (subject) =>
-                                                                    subject.year_level ===
-                                                                        data.year_level &&
-                                                                    subject.period ===
-                                                                        data.semester &&
-                                                                    subject.category ===
-                                                                        "Minor Subject"
-                                                            )
-                                                            .map(
-                                                                (
-                                                                    subject,
-                                                                    index,
-                                                                    array
-                                                                ) => {
-                                                                    // We are processing every two subjects in one row
-                                                                    const subject1 =
-                                                                        subject; // First subject
-                                                                    const subject2 =
-                                                                        array[
-                                                                            index +
-                                                                                1
-                                                                        ]; // Second subject (if exists)
-
-                                                                    return (
-                                                                        index %
-                                                                            2 ===
-                                                                            0 && (
-                                                                            <tr
-                                                                                className="table-fixed"
-                                                                                key={
-                                                                                    subject1.code
-                                                                                }
-                                                                            >
-                                                                                {/* First Subject Checkbox */}
-                                                                                <td className="whitespace-nowrap px-4 py-1 font-medium text-gray-900">
-                                                                                    <Checkbox
-                                                                                        checked={selectedSubjects.some(
-                                                                                            (
-                                                                                                selectedSubject
-                                                                                            ) =>
-                                                                                                selectedSubject.id ===
-                                                                                                subject1.id
-                                                                                        )}
-                                                                                        onCheckedChange={() =>
-                                                                                            handleSubjectToggle(
-                                                                                                subject1
-                                                                                            )
-                                                                                        }
-                                                                                    />
-                                                                                </td>
-                                                                                <td className="whitespace-nowrap px-4 py-1 font-medium text-gray-900">
-                                                                                    {
-                                                                                        subject1.name
-                                                                                    }
-                                                                                </td>
-
-                                                                                {/* Second Subject Checkbox */}
-                                                                                {subject2 && (
-                                                                                    <>
-                                                                                        <td className="whitespace-nowrap px-4 py-1 font-medium text-gray-900">
-                                                                                            <Checkbox
-                                                                                                checked={selectedSubjects.some(
-                                                                                                    (
-                                                                                                        selectedSubject
-                                                                                                    ) =>
-                                                                                                        selectedSubject.id ===
-                                                                                                        subject2.id
-                                                                                                )}
-                                                                                                onCheckedChange={() =>
-                                                                                                    handleSubjectToggle(
-                                                                                                        subject2
-                                                                                                    )
-                                                                                                }
-                                                                                            />
-                                                                                        </td>
-                                                                                        <td className="whitespace-nowrap px-4 py-1 font-medium text-gray-900">
-                                                                                            {
-                                                                                                subject2.name
-                                                                                            }
-                                                                                        </td>
-                                                                                    </>
-                                                                                )}
-                                                                            </tr>
-                                                                        )
-                                                                    );
-                                                                }
-                                                            )}
-                                                    </ScrollArea>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                    <div className="space-y-4">
-                                        <h2 className="text-xl font-semibold">
-                                            Selected Courses
-                                        </h2>
-                                        <ScrollArea className="h-[380px]">
-                                            <ul className="space-y-2">
-                                                {selectedSubjects.length > 0 ? (
-                                                    selectedSubjects.map(
-                                                        (subject) => (
-                                                            <li
-                                                                key={subject.id}
-                                                                className="border p-2 text-sm rounded-md bg-gray-50"
-                                                            >
-                                                                {subject.name}
-                                                            </li>
-                                                        )
-                                                    )
-                                                ) : (
-                                                    <p>No courses selected.</p>
-                                                )}
-                                            </ul>
-                                        </ScrollArea>
-
-                                        <Button
-                                            onClick={handleSubmit}
-                                            disabled={
-                                                selectedSubjects.length === 0
-                                            }
-                                        >
-                                            Submit Selected Subjects
-                                        </Button>
-                                    </div>
-                                </div>
-                            </DialogHeader>
-                        </DialogContent>
-                    </Dialog>
-                )}
             </div>
+            <div className="flex justify-between pt-2">
+                <RowPerPage
+                    filters={filters}
+                    routeName={"admin.course.selection"}
+                    dataFilter={dataFilter}
+                />
+                <Pagination links={student.links} />
+            </div>
+
+            {/* Course Selection Dialog */}
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogContent className="max-w-5xl h-[600px]">
+                    <DialogHeader>
+                        <h2 className="text-xl font-bold">
+                            Assign Courses to {currentStudent?.first_name}{" "}
+                            {currentStudent?.last_name}
+                        </h2>
+                        <div className="grid grid-cols-3 gap-4 mb-4">
+                            <div>
+                                <Label>Program</Label>
+                                <p className="font-medium">{data.program}</p>
+                            </div>
+                            <div>
+                                <Label>Year Level</Label>
+                                <p className="font-medium">{data.year_level}</p>
+                            </div>
+                            <div>
+                                <Label>Semester</Label>
+                                <p className="font-medium">{data.semester}</p>
+                            </div>
+                        </div>
+                    </DialogHeader>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div className="md:col-span-2 space-y-4">
+                            <SubjectTableSection category="Major Subject" />
+                            <SubjectTableSection category="Minor Subject" />
+                        </div>
+
+                        <div className="border rounded-lg p-4">
+                            <h3 className="font-bold text-lg mb-4">
+                                Selected Courses
+                            </h3>
+                            {selectedSubjects.length > 0 ? (
+                                <ScrollArea className="h-[50vh] pr-4">
+                                    <div className="space-y-3">
+                                        {selectedSubjects.map((subject) => (
+                                            <div
+                                                key={subject.id}
+                                                className="border rounded p-3"
+                                            >
+                                                <p className="font-medium">
+                                                    {subject.name}
+                                                </p>
+                                                <p className="text-sm text-gray-600">
+                                                    {subject.code}
+                                                </p>
+                                                <p className="text-xs text-gray-500">
+                                                    {subject.lec} Lecture Hours
+                                                    | {subject.lab} Lab Hours
+                                                </p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </ScrollArea>
+                            ) : (
+                                <p className="text-gray-500 py-8 text-center">
+                                    No courses selected yet
+                                </p>
+                            )}
+                            <div className="mt-4">
+                                <Button
+                                    className="w-full"
+                                    onClick={handleSubmit}
+                                    disabled={selectedSubjects.length === 0}
+                                >
+                                    Assign {selectedSubjects.length} Courses
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
         </Layout>
     );
 }

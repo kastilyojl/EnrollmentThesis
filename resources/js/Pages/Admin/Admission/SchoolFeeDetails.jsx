@@ -12,6 +12,7 @@ import { Separator } from "@/components/ui/separator";
 import { router, useForm } from "@inertiajs/react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { getFormattedDateTime } from "@/components/utils/formatDateTime";
 
 export default function SchoolFeeDetails({
     student,
@@ -22,58 +23,93 @@ export default function SchoolFeeDetails({
     const [selectedCollegeFees, setSelectedCollegeFees] = useState([]);
     const [selectedOtherFees, setSelectedOtherFees] = useState([]);
     const { data, setData, post } = useForm({
-        id: student[0].users_id,
-        student_info_id: student[0].student_id,
+        id: student.users_id,
+        student_info_id: student.student_id,
         fee_type: "",
         fee_id: "",
         amount: "",
         paymentDetails: [],
     });
 
-    // console.log("Student", data.id);
-    // console.log("Student ID", data.student_info_id);
+    const calculateTotalAmount = () => {
+        // Calculate total college fees (always positive)
+        const totalCollegeFees = selectedCollegeFees.reduce(
+            (acc, fee) => acc + parseFloat(fee.total_amount || 0),
+            0
+        );
+
+        // Calculate other fees, separating discounts from other fees
+        const { discounts, otherFees } = selectedOtherFees.reduce(
+            (acc, fee) => {
+                if (fee.payment_type === "discount") {
+                    acc.discounts += parseFloat(fee.amount || 0);
+                } else {
+                    acc.otherFees += parseFloat(fee.amount || 0);
+                }
+                return acc;
+            },
+            { discounts: 0, otherFees: 0 }
+        );
+
+        // Calculate net total (college fees + other fees - discounts)
+        const netTotal = (totalCollegeFees + otherFees - discounts).toFixed(2);
+
+        // Ensure total doesn't go below 0
+        return Math.max(0, netTotal);
+    };
 
     const handleSubmit = (e) => {
-        e.preventDefault(); // <-- prevent default form behavior
+        e.preventDefault();
         const paymentDetails = [];
+
+        // Add college fees (always positive)
         selectedCollegeFees.forEach((fee) => {
             paymentDetails.push({
                 student_info_id: data.student_info_id,
                 fee_type: "college_billing",
                 fee_id: fee.id,
-                amount: fee.total_amount,
+                amount: parseFloat(fee.total_amount || 0), // Ensure positive value
             });
         });
 
-        // Add selected other fees
+        // Add other fees (positive) and discounts (negative)
         selectedOtherFees.forEach((fee) => {
             paymentDetails.push({
                 student_info_id: data.student_info_id,
                 fee_type: "other_billing",
                 fee_id: fee.id,
-                amount: fee.amount,
+                amount:
+                    fee.payment_type === "discount"
+                        ? -Math.abs(parseFloat(fee.amount || 0)) // Ensure negative for discounts
+                        : parseFloat(fee.amount || 0), // Positive for other fees
             });
-        });
-
-        console.log("Submitting to Laravel:", {
-            paymentDetails,
         });
 
         router.post(
             route("admin.payment.storeDetails"),
-            {
-                paymentDetails: paymentDetails,
-            },
+            { paymentDetails },
             {
                 onSuccess: () => {
+                    toast.success("Fees have been assigned successfully.", {
+                        description: (
+                            <span className="text-gray-900">
+                                {getFormattedDateTime()}
+                            </span>
+                        ),
+                    });
                     setAdd(false);
+                },
+                onError: (errors) => {
+                    toast.error("Failed to assign fees.", {
+                        description: (
+                            <span className="text-gray-900">
+                                Please check the selected fees and try again.
+                            </span>
+                        ),
+                    });
                 },
             }
         );
-        console.log("Payment Details", paymentDetails);
-        console.log("Selected College Fees:", selectedCollegeFees);
-        console.log("Selected Other Fees:", selectedOtherFees);
-        console.log("Final Payment Details:", paymentDetails);
     };
 
     const handleCollegeFeeToggle = (fee) => {
@@ -98,26 +134,6 @@ export default function SchoolFeeDetails({
                 return [...prevSelected, fee];
             }
         });
-    };
-
-    // Calculate total amount considering discounts
-    const calculateTotalAmount = () => {
-        const totalCollegeFees = selectedCollegeFees.reduce(
-            (acc, fee) => acc + parseFloat(fee.total_amount || 0),
-            0
-        );
-
-        const totalOtherFees = selectedOtherFees.reduce((acc, fee) => {
-            if (fee.payment_type === "discount") {
-                // Subtract discount
-                return acc - parseFloat(fee.amount || 0);
-            } else {
-                // Add non-discount fee
-                return acc + parseFloat(fee.amount || 0);
-            }
-        }, 0);
-
-        return (totalCollegeFees + totalOtherFees).toFixed(2);
     };
 
     return (

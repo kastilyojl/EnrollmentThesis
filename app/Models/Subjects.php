@@ -32,5 +32,11 @@ class Subjects extends Model
     public function programs() {
         return $this->belongsTo(Programs::class, 'program_code', 'code');
     }
+
+    public function studentSubjects()
+    {
+        return $this->hasOne(Student_Subjects::class, 'subject_code', 'code');
+    }
+
 }
 

@@ -56,7 +56,7 @@ export default function ChatBubbles({ className = "", FAQ }) {
             {show && (
                 <div className="bg-white border relative shadow-lg min-w-80 max-w-80 h-96 space-y-2 rounded-lg rounded-br-none">
                     <div className="p-2 flex justify-between bg-primary rounded-lg rounded-bl-none rounded-br-none">
-                        <p className="text-white font-medium">ChatBot</p>
+                        <p className="text-white font-medium">ChatBot (FAQ)</p>
                         <X
                             className="h-5 text-white cursor-pointer hover:bg-slate-50  hover:text-black"
                             onClick={() => setShow(false)}

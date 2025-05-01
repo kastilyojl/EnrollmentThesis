@@ -14,8 +14,10 @@ return new class extends Migration
         Schema::create('payment_details', function (Blueprint $table) {
             $table->id();
             $table->string('student_info_id');
-            $table->string('fee_type'); // College Fee, SHS Fee, Other Fee
-            $table->unsignedBigInteger('fee_id'); // College Fee id, etc... 
+            $table->string('fee_type');
+            $table->string('year_level');
+            $table->string('semester'); 
+            $table->unsignedBigInteger('fee_id'); 
             $table->double('amount');
             $table->foreign('student_info_id')->references('student_id')->on('student_info')->onDelete('cascade')->onUpdate('cascade');
             $table->softDeletes();
@@ -25,11 +27,12 @@ return new class extends Migration
         Schema::create('student_fees', function (Blueprint $table) {
             $table->id();
             $table->string('student_info_id');
-            $table->unsignedBigInteger('payment_details_id'); // College Fee, SHS Fee, Other Fee
-            $table->string('status'); // Paying, Fully Paid
+            $table->string('year_level');
+            $table->string('semester'); 
+            $table->string('status'); 
+            $table->double('total_amount'); 
             $table->double('amount_paid');
             $table->foreign('student_info_id')->references('student_id')->on('student_info')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreign('payment_details_id')->references('id')->on('payment_details')->onDelete('cascade')->onUpdate('cascade');
             $table->softDeletes();
             $table->timestamps();
         });

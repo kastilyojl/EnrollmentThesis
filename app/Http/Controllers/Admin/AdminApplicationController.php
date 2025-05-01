@@ -21,17 +21,7 @@ class AdminApplicationController extends Controller
 {
     public function index(Request $request)
     {
-        
-    // Count total students
-    $totalStudents = Student_Info::count();
-    Log::info("Total students in database: ".$totalStudents);
-    
-    // Get first few students with relationships
-    $sampleStudents = Student_Info::with('users', 'personalInfo', 'guardian')
-                        ->limit(5)
-                        ->get()
-                        ->toArray();
-    Log::info("Sample students: ".json_encode($sampleStudents));
+
         $perPage = $request->input('per_page', session('rows_per_page', 10));
         
         session(['rows_per_page' => $perPage]);
@@ -47,7 +37,6 @@ class AdminApplicationController extends Controller
             });
         }
         
-        // Filter
         if ($request->has('filter') && $request->filter && $request->filter !== 'All') {
             $query->where(function($q) use ($request) {
                 $q->where('department', $request->filter)
@@ -57,20 +46,6 @@ class AdminApplicationController extends Controller
             });
         }
         
-         // Academic year filter
-        //  if ($request->filled('year')) {
-        //     $year = str_replace('SY: ', '', $request->year); 
-        //     [$startYear, $endYear] = explode(' - ', $year);
-
-        //     $academic = Academic_Year::whereYear('start', $startYear)
-        //         ->whereYear('end', $endYear)
-        //         ->first();
-
-        //     if ($academic) {
-        //         $query->whereBetween('created_at', [$academic->start, $academic->end]);
-        //     }
-        // }
-        // Academic year filter using academic_year_id directly
 
         if ($request->filled('academic_year_id')) {
             $academic = Academic_Year::find($request->academic_year_id);
@@ -82,10 +57,11 @@ class AdminApplicationController extends Controller
 
         
         $student = $query->paginate($perPage);
-        Log::info($student);
-        
+        $acad_year = Academic_Year::all();
+        $program = Programs::all();
+
         return Inertia::render('Admin/Application', [
-            'student' => $student,
+            'student' => $student, 'acad_year' => $acad_year, 'program' => $program,
             'filters' => $request->only(['search', 'filter', 'per_page'])
         ]);
     }
@@ -103,7 +79,6 @@ class AdminApplicationController extends Controller
         $User = new User();
         $User->name = $request->first_name . ' ' . $request->last_name;
         $User->email = $request->email;
-        // $randomPassword = Str::password(12);
         $defaultPassword = 'WITI@123';
         $User->password = Hash::make($defaultPassword);
         $User->role = 'student';
@@ -164,30 +139,77 @@ class AdminApplicationController extends Controller
         }        
     }
 
-    public function edit(Request $request) {
+    public function edit(ApplicationRequest $request) {
 
-        $items = Student_Info::where('id', $request->id)->first();
-        $items->update([
-            'status'=>$request->status,   
-        ]);
-
-        if($request->status === 'Approved' || $request->status === 'approved') {
-
-            $existing = Documents::where('student_info_id', $items->student_id)->first();
-             if(!$existing) {
-                Documents::create([
-                    'student_info_id' => $items->student_id,
-                ]);
-                return redirect()->route('send.email', ['id'=>$items]);
-             } else {
-                return redirect()->route('send.email', ['id'=>$items]);
-             }
-            
-        } elseif($request->status === 'Reject' || $request->status === 'reject') {
-            return redirect()->route('send.email.rejected', ['id'=>$items]);
-        } elseif($request->status === 'OnHold' || $request->status === 'onhold') {
-            return redirect()->route('send.email.onhold', ['id'=>$items]);
-        } 
+        DB::beginTransaction();
+    
+      
+            $studentInfo = Student_Info::where('id', $request->id)->first();
+            $studentInfo->update([
+                'department' => $request->department,
+                'school_year' => $request->school_year,
+                'semester' => $request->semester,
+                'branch' => $request->branch,
+                'year_level' => $request->year_level,
+                'program' => $request->program,
+                'classified_as' => $request->classified_as,
+                'last_school_attended' => $request->last_school_attended,
+                'last_school_address' => $request->last_school_address,
+                'status' => $request->status,
+            ]);
+    
+            // Update user email
+            User::where('id', $studentInfo->users_id)->update([
+                'email' => $request->email
+            ]);
+    
+            // Update personal info
+            Personal_Info::where('student_info_id', $studentInfo->student_id)->update([
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'middle_name' => $request->middle_name,
+                'address' => $request->address,
+                'birth_date' => $request->birth_date,
+                'birth_place' => $request->birth_place,
+                'civil_status' => $request->civil_status,
+                'gender' => $request->gender,
+                'religion' => $request->religion,
+            ]);
+    
+            // Update guardian info
+            Guardian::where('student_info_id', $studentInfo->student_id)->update([
+                'father_name' => $request->father_name,
+                'father_occupation' => $request->father_occupation,
+                'father_phone' => $request->father_phone,
+                'mother_name' => $request->mother_name,
+                'mother_occupation' => $request->mother_occupation,
+                'mother_phone' => $request->mother_phone,
+                'guardian_name' => $request->guardian_name,
+                'guardian_relationship' => $request->guardian_relationship,
+                'guardian_phone' => $request->guardian_phone,
+            ]);
+    
+            DB::commit();
+   
+            if(strtolower($request->status) === 'approved') {
+                $existing = Documents::where('student_info_id', $studentInfo->student_id)->first();
+                if(!$existing) {
+                    Documents::create([
+                        'student_info_id' => $studentInfo->student_id,
+                    ]);
+                }
+                return redirect()->route('send.email', ['id' => $studentInfo]);
+            } elseif(strtolower($request->status) === 'reject') {
+                return redirect()->route('send.email.rejected', ['id' => $studentInfo]);
+            } elseif(strtolower($request->status) === 'onhold') {
+                return redirect()->route('send.email.onhold', ['id' => $studentInfo]);
+            }
+    
+            return back()->with('success', 'Student information updated successfully');
+    
+            DB::rollBack();
+            return back()->with('error', 'Failed to update student information: ' . $e->getMessage());
+        
     }
 
     public function destroy($id) {
@@ -219,15 +241,9 @@ class AdminApplicationController extends Controller
                   ->orWhere('year_level', $request->filter);
             });
         }
-        
-         // Academic year filter
-         if ($request->filled('year')) {
-            $year = str_replace('SY: ', '', $request->year); 
-            [$startYear, $endYear] = explode(' - ', $year);
 
-            $academic = Academic_Year::whereYear('start', $startYear)
-                ->whereYear('end', $endYear)
-                ->first();
+        if ($request->filled('academic_year_id')) {
+            $academic = Academic_Year::find($request->academic_year_id);
 
             if ($academic) {
                 $query->whereBetween('created_at', [$academic->start, $academic->end]);
@@ -235,8 +251,6 @@ class AdminApplicationController extends Controller
         }
 
         $student = $query->paginate($perPage);
-        // $query = Student_Info::with('users', 'personalInfo', 'guardian');
-        // $student = Student_Info::with('users','personalInfo', 'guardian')->get();
         return Inertia::render('Admin/Documents', ['student'=>$student,  
         'filters' => $request->only(['search', 'filter', 'per_page'])]);
     }

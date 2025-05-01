@@ -13,7 +13,10 @@ class Student_Fees extends Model
     protected $fillable = [
         'student_info_id',
         'payment_details_id',
+        'year_level',
+        'semester',
         'status',
+        'total_amount',
         'amount_paid',
     ];
 

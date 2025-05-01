@@ -15,7 +15,6 @@ use Inertia\Inertia;
 
 class EmailController extends Controller
 {
-    //
     public function index() {
         $student = Student_Info::with('personalInfo', 'users')->paginate(10);
         return Inertia::render('Admin/Features/Email/SendEmail', ['student'=>$student]);
@@ -47,12 +46,6 @@ class EmailController extends Controller
 
     public function sendEmailRejected(Request $request) {
 
-        // $to = "ljohn0148@gmail.com";
-        // $msg = "TEST";
-        // $subject = "TEST";
-
-        // Mail::to($to)->send(new GreetingEmail($msg, $subject));
-
         $email = Student_Info::findOrFail($request->id);
         $user = $email->users;
 
@@ -78,12 +71,6 @@ class EmailController extends Controller
     }
 
     public function sendEmailOnHold(Request $request) {
-
-        // $to = "ljohn0148@gmail.com";
-        // $msg = "TEST";
-        // $subject = "TEST";
-
-        // Mail::to($to)->send(new GreetingEmail($msg, $subject));
 
         $email = Student_Info::findOrFail($request->id);
         $user = $email->users;
@@ -158,7 +145,6 @@ class EmailController extends Controller
     $studentInfoId = $paymentVerification->student_info_id;
     Log::info("Student Info ID: " . $studentInfoId);
 
-    // Check existence first
     $email = Student_Info::findOrFail($studentInfoId);
     Log::info("Email Info ID: " . $email);
     $user = $email->users;
@@ -186,8 +172,5 @@ class EmailController extends Controller
                     ->subject($subject);
     });
 }
-
-
-    
     
 }

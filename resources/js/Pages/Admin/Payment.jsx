@@ -22,9 +22,15 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import InputError from "@/components/InputError";
-import { useForm } from "@inertiajs/react";
+import { router, useForm } from "@inertiajs/react";
+import { getFormattedDateTime } from "@/components/utils/formatDateTime";
+import FilterDropdown from "@/components/FilterDropdown";
+import SearchFilter from "@/components/SearchFilter";
+import useDebouncedSearch from "@/components/utils/useDebounceSearch";
+import RowPerPage from "@/components/RowPerPage";
+import Pagination from "@/components/Pagination";
 
-export default function Payment({ program = [], payment = [] }) {
+export default function Payment({ program = [], payment, filters }) {
     const tableHeader = [
         "Name",
         "Email",
@@ -56,7 +62,7 @@ export default function Payment({ program = [], payment = [] }) {
         status: "",
     });
 
-    const paymentData = payment.map((payment) => ({
+    const paymentData = payment.data.map((payment) => ({
         id: payment.id,
         student_info_id: payment.student_info_id,
         name: payment.name,
@@ -120,8 +126,12 @@ export default function Payment({ program = [], payment = [] }) {
         console.log("Delete id", itemId.id);
         onDelete(route("admin.payment.destroy", { id: itemId }), {
             onSuccess: () => {
-                toast("Program has been deleted", {
-                    description: "Sunday, December 03, 2023 at 9:00 AM",
+                toast.success("Payment has been deleted.", {
+                    description: (
+                        <span className="text-gray-900">
+                            {getFormattedDateTime()}
+                        </span>
+                    ),
                 });
                 setDel(false);
             },
@@ -149,8 +159,12 @@ export default function Payment({ program = [], payment = [] }) {
     const handleSubmit = () => {
         post(route("admin.program.store"), {
             onSuccess: () => {
-                toast("Payment has been created", {
-                    description: "Sunday, December 03, 2023 at 9:00 AM",
+                toast.success("Payment has been created.", {
+                    description: (
+                        <span className="text-gray-900">
+                            {getFormattedDateTime()}
+                        </span>
+                    ),
                 });
                 setAdd(false);
                 setData({
@@ -171,8 +185,12 @@ export default function Payment({ program = [], payment = [] }) {
     const handleUpdateSubmit = () => {
         post(route("admin.payment.update", { id: itemId }), {
             onSuccess: () => {
-                toast("Payment has been updated", {
-                    description: "Sunday, December 03, 2023 at 9:00 AM",
+                toast.success("Payment has been updated.", {
+                    description: (
+                        <span className="text-gray-900">
+                            {getFormattedDateTime()}
+                        </span>
+                    ),
                 });
                 setAdd(false);
                 setData({
@@ -190,21 +208,103 @@ export default function Payment({ program = [], payment = [] }) {
         });
     };
 
+    const filterData = {
+        Department: ["1st Semester", "2nd Semester"],
+        Purpose: ["Tuition Fee", "Documents Fee", "Graduation Fee"],
+        Year: [
+            "Grade 11",
+            "Grade 12",
+            "1st Year",
+            "2nd Year",
+            "3rd Year",
+            "4th Year",
+        ],
+    };
+
+    const [search, setSearch] = useState(filters?.search || "");
+    const [dataFilter, setDataFilter] = useState("All");
+    const [perPage, setPerPage] = useState(filters?.per_page || 10);
+
+    const { triggerSearch } = useDebouncedSearch({
+        routeName: "admin.payment",
+        filterKey: "filter",
+        filterValue: dataFilter,
+        perPage,
+    });
+
+    const handleSearchChange = (val) => {
+        setSearch(val);
+        triggerSearch(val);
+    };
+
+    const year = sessionStorage.getItem("selectedYear");
+
+    const handleFilterChange = (filterValue) => {
+        setDataFilter(filterValue);
+        router.get(
+            route("admin.payment"),
+            {
+                search: "",
+                filter: filterValue === "All" ? "" : filterValue,
+                per_page: perPage,
+                year,
+            },
+            {
+                preserveState: true,
+                replace: true,
+            }
+        );
+    };
+
+    const clearAllFilters = () => {
+        const year = sessionStorage.getItem("selectedYear");
+        setSearch("");
+        setDataFilter("All");
+
+        router.get(
+            route("admin.payment"),
+            {
+                search: "",
+                filter: "",
+                per_page: perPage,
+                year: year || "",
+            },
+            {
+                preserveState: true,
+                replace: true,
+            }
+        );
+    };
+
     return (
         <Layout>
             <div className="flex items-end justify-between mb-7">
                 <h1 className="text-2xl font-bold">Payment</h1>
             </div>
             <div className="flex justify-between mb-3">
-                <Input type="text" placeholder="Search" className="w-[300px]" />
+                <div className="flex items-center gap-2">
+                    <SearchFilter
+                        searchValue={search}
+                        onSearchChange={handleSearchChange}
+                        onSearchSubmit={triggerSearch}
+                        onClearFilters={clearAllFilters}
+                        showClearButton={search || dataFilter !== "All"}
+                    />
+                    <FilterDropdown
+                        currentFilter={dataFilter}
+                        filterData={filterData}
+                        onFilterChange={handleFilterChange}
+                    />
+                </div>
                 <Button onClick={handleAdd}>Create</Button>
             </div>
-            <div className="border rounded-sm px-4">
+            <div className="border rounded-sm px-4  min-h-96">
                 <TableData
                     tablerow={tableHeader}
                     tabledata={tableData}
                     handleEdit={handleEdit}
                     handleDel={handleDel}
+                    showDownload={false}
                 />
                 {add && (
                     <Dialog open={add} onOpenChange={(open) => setAdd(open)}>
@@ -223,6 +323,7 @@ export default function Payment({ program = [], payment = [] }) {
                                                 name="name"
                                                 type="text"
                                                 value={data.name}
+                                                className="text-black"
                                                 onChange={(e) =>
                                                     setData(
                                                         "name",
@@ -345,7 +446,7 @@ export default function Payment({ program = [], payment = [] }) {
                                                     setData("purpose", value)
                                                 }
                                             >
-                                                <SelectTrigger>
+                                                <SelectTrigger className="text-black">
                                                     <SelectValue />
                                                 </SelectTrigger>
                                                 <SelectContent>
@@ -379,7 +480,7 @@ export default function Payment({ program = [], payment = [] }) {
                                                     setData("semester", value)
                                                 }
                                             >
-                                                <SelectTrigger>
+                                                <SelectTrigger className="text-black">
                                                     <SelectValue />
                                                 </SelectTrigger>
                                                 <SelectContent>
@@ -532,7 +633,7 @@ export default function Payment({ program = [], payment = [] }) {
                                                 setData("status", value)
                                             }
                                         >
-                                            <SelectTrigger>
+                                            <SelectTrigger className="text-black">
                                                 <SelectValue placeholder="Select..." />
                                             </SelectTrigger>
                                             <SelectContent className="bg-customBlue">
@@ -593,6 +694,14 @@ export default function Payment({ program = [], payment = [] }) {
                         </DialogContent>
                     </Dialog>
                 )}
+            </div>
+            <div className="flex justify-between pt-2">
+                <RowPerPage
+                    filters={filters}
+                    routeName={"admin.payment"}
+                    dataFilter={dataFilter}
+                />
+                <Pagination links={payment.links} />
             </div>
         </Layout>
     );

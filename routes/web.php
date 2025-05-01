@@ -24,6 +24,7 @@ use App\Http\Controllers\Student\ApplicationController;
 use App\Http\Controllers\Student\GeneralController;
 use App\Http\Middleware\VerifyAdminIp;
 use App\Models\Admin\GradeController;
+use App\Models\AuditTrailCurriculum;
 use App\Models\Campus;
 use App\Models\FAQ;
 use App\Models\Programs;
@@ -67,10 +68,7 @@ Route::get('/', function () {
 
 Route::prefix('dashboard/admin')->group(function () {
     Route::get('/enrollment', [DashboardController::class, 'enrollment'])->name('admin.dashboard.enrollment');
-    
-    Route::get('/audit-trail', function () {
-        return Inertia::render('Dashboard/Admin/AuditTrail');
-    })->name('admin.dashboard.audit-trail');
+    Route::get('/audit-trail', [DashboardController::class, 'AuditTrail'])->name('admin.dashboard.audit-trail');
     Route::get('/billing', function () {
         return Inertia::render('Dashboard/Admin/Billing');
     })->name('admin.dashboard.billing');

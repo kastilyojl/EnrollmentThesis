@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Academic_Year;
 use App\Models\DisplaySetting;
 use App\Models\GradeEditRequest;
 use App\Models\Grades;
@@ -14,7 +15,7 @@ use Inertia\Inertia;
 
 class GradesController extends Controller
 {
-    //
+
     public function index() {
         return Inertia::render("Admin/Excel/GradesExcel");
     }
@@ -38,13 +39,12 @@ class GradesController extends Controller
             $studentInfo = $request->grade->studentInfo ?? null;
             $personalInfo = $studentInfo->personalInfo ?? null;
     
-            // Find the user's name by the requested_by ID
             $requestedByUser = \App\Models\User::find($request->requested_by);
     
             return [
                 'id' => $request->id,
                 'grade_id' => $request->grade_id,
-                'requested_by' => $requestedByUser ? $requestedByUser->name : 'Unknown', // Fetch user's name
+                'requested_by' => $requestedByUser ? $requestedByUser->name : 'Unknown', 
                 'current_grade' => $request->grade->grade,
                 'new_grade' => $request->new_grade,
                 'reason' => $request->reason,
@@ -52,8 +52,8 @@ class GradesController extends Controller
                 'student_name' => $personalInfo ? $personalInfo->first_name . ' ' . $personalInfo->last_name : 'Unknown',
                 'program' => $studentInfo->program ?? 'N/A',
                 'semester' => $request->grade->semester,
-                'student_id' => $studentInfo->student_id ?? 'Unknown',  // Include student_id
-                'year_level' => $studentInfo->year_level ?? 'N/A',  // Include year_level
+                'student_id' => $studentInfo->student_id ?? 'Unknown',  
+                'year_level' => $studentInfo->year_level ?? 'N/A',  
             ];
         });
     
@@ -67,24 +67,21 @@ public function submittedGradeProfessor()
 {
     $userId = auth()->id();
 
-    // Get all grades submitted by the professor
     $grades = Grades::where('sender_id', $userId)
                    ->with(['studentInfo', 'studentInfo.personalInfo','gradeEditRequests' => function ($query) use ($userId) {
-                $query->where('requested_by', $userId)->latest(); // Get latest request by professor
+                $query->where('requested_by', $userId)->latest(); 
             }])
                    ->get();
 
-    // Get all requested grade IDs
-    $requestedGradeIds = GradeEditRequest::where('requested_by', $userId) // or filter by status if needed
+    $requestedGradeIds = GradeEditRequest::where('requested_by', $userId) 
                                          ->pluck('grade_id')
                                          ->toArray();
 
-    // Map and add `has_requested` flag
     $mappedGrades = $grades->map(function ($grade) use ($requestedGradeIds) {
         $studentInfo = $grade->studentInfo;
         $personalInfo = $studentInfo ? $studentInfo->personalInfo : null;
 
-         $latestEditRequest = $grade->gradeEditRequests->first(); // latest one due to `latest()` above
+         $latestEditRequest = $grade->gradeEditRequests->first();
 
         return [
             'id' => $grade->id,
@@ -105,13 +102,21 @@ public function submittedGradeProfessor()
     ]);
 }
     
-public function submittedGradeAdmin()
+public function submittedGradeAdmin(Request $request)
 {
-    // Get all grades with student and personal info
-    $grades = Grades::with([
+    $query = Grades::with([
         'studentInfo',
         'studentInfo.personalInfo'
-    ])->get();
+    ]);
+
+    if ($request->filled('academic_year_id')) {
+        $academic = Academic_Year::find($request->academic_year_id);
+        if ($academic) {
+            $query->whereBetween('created_at', [$academic->start, $academic->end]);
+        }
+    }
+
+    $grades = $query->get();
 
     $mappedGrades = $grades->map(function ($grade) {
         $studentInfo = $grade->studentInfo;
@@ -133,7 +138,6 @@ public function submittedGradeAdmin()
         ];
     });
 
-    // Just grab the first row from the settings table
     $settings = DisplaySetting::first();
 
     return Inertia::render('Admin/Grades/SubmittedGrade', [
@@ -141,6 +145,7 @@ public function submittedGradeAdmin()
         'gradeSidebarEnabled' => $settings?->grade_sidebar ?? false,
     ]);
 }
+
 
 
     public function storeFromExcel(Request $request)
@@ -154,7 +159,7 @@ public function submittedGradeAdmin()
 
         try {
             foreach ($grades as $grade) {
-                // 1. Validate student existence
+             
                 $student = Student_Info::where('student_id', $grade['student_info_id'])->first();
 
                 if (!$student) {
@@ -165,7 +170,7 @@ public function submittedGradeAdmin()
                     continue;
                 }
 
-                // 2. Check for existing grade for the same subject
+                
                 $existingGrade = Grades::where('student_info_id', $student->student_id)
                     ->where('subject', $grade['subject'])
                     ->first();
@@ -179,9 +184,9 @@ public function submittedGradeAdmin()
                     continue;
                 }
 
-                // 3. Create grade entry
+              
                 Grades::create([
-                    'sender_id' => auth()->id(), // Current logged in user
+                    'sender_id' => auth()->id(), 
                     'student_info_id' => $student->student_id,
                     'semester' => $grade['semester'],
                     'year_level' => $grade['year_level'],
@@ -190,7 +195,7 @@ public function submittedGradeAdmin()
                     'status' => $grade['status'],
                 ]);
 
-                // 4. Mark as successfully saved
+             
                 $saved[] = [
                     'student_info_id' => $grade['student_info_id'],
                     'subject' => $grade['subject'],
@@ -227,7 +232,7 @@ public function submittedGradeAdmin()
         $request->validate([
             'grade_id' => 'required|exists:grades,id',
             'reason' => 'required|string',
-            'new_grade' => 'required|string|max:10', // You can adjust max based on expected format
+            'new_grade' => 'required|string|max:10',
         ]);
     
         GradeEditRequest::create([
@@ -248,14 +253,14 @@ public function submittedGradeAdmin()
         'status' => 'required|string|in:Pending,Approved,Rejected',
     ]);
 
-    // Find the GradeEditRequest
+   
     $gradeEditRequest = GradeEditRequest::findOrFail($gradeId);
 
-    // Update the edit request status
+  
     $gradeEditRequest->status = $request->status;
     $gradeEditRequest->save();
 
-    // Only update the actual grade value (not status) if approved
+ 
     if ($request->status === 'Approved') {
         $grade = $gradeEditRequest->grade;
 

@@ -14,40 +14,71 @@ use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 
 class CourseSelectionController extends Controller
-{
-    //
-    public function index() {
-        $student = Student_Info::with('users','personalInfo', 'documents', 'guardian', 'paymentVerification')->whereHas('documents')
-        ->whereHas('paymentVerification')
-        ->get();
-    
-        $college_fee = College_Billing::all();
-        $subjects = Subjects::all();
-        $other_fee = Other_Billing::all();
+{   
+        public function index(Request $request)
+        {
+            $perPage = $request->input('per_page', session('rows_per_page', 10));
         
-        return Inertia::render('Admin/AssignCourse', ['student'=>$student, 'college_fee'=>$college_fee, 'subjects'=>$subjects, 'other_fee' => $other_fee]);
-    }
+            session(['rows_per_page' => $perPage]);
 
-    public function store(Request $request) {
-        // // Log the entire request payload
-        // Log::info('Request Payload: ', $request->all());
-    
-        // Log the selectedSubjects array
-        // Log::info('Selected Subjects Received: ', $request->selectedSubjects);
-    
-        // Process the selectedSubjects array
-        foreach ($request->selectedSubjects as $subjectDetail) {
-            
-            // Log::info('Processing Subject:', $subjectDetail);
-    
-            // Create a new record in the database
-            Student_Subjects::create([
-                'student_info_id' => $request->student_id,
-                'subject_code' => $subjectDetail['code'],
-                'status' => 'enroll',
+            $query = Student_Info::with([
+                'users',
+                'personalInfo',
+                'documents',
+                'guardian',
+                'paymentVerification'
+            ])
+            ->whereHas('documents')
+            ->whereHas('paymentVerification');
+
+            if ($request->has('search') && !empty($request->search)) {
+                $query->whereHas('personalInfo', function($q) use ($request) {
+                    $q->where('first_name', 'like', "%{$request->search}%")
+                    ->orWhere('last_name', 'like', "%{$request->search}%")
+                    ->orWhere('student_info_id', 'like', "%{$request->search}%");
+                });
+            }
+                    
+            if ($request->has('filter') && $request->filter && $request->filter !== 'All') {
+                $query->where(function($q) use ($request) {
+                    $q->where('semester', $request->filter)
+                      ->orWhere('year_level', $request->filter);
+                    });
+                }
+
+            $students = $query->paginate($perPage);
+
+            $college_fee = College_Billing::all();
+            $subjects = Subjects::all();
+            $other_fee = Other_Billing::all();
+
+            return Inertia::render('Admin/AssignCourse', [
+                'student' => $students,
+                'college_fee' => $college_fee,
+                'subjects' => $subjects,
+                'other_fee' => $other_fee,
+                'filters' => $request->only(['search', 'filter', 'per_page'])
             ]);
         }
+
+    public function store(Request $request) {
     
-        return redirect()->back()->with('success', 'Subjects saved successfully!');
+        if (isset($request->subjects) && is_array($request->subjects)) {
+           
+            foreach ($request->subjects as $subjectDetail) {
+                
+                Student_Subjects::create([
+                    'student_info_id' => $request->student_id,
+                    'subject_code' => $subjectDetail['subject_code'],  
+                    'status' => 'enroll',
+                ]);
+            }
+    
+            return redirect()->back()->with('success', 'Subjects saved successfully!');
+        } else {
+            return redirect()->back()->with('error', 'No subjects selected.');
+        }
     }
+    
+        
 }

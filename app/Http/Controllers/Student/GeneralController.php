@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
+use App\Models\Academic_Year;
 use App\Models\College_Billing;
 use App\Models\DisplaySetting;
 use App\Models\Other_Billing;
@@ -55,7 +56,6 @@ class GeneralController extends Controller
         dd('No grades found for student_info_id', $studentInfo->student_id);
     }
 
-    // If grades exist, proceed
     $mappedGrades = $grades->map(function ($grade) {
         return [
             'id' => $grade->id,
@@ -76,32 +76,57 @@ class GeneralController extends Controller
 }
 
 
-    
-
     public function enrollment() {
         return Inertia::render('Dashboard/Student/Enrollment');
     }
 
-    public function payment()
+
+    public function payment(Request $request)
     {
         $user = Auth::user();
     
-        $payment = $user->studentInfo()->with('paymentVerification')->first();
-
+        $academic = null;
+    
+        if ($request->filled('academic_year_id')) {
+            $academic = Academic_Year::find($request->academic_year_id);
+        }
+    
+        $payment = $user->studentInfo()->with([
+            'paymentVerification' => function ($query) use ($academic) {
+                if ($academic) {
+                    $query->whereBetween('created_at', [$academic->start, $academic->end]);
+                }
+            }
+        ])->first();
+    
         return Inertia::render('Dashboard/Student/Payment', [
             'student' => $payment,
         ]);
     }
 
-    public function plan()
+    public function plan(Request $request)
     {
         $user = Auth::user();
+        $academic = null;
     
-        $payment = $user->studentInfo()->with('paymentDetails')->first();
+        if ($request->filled('academic_year_id')) {
+            $academic = Academic_Year::find($request->academic_year_id);
+        }
+    
+        $payment = $user->studentInfo()->with([
+            'paymentDetails' => function ($query) use ($academic) {
+                if ($academic) {
+                    $query->whereDate('created_at', '>=', $academic->start)
+                          ->whereDate('created_at', '<=', $academic->end);
+                    
+                }
+            }
+        ])->first();
+    
         $otherBilling = Other_Billing::all();
         $collegeBilling = College_Billing::all();
         $shsBilling = SHS_Billing::all();
-
+    
         return Inertia::render('Dashboard/Student/PaymentPlan', [
             'student' => $payment,
             'otherBilling'  => $otherBilling,
@@ -109,13 +134,13 @@ class GeneralController extends Controller
             'shsBilling' => $shsBilling
         ]);
     }
+    
 
     public function subjects()
     {
         $user = Auth::user();
     
-        $subjects = $user->studentInfo()->with('studentSubjects')->first();
-        // dd($subjects->studentSubjects);
+        $subjects = $user->studentInfo()->with('studentSubjects.subject')->first();
 
         return Inertia::render('Dashboard/Student/Subject', [
             'student' => $subjects,
@@ -147,7 +172,6 @@ class GeneralController extends Controller
 
     $grades = $studentInfo->grades;
 
-    // Map and calculate average
     $mappedGrades = $grades->map(function ($grade) {
         return [
             'id' => $grade->id,
@@ -167,15 +191,21 @@ class GeneralController extends Controller
         'student' => $studentInfo,
         'grades' => $mappedGrades,
         'averageGrade' => $averageGrade,
-        'department' => $studentInfo->department, // 👈 Add this
+        'department' => $studentInfo->department, 
     ]);
 }
 
-
-
     
     public function paymentForm() {
-        return Inertia::render('Dashboard/Student/PaymentForm');
+        $user = Auth::user();
+    
+        $studentInfo = $user->studentInfo()->with('personalInfo', 'guardian')->first();
+
+        return Inertia::render('Dashboard/Student/PaymentForm', [
+            'student' => $studentInfo,
+            'user' => $user
+        ]);
+       
     }
     
 }

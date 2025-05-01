@@ -22,7 +22,6 @@ export default function Navbar() {
             "yyyy"
         )}`;
 
-    // Get the latest academic year by highest ID
     const getLatestAcademicYearById = () => {
         if (!academic_year || academic_year.length === 0) return null;
         const latest = [...academic_year].sort((a, b) => b.id - a.id)[0];
@@ -32,7 +31,6 @@ export default function Navbar() {
         };
     };
 
-    // Initial state: sessionStorage or fallback to latest year
     const [selectedYear, setSelectedYear] = useState(() => {
         if (typeof window !== "undefined") {
             const stored = sessionStorage.getItem("selectedYear");
@@ -46,7 +44,6 @@ export default function Navbar() {
     useEffect(() => {
         const storedYear = sessionStorage.getItem("selectedYear");
 
-        // If the URL already has academic_year_id, no need to trigger a redirect
         const url = new URL(window.location.href);
         const hasAcademicYearId = url.searchParams.has("academic_year_id");
 
@@ -70,7 +67,6 @@ export default function Navbar() {
         }
     }, [academic_year]);
 
-    // Handle dropdown change
     const handleSelectChange = (value) => {
         setSelectedYear(value);
         sessionStorage.setItem("selectedYear", value);
@@ -81,7 +77,7 @@ export default function Navbar() {
 
         if (selected) {
             const currentUrl = new URL(window.location.href);
-            currentUrl.searchParams.set("academic_year_id", selected.id); // ✅ Use ID again
+            currentUrl.searchParams.set("academic_year_id", selected.id);
 
             router.get(
                 currentUrl.pathname + currentUrl.search,
