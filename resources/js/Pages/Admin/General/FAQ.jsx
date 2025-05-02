@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { getFormattedDateTime } from "@/components/utils/formatDateTime";
 import { useForm } from "@inertiajs/react";
 import { ArrowDown, ArrowRight, Edit, Trash } from "lucide-react";
 import React, { useState } from "react";
@@ -22,8 +23,12 @@ export default function FAQ({ faq = [] }) {
     const handleSubmit = () => {
         post(route("admin.setting.general.faq"), {
             onSuccess: () => {
-                toast("FAQ has been created", {
-                    description: "Sunday, December 03, 2023 at 9:00 AM",
+                toast("FAQ has been created.", {
+                    description: (
+                        <span className="text-gray-900">
+                            {getFormattedDateTime()}
+                        </span>
+                    ),
                 });
                 setData({
                     answer: "",
@@ -36,8 +41,12 @@ export default function FAQ({ faq = [] }) {
     const handleDelete = (faq) => {
         onDelete(route("admin.setting.general.faq-destroy", { id: faq.id }), {
             onSuccess: () => {
-                toast("FAQ has been deleted", {
-                    description: "Sunday, December 03, 2023 at 9:00 AM",
+                toast("FAQ has been deleted.", {
+                    description: (
+                        <span className="text-gray-900">
+                            {getFormattedDateTime()}
+                        </span>
+                    ),
                 });
             },
         });
@@ -59,8 +68,12 @@ export default function FAQ({ faq = [] }) {
             route("admin.setting.general.faq-update", { id: selectedFAQ.id }),
             {
                 onSuccess: () => {
-                    toast("FAQ has been updated", {
-                        description: "Sunday, December 03, 2023 at 9:00 AM",
+                    toast("FAQ has been updated.", {
+                        description: (
+                            <span className="text-gray-900">
+                                {getFormattedDateTime()}
+                            </span>
+                        ),
                     });
                     setData({
                         answer: "",

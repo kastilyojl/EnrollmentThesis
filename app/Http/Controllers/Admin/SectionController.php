@@ -15,10 +15,35 @@ use Inertia\Inertia;
 class SectionController extends Controller
 {
     //
-    public function index() {
+    public function index(Request $request)
+    {
+        $sectionQuery = Section::with('schedule');
         $program = Programs::with('subjects')->get();
-        $section = Section::with('schedule')->get();
-        return Inertia::render('Admin/Section', ['program'=>$program, 'section'=>$section]);
+
+        if ($request->has('search') && !empty($request->search)) {
+            $searchTerm = $request->search;
+            $sectionQuery->where(function($query) use ($searchTerm) {
+                $query->where('name', 'like', "%{$searchTerm}%")
+                    ->orWhere('semester', 'like', "%{$searchTerm}%")
+                    ->orWhere('program_code', 'like', "%{$searchTerm}%")
+                    ->orWhere('year_level', 'like', "%{$searchTerm}%");
+            });
+        }
+
+        if ($request->has('filter') && $request->filter !== 'All') {
+            $sectionQuery->where(function($query) use ($request) {
+                $query->where('semester', $request->filter)
+                    ->orWhere('year_level', $request->filter);
+            });
+        }
+
+        $section = $sectionQuery->get();
+
+        return Inertia::render('Admin/Section', [
+            'program' => $program,
+            'section' => $section,
+            'filters' => $request->only(['search', 'filter'])
+        ]);
     }
 
     public function store(SectionRequest $request) {

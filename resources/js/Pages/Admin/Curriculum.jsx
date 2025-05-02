@@ -34,25 +34,21 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-    Download,
-    Edit,
-    File,
-    MoreHorizontal,
-    Trash,
-    View,
-} from "lucide-react";
-import { useForm } from "@inertiajs/react";
+import { File, MoreHorizontal, View } from "lucide-react";
+import { router, useForm } from "@inertiajs/react";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import SHS from "./Curriculum/SHS";
 import College from "./Curriculum/College";
 import FilterDropdown from "@/components/FilterDropdown";
+import SearchFilter from "@/components/SearchFilter";
+import useDebouncedSearch from "@/components/utils/useDebounceSearch";
 
 export default function Curriculum({ program = [] }) {
     const [itemId, setItemId] = useState(null);
     const [edit, setEdit] = useState(false);
     const [del, setDel] = useState(false);
+    const [search, setSearch] = useState("");
 
     const {
         data,
@@ -94,16 +90,18 @@ export default function Curriculum({ program = [] }) {
         setDel(true);
     };
 
-    const handleSubmitDel = () => {
-        console.log("Delete id", itemId.id);
-        onDelete(route("admin.otherfee.destroy", { id: itemId }), {
-            onSuccess: () => {
-                toast("Fees has been deleted", {
-                    description: "Sunday, December 03, 2023 at 9:00 AM",
-                });
-                setDel(false);
-            },
-        });
+    const handleSearch = (searchTerm) => {
+        setSearch(searchTerm);
+        router.get(
+            route("admin.curriculum"),
+            { search: searchTerm },
+            { preserveState: true }
+        );
+    };
+
+    const clearSearch = () => {
+        setSearch("");
+        router.get(route("admin.curriculum"), {}, { preserveState: false });
     };
 
     return (
@@ -112,13 +110,14 @@ export default function Curriculum({ program = [] }) {
                 <h1 className="text-2xl font-bold">Curriculum</h1>
             </div>
             <div className="flex space-x-4 mb-3">
-                <Input type="text" placeholder="Search" className="w-[300px]" />
-                {/* <FilterDropdown
-                // currentFilter={dataFilter}
-                // filterData={filterData}
-                // onFilterChange={handleFilterChange}
-                />
-                <Button>Create</Button> */}
+                <div className="flex items-center gap-2">
+                    <SearchFilter
+                        searchValue={search}
+                        onSearchChange={handleSearch}
+                        onClearFilters={clearSearch}
+                        showClearButton={!!search}
+                    />
+                </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -186,18 +185,14 @@ export default function Curriculum({ program = [] }) {
                             .map((program) => (
                                 <DialogContent className="max-w-5xl">
                                     <DialogHeader>
-                                        <DialogTitle>
-                                            {/* {program.name} */}
-                                        </DialogTitle>
+                                        <DialogTitle></DialogTitle>
                                         <DialogDescription>
                                             <ScrollArea className="h-[500px] px-4">
                                                 {program.department ===
                                                 "College" ? (
-                                                    <College
-                                                        program={program}
-                                                    />
+                                                    <College program={itemId} />
                                                 ) : (
-                                                    <SHS program={program} />
+                                                    <SHS program={itemId} />
                                                 )}
                                             </ScrollArea>
                                         </DialogDescription>

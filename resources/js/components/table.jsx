@@ -93,7 +93,6 @@ export default function TableData({
                                         <DropdownMenuContent>
                                             <DropdownMenuItem
                                                 onClick={() => {
-                                                    // Defer to let Dropdown close before Dialog opens
                                                     document.activeElement?.blur();
                                                     setTimeout(
                                                         () =>

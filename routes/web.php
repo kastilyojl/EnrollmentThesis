@@ -21,6 +21,7 @@ use App\Http\Controllers\OCR\OCRController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\Student\ApplicationController;
+use App\Http\Controllers\Student\EvaluationController;
 use App\Http\Controllers\Student\GeneralController;
 use App\Http\Middleware\VerifyAdminIp;
 use App\Models\Admin\GradeController;
@@ -129,6 +130,12 @@ Route::middleware('auth')->group(function () {
     // Professor
 
     //Admin
+Route::get('help', function() {
+        return Inertia::render('Admin/Help');
+})->name('admin.help');
+Route::get('admin/evaluation', [EvaluationController::class, 'indexAdmin'])->name('admin.evaluation');
+Route::post('/evaluation', [EvaluationController::class, 'store']);
+
 Route::prefix('/setting')->group(function () {
     Route::get('/', [GeneralSettingController::class, 'index'])->name('admin.setting.general');
     Route::prefix('general')->group(function ()  {
@@ -217,13 +224,14 @@ Route::prefix('billing')->group(function () {
     Route::post('/store/payment-details', [PaymentController::class, 'storePaymentDetails'])->name('admin.payment.storeDetails');
     Route::get('/assign-payment', [PaymentController::class, 'indexAssignFee'])->name('admin.assign-fee.index');
 
-
     Route::post('/shs-fee/{id}/update', [BillingController::class, 'editSHSFee'])->name("admin.shsfee.update");
     Route::delete('/shs-fee/{id}/delete', [BillingController::class, 'destroySHSFee'])->name("admin.shsfee.destroy");
     Route::post('/college-fee/{id}/update', [BillingController::class, 'editCollegeFee'])->name("admin.collegefee.update");
     Route::delete('/college-fee/{id}/delete', [BillingController::class, 'destroyCollegeFee'])->name("admin.collegefee.destroy");
     Route::post('/other-fee/{id}/update', [BillingController::class, 'editOtherFee'])->name("admin.otherfee.update");
     Route::delete('/other-fee/{id}/delete', [BillingController::class, 'destroyOtherFee'])->name("admin.otherfee.destroy");
+
+    Route::get('payment-list',[PaymentController::class, 'paymentIndex'])->name('admin.payment.list');
 });
 
 Route::get('enrollment/final-step', [EnrollmentConfirmationController::class, 'index'])->name('enrollment.final.step');

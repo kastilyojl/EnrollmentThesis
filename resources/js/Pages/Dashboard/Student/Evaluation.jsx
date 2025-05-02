@@ -1,13 +1,38 @@
 import Layout from "@/components/layout";
-import { usePage } from "@inertiajs/react";
-import React from "react";
+import { usePage, router } from "@inertiajs/react";
+import React, { useEffect } from "react";
+import { Badge } from "@/components/ui/badge";
 
 export default function Evaluation() {
-    const { student, grades, averageGrade, department } = usePage().props;
+    const {
+        student,
+        grades,
+        averageGrade,
+        department,
+        paymentStatus = "unpaid",
+        semester,
+        year_level,
+        clearanceStatus = "Not Cleared",
+    } = usePage().props;
 
     const documentsStatus = student.documents?.status || "pending";
     const gradesStatus = grades?.length ? "available" : "unavailable";
-    const paymentStatus = student.payment_verification?.status || "pending";
+
+    const saveEvaluation = () => {
+        router.post("/evaluation", {
+            student_info_id: student.student_id,
+            semester: semester,
+            year_level: year_level,
+            clearance: clearanceStatus,
+            grades_eval: gradesStatus,
+            documents: documentsStatus,
+            payment: paymentStatus,
+        });
+    };
+
+    useEffect(() => {
+        saveEvaluation();
+    }, [documentsStatus, gradesStatus, paymentStatus, clearanceStatus]);
 
     const getGradeRemark = () => {
         if (averageGrade === null) return "N/A";
@@ -23,6 +48,42 @@ export default function Evaluation() {
         return "Unknown Department";
     };
 
+    const getPaymentBadge = (status) => {
+        if (!status) return <Badge className="bg-gray-500">Loading...</Badge>;
+
+        const statusLower = String(status).toLowerCase();
+
+        switch (statusLower) {
+            case "fully paid":
+                return <Badge className="bg-green-500">Fully Paid</Badge>;
+            case "partially paid":
+                return <Badge className="bg-yellow-500">Partially Paid</Badge>;
+            case "unpaid":
+                return <Badge className="bg-red-500">Unpaid</Badge>;
+            case "no fees recorded":
+                return <Badge className="bg-gray-500">No Fees Recorded</Badge>;
+            default:
+                return <Badge className="bg-gray-500">{status}</Badge>;
+        }
+    };
+
+    const getDocumentsBadge = (status) => {
+        if (!status) return <Badge className="bg-gray-500">Loading...</Badge>;
+
+        const statusLower = String(status).toLowerCase();
+
+        switch (statusLower) {
+            case "approved":
+                return <Badge className="bg-green-500">Approved</Badge>;
+            case "pending":
+                return <Badge className="bg-yellow-500">Pending</Badge>;
+            case "rejected":
+                return <Badge className="bg-red-500">Rejected</Badge>;
+            default:
+                return <Badge className="bg-gray-500">{status}</Badge>;
+        }
+    };
+
     return (
         <Layout>
             <div className="flex items-end justify-between mb-7">
@@ -33,18 +94,33 @@ export default function Evaluation() {
                 <div className="bg-white shadow rounded p-4">
                     <h2 className="text-xl font-semibold mb-3">Statuses</h2>
                     <ul className="space-y-2">
-                        <li>
-                            <strong>Documents:</strong> {documentsStatus}
+                        <li className="flex items-center gap-2">
+                            <strong>Documents:</strong>
+                            {getDocumentsBadge(documentsStatus)}
                         </li>
-                        <li>
-                            <strong>Grades:</strong> {gradesStatus}
+                        <li className="flex items-center gap-2">
+                            <strong>Grades:</strong>
+                            <Badge
+                                variant={
+                                    gradesStatus === "available"
+                                        ? "success"
+                                        : "destructive"
+                                }
+                            >
+                                {gradesStatus}
+                            </Badge>
                         </li>
-                        <li>
-                            <strong>Payment:</strong> {paymentStatus}
+                        <li className="flex items-center gap-2">
+                            <strong>Payment:</strong>
+                            {getPaymentBadge(paymentStatus)}
                         </li>
-                        <li>
-                            <strong>Average Grade:</strong>{" "}
-                            {averageGrade ?? "N/A"}{" "}
+                        <li className="flex items-center gap-2">
+                            <strong>Clearance:</strong>
+                            {clearanceStatus}
+                        </li>
+                        <li className="flex items-center gap-2">
+                            <strong>Average Grade:</strong>
+                            {averageGrade ?? "N/A"}
                             {averageGrade !== null && (
                                 <span className="ml-2 text-sm text-gray-500">
                                     ({getGradeRemark()})
@@ -55,6 +131,19 @@ export default function Evaluation() {
                             <strong>Department:</strong> {department}
                         </li>
                     </ul>
+
+                    <div className="mt-4 p-3 bg-blue-50 rounded-md text-sm text-blue-700">
+                        <p className="font-medium">Note:</p>
+                        <p>
+                            To change your clearance status to "Cleared", you
+                            must first have:
+                        </p>
+                        <ul className="list-disc pl-5 mt-1 space-y-1">
+                            <li>Approved documents status</li>
+                            <li>Available grades</li>
+                            <li>Fully paid payment status</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </Layout>

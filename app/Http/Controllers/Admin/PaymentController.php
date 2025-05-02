@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Student\PaymentVerification;
+use App\Models\Academic_Year;
 use App\Models\Billing_Type;
 use App\Models\College_Billing;
 use App\Models\Other_Billing;
@@ -17,6 +18,8 @@ use App\Models\Student_Subjects;
 use App\Models\Subjects;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
@@ -80,6 +83,70 @@ class PaymentController extends Controller
 }
 
         // Admin
+
+        public function paymentIndex(Request $request) 
+        {
+            $perPage = $request->input('per_page', session('rows_per_page', 10));
+            session(['rows_per_page' => $perPage]);
+        
+            $query = Student_Fees::with(['studentInfo.personalInfo']);
+        
+            if ($request->has('search') && !empty($request->search)) {
+                $searchTerm = $request->search;
+                $query->whereHas('studentInfo.personalInfo', function ($q) use ($searchTerm) {
+                    $q->where('first_name', 'like', "%{$searchTerm}%")
+                      ->orWhere('last_name', 'like', "%{$searchTerm}%")
+                      ->orWhere('student_id', 'like', "%{$searchTerm}%");
+                });
+            }
+        
+            if ($request->has('filter') && $request->filter && $request->filter !== 'All') {
+                $query->where(function($q) use ($request) {
+                    $q->where('semester', $request->filter)
+                      ->orWhere('year_level', $request->filter)
+                      ->orWhere('status', $request->filter);
+                });
+            }
+
+            if ($request->filled('academic_year_id')) {
+                $academic = Academic_Year::find($request->academic_year_id);
+    
+                if ($academic) {
+                    $query->whereBetween('created_at', [$academic->start, $academic->end]);
+                }
+            }
+        
+            $payments = $query->paginate($perPage);
+        
+            $transformedPayments = $payments->getCollection()->map(function($payment) {
+                return [
+                    'id' => $payment->id,
+                    'student_info_id' => $payment->student_info_id,
+                    'student_name' => optional($payment->studentInfo->personalInfo)?->first_name . ' ' . optional($payment->studentInfo->personalInfo)?->last_name ?? 'N/A',
+                    'year_level' => $payment->year_level,
+                    'semester' => $payment->semester,
+                    'status' => $payment->status,
+                    'total_amount' => $payment->total_amount,
+                    'amount_paid' => $payment->amount_paid,
+                    'created_at' => $payment->created_at->format('Y-m-d H:i:s'),
+                ];
+            });
+        
+            return Inertia::render('Admin/PaymentList', [
+                'payment' => new LengthAwarePaginator(
+                    $transformedPayments,
+                    $payments->total(),
+                    $payments->perPage(),
+                    $payments->currentPage(),
+                    [
+                        'path' => Paginator::resolveCurrentPath(),
+                        'pageName' => 'page',
+                    ]
+                ),
+                'filters' => $request->only(['search', 'filter', 'per_page'])
+            ]);
+        }
+        
 
         public function indexPayment(Request $request) {
             $perPage = $request->input('per_page', session('rows_per_page', 10));

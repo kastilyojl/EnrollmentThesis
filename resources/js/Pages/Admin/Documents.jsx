@@ -85,7 +85,6 @@ export default function Documents({ student, filters }) {
         doc_status: student.documents?.status || "",
     }));
 
-    // Filtered data with only the required columns
     const tableData = document.map((student) => ({
         id: student.id,
         name:

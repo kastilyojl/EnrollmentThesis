@@ -14,6 +14,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import InputError from "@/components/InputError copy";
+import { getFormattedDateTime } from "@/components/utils/formatDateTime";
 
 export default function AcademicYear({ acedemic_year }) {
     const [year, setYear] = useState(null);
@@ -33,7 +34,11 @@ export default function AcademicYear({ acedemic_year }) {
         post(route("admin.setting.general.academicYear-store"), {
             onSuccess: () => {
                 toast("Academic Year has been created", {
-                    description: "Sunday, December 03, 2023 at 9:00 AM",
+                    description: (
+                        <span className="text-gray-900">
+                            {getFormattedDateTime()}
+                        </span>
+                    ),
                 });
                 setData({
                     end: "",
@@ -52,7 +57,11 @@ export default function AcademicYear({ acedemic_year }) {
             {
                 onSuccess: () => {
                     toast("Academic Year has been deleted", {
-                        description: "Sunday, December 03, 2023 at 9:00 AM",
+                        description: (
+                            <span className="text-gray-900">
+                                {getFormattedDateTime()}
+                            </span>
+                        ),
                     });
                 },
             }
@@ -82,7 +91,11 @@ export default function AcademicYear({ acedemic_year }) {
             {
                 onSuccess: () => {
                     toast("Academic Year has been updated", {
-                        description: "Sunday, December 03, 2023 at 9:00 AM",
+                        description: (
+                            <span className="text-gray-900">
+                                {getFormattedDateTime()}
+                            </span>
+                        ),
                     });
                     setData({
                         end: "",

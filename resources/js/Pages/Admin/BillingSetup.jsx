@@ -3,7 +3,6 @@ import TableData from "@/components/table";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -17,7 +16,6 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import RadioButton from "@/Components/RadioButton";
 import {
     DialogDescription,
     Dialog,
@@ -26,7 +24,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import { useForm } from "@inertiajs/react";
+import { router, useForm } from "@inertiajs/react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -40,6 +38,8 @@ import {
 import SHSBilling from "./BillingSetup/SHSBilling";
 import OtherBilling from "./BillingSetup/OtherBilling";
 import CollegeBilling from "./BillingSetup/CollegeBilling";
+import SearchFilter from "@/components/SearchFilter";
+import { getFormattedDateTime } from "@/components/utils/formatDateTime";
 
 export default function BillingSetup({
     program = [],
@@ -79,6 +79,7 @@ export default function BillingSetup({
     const [itemId, setItemId] = useState(null);
     const [add, setAdd] = useState(false);
     const [del, setDel] = useState(false);
+    const [search, setSearch] = useState("");
 
     const handleAdd = () => {
         setItemId(null);
@@ -111,11 +112,14 @@ export default function BillingSetup({
     };
 
     const handleSubmitDel = () => {
-        console.log("Delete id", itemId.id);
         onDelete(route("admin.subject.destroy", { id: itemId }), {
             onSuccess: () => {
-                toast("Subject has been deleted", {
-                    description: "Sunday, December 03, 2023 at 9:00 AM",
+                toast("Subject has been deleted.", {
+                    description: (
+                        <span className="text-gray-900">
+                            {getFormattedDateTime()}
+                        </span>
+                    ),
                 });
                 setDel(false);
             },
@@ -125,9 +129,12 @@ export default function BillingSetup({
     const handleSHSSubmit = () => {
         post(route("admin.billing.storeSHS"), {
             onSuccess: () => {
-                console.log("Success Trigger");
-                toast("Bill has been created", {
-                    description: "Sunday, December 03, 2023 at 9:00 AM",
+                toast("Bill has been created.", {
+                    description: (
+                        <span className="text-gray-900">
+                            {getFormattedDateTime()}
+                        </span>
+                    ),
                 });
                 setAdd(false);
                 setData({
@@ -157,9 +164,12 @@ export default function BillingSetup({
     const handleCollegeSubmit = () => {
         post(route("admin.billing.storeCollege"), {
             onSuccess: () => {
-                console.log("Success Trigger");
-                toast("Bill has been created", {
-                    description: "Sunday, December 03, 2023 at 9:00 AM",
+                toast("Bill has been created.", {
+                    description: (
+                        <span className="text-gray-900">
+                            {getFormattedDateTime()}
+                        </span>
+                    ),
                 });
                 setAdd(false);
                 setData({
@@ -189,9 +199,12 @@ export default function BillingSetup({
     const handleSubmit = () => {
         post(route("admin.billing.storeOther"), {
             onSuccess: () => {
-                console.log("Success Trigger");
-                toast("Bill has been created", {
-                    description: "Sunday, December 03, 2023 at 9:00 AM",
+                toast("Bill has been created.", {
+                    description: (
+                        <span className="text-gray-900">
+                            {getFormattedDateTime()}
+                        </span>
+                    ),
                 });
                 setAdd(false);
                 setData({
@@ -221,8 +234,12 @@ export default function BillingSetup({
     const handleUpdateSubmit = () => {
         post(route("admin.subject.update", { id: itemId }), {
             onSuccess: () => {
-                toast("Bill has been updated", {
-                    description: "Sunday, December 03, 2023 at 9:00 AM",
+                toast("Bill has been updated.", {
+                    description: (
+                        <span className="text-gray-900">
+                            {getFormattedDateTime()}
+                        </span>
+                    ),
                 });
                 setAdd(false);
                 setData({
@@ -265,13 +282,32 @@ export default function BillingSetup({
         setData("fees", [...otherFees, newOtherFee]);
     };
 
+    const handleSearch = (searchTerm) => {
+        setSearch(searchTerm);
+        router.get(
+            route("admin.billing"),
+            { search: searchTerm },
+            { preserveState: true }
+        );
+    };
+
+    const clearSearch = () => {
+        setSearch("");
+        router.get(route("admin.billing"), {}, { preserveState: false });
+    };
+
     return (
         <Layout>
             <div className="flex items-end justify-between mb-7">
                 <h1 className="text-2xl font-bold">Billing</h1>
             </div>
             <div className="flex justify-between mb-3">
-                <Input type="text" placeholder="Search" className="w-[300px]" />
+                <SearchFilter
+                    searchValue={search}
+                    onSearchChange={handleSearch}
+                    onClearFilters={clearSearch}
+                    showClearButton={!!search}
+                />
                 <Button onClick={handleAdd}>Create</Button>
             </div>
             <div>

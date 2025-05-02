@@ -20,6 +20,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import InputError from "@/components/InputError copy";
+import { getFormattedDateTime } from "@/components/utils/formatDateTime";
 
 export default function IDSetup({ id_format }) {
     const [IDFormat, setIDFormat] = useState(null);
@@ -40,7 +41,11 @@ export default function IDSetup({ id_format }) {
         post(route("admin.setting.general.id-setup"), {
             onSuccess: () => {
                 toast("ID Format has been created", {
-                    description: "Sunday, December 03, 2023 at 9:00 AM",
+                    description: (
+                        <span className="text-gray-900">
+                            {getFormattedDateTime()}
+                        </span>
+                    ),
                 });
                 setData({
                     prefix: "",
@@ -60,7 +65,11 @@ export default function IDSetup({ id_format }) {
             {
                 onSuccess: () => {
                     toast("ID Format has been deleted", {
-                        description: "Sunday, December 03, 2023 at 9:00 AM",
+                        description: (
+                            <span className="text-gray-900">
+                                {getFormattedDateTime()}
+                            </span>
+                        ),
                     });
                 },
             }
@@ -97,8 +106,12 @@ export default function IDSetup({ id_format }) {
             }),
             {
                 onSuccess: () => {
-                    toast("ID Format Data has been updated", {
-                        description: "Sunday, December 03, 2023 at 9:00 AM",
+                    toast("ID Format has been updated", {
+                        description: (
+                            <span className="text-gray-900">
+                                {getFormattedDateTime()}
+                            </span>
+                        ),
                     });
                     setData({
                         prefix: "",

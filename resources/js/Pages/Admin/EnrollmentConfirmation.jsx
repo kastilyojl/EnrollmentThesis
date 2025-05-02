@@ -2,18 +2,9 @@ import Layout from "@/components/layout";
 import TableData from "@/components/table";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
-
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
     DialogDescription,
     Dialog,
@@ -23,7 +14,7 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 
-import { Link, router, useForm } from "@inertiajs/react";
+import { router, useForm } from "@inertiajs/react";
 import {
     Select,
     SelectContent,
@@ -31,13 +22,13 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import ApplicationForm from "../Public/Section/Application";
 import Pagination from "@/components/Pagination";
-import { ChevronDown, Filter } from "lucide-react";
 import RowPerPage from "@/components/RowPerPage";
 import SearchFilter from "@/components/SearchFilter";
 import FilterDropdown from "@/components/FilterDropDown";
 import { Label } from "@/components/ui/label";
+import { getFormattedDateTime } from "@/components/utils/formatDateTime";
+import useDebouncedSearch from "@/components/utils/useDebounceSearch";
 
 export default function EnrollmentConfirmation({
     student,
@@ -136,8 +127,12 @@ export default function EnrollmentConfirmation({
         console.log(data);
         post(route("enrollment.insert.section"), {
             onSuccess: () => {
-                toast("Student Enrolled", {
-                    description: "Sunday, December 03, 2023 at 9:00 AM",
+                toast("Student successfully enrolled", {
+                    description: (
+                        <span className="text-gray-900">
+                            {getFormattedDateTime()}
+                        </span>
+                    ),
                 });
                 setAdd(false);
                 setData({
@@ -149,42 +144,47 @@ export default function EnrollmentConfirmation({
         });
     };
 
-    const FilterData = [
-        "All",
-        "Computer Science",
-        "Uno",
-        "Senior High School",
-        "College",
-    ];
+    const filterData = {
+        Department: ["SHS", "College"],
+        Year: [
+            "Grade 11",
+            "Grade 12",
+            "1st Year",
+            "2nd Year",
+            "3rd Year",
+            "4th Year",
+        ],
+        Semester: ["1st Semester", "2nd Semester"],
+        Branch: ["Banlic - Main", "Uno"],
+    };
 
     const [search, setSearch] = useState(filters?.search || "");
     const [dataFilter, setDataFilter] = useState("All");
     const [perPage, setPerPage] = useState(filters?.per_page || 10);
 
-    const handleSearchSubmit = () => {
-        setDataFilter("All");
-        router.get(
-            route("admin.application"),
-            {
-                search,
-                program: "",
-                per_page: perPage,
-            },
-            {
-                preserveState: true,
-                replace: true,
-            }
-        );
+    const { triggerSearch } = useDebouncedSearch({
+        routeName: "enrollment.final.step",
+        filterKey: "filter",
+        filterValue: dataFilter,
+        perPage,
+    });
+
+    const handleSearchChange = (val) => {
+        setSearch(val);
+        triggerSearch(val);
     };
 
-    const handleFilterChange = (program) => {
-        setDataFilter(program);
+    const year = sessionStorage.getItem("selectedYear");
+
+    const handleFilterChange = (filterValue) => {
+        setDataFilter(filterValue);
         router.get(
-            route("admin.application"),
+            route("enrollment.final.step"),
             {
                 search: "",
-                program: program === "All" ? "" : program,
+                filter: filterValue === "All" ? "" : filterValue,
                 per_page: perPage,
+                year,
             },
             {
                 preserveState: true,
@@ -194,11 +194,18 @@ export default function EnrollmentConfirmation({
     };
 
     const clearAllFilters = () => {
+        const year = sessionStorage.getItem("selectedYear");
         setSearch("");
         setDataFilter("All");
+
         router.get(
-            route("admin.application"),
-            { per_page: perPage },
+            route("enrollment.final.step"),
+            {
+                search: "",
+                filter: "",
+                per_page: perPage,
+                year: year || "",
+            },
             {
                 preserveState: true,
                 replace: true,
@@ -215,15 +222,15 @@ export default function EnrollmentConfirmation({
                 <div className="flex items-center gap-2">
                     <SearchFilter
                         searchValue={search}
-                        onSearchChange={setSearch}
-                        onSearchSubmit={handleSearchSubmit}
+                        onSearchChange={handleSearchChange}
+                        onSearchSubmit={triggerSearch}
                         onClearFilters={clearAllFilters}
                         showClearButton={search || dataFilter !== "All"}
                     />
                     <FilterDropdown
                         currentFilter={dataFilter}
+                        filterData={filterData}
                         onFilterChange={handleFilterChange}
-                        FilterData={FilterData}
                     />
                 </div>
             </div>
@@ -306,7 +313,7 @@ export default function EnrollmentConfirmation({
             <div className="flex justify-between pt-2">
                 <RowPerPage
                     filters={filters}
-                    routeName={"admin.application"}
+                    routeName={"enrollment.final.step"}
                     perPage={perPage}
                     onPerPageChange={setPerPage}
                 />

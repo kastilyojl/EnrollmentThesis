@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Academic_Year;
 use App\Models\Section;
 use App\Models\Section_Student;
 use App\Models\Student_Info;
@@ -32,8 +33,21 @@ class EnrollmentConfirmationController extends Controller
             });
         }
         
-        if ($request->has('program') && $request->program && $request->program !== 'All') {
-            $query->where('program', $request->program);
+        if ($request->has('filter') && $request->filter && $request->filter !== 'All') {
+            $query->where(function($q) use ($request) {
+                $q->where('department', $request->filter)
+                  ->orWhere('branch', $request->filter)
+                  ->orWhere('semester', $request->filter)
+                  ->orWhere('year_level', $request->filter);
+            });
+        }
+
+        if ($request->filled('academic_year_id')) {
+            $academic = Academic_Year::find($request->academic_year_id);
+
+            if ($academic) {
+                $query->whereBetween('created_at', [$academic->start, $academic->end]);
+            }
         }
         
         $student = $query->paginate($perPage);
@@ -68,25 +82,21 @@ class EnrollmentConfirmationController extends Controller
             $format = Users_IDFormat::where('id_format', $request->student_info_id)->first();
 
             if ($format) {
-                // Assuming format like STUD-0001
+           
                 $currentId = $format->id_format;
 
-                // Extract prefix and number
                 preg_match('/^([A-Z]+[\-\_]?)(\d+)$/', $currentId, $matches);
 
                 if (count($matches) === 3) {
-                    $prefix = $matches[1];           // STUD- or STUD_
-                    $number = (int) $matches[2];     // 1
+                    $prefix = $matches[1];        
+                    $number = (int) $matches[2];   
 
                     $newNumber = $number + 1;
 
-                    // Format new number with leading zeros
                     $formattedNumber = str_pad($newNumber, strlen($matches[2]), '0', STR_PAD_LEFT);
 
-                    // Create new ID format
                     $newIdFormat = $prefix . $formattedNumber;
 
-                    // Update it in DB
                     $format->update([
                         'id_format' => $newIdFormat,
                     ]);
@@ -95,9 +105,6 @@ class EnrollmentConfirmationController extends Controller
             DB::commit();
             $items = Student_Info::where('users_id', $request->users_id)->first();
             return redirect()->route('send.email.official-enroll', ['users_id' => $items->users_id]);
-    
-            
-    
             return redirect()->route('enrollment.final.step');
         } catch (\Exception $e) {
             DB::rollBack();

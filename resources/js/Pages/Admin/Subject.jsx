@@ -110,14 +110,13 @@ export default function Subjects({ program = [], subject, filters }) {
         code: subject.code,
         name: subject.name,
         category: subject.category,
-        prerequisites: subject.prerequisites,
+        prerequisites: subject.prerequisites || "-",
         department: subject.department,
         year_level: subject.year_level,
         period: subject.period,
         lec: subject.lec,
         lab: subject.lab,
         unit: subject.unit,
-        total: subject.total,
     }));
 
     const [itemId, setItemId] = useState(null);

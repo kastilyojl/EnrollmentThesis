@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { getFormattedDateTime } from "@/components/utils/formatDateTime";
 import { useForm } from "@inertiajs/react";
 import { ArrowDown, ArrowRight, Edit, Trash } from "lucide-react";
 import React, { useState } from "react";
@@ -24,8 +25,12 @@ export default function Campus({ campus }) {
     const handleSubmit = () => {
         post(route("admin.setting.general.campus"), {
             onSuccess: () => {
-                toast("campuses has been created", {
-                    description: "Sunday, December 03, 2023 at 9:00 AM",
+                toast("Campus has been created", {
+                    description: (
+                        <span className="text-gray-900">
+                            {getFormattedDateTime()}
+                        </span>
+                    ),
                 });
                 setData({
                     name: "",
@@ -44,7 +49,11 @@ export default function Campus({ campus }) {
             {
                 onSuccess: () => {
                     toast("Campus has been deleted", {
-                        description: "Sunday, December 03, 2023 at 9:00 AM",
+                        description: (
+                            <span className="text-gray-900">
+                                {getFormattedDateTime()}
+                            </span>
+                        ),
                     });
                 },
             }
@@ -75,8 +84,12 @@ export default function Campus({ campus }) {
             }),
             {
                 onSuccess: () => {
-                    toast("Campus Data has been updated", {
-                        description: "Sunday, December 03, 2023 at 9:00 AM",
+                    toast("Campus has been updated", {
+                        description: (
+                            <span className="text-gray-900">
+                                {getFormattedDateTime()}
+                            </span>
+                        ),
                     });
                     setData({
                         location: "",

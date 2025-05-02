@@ -79,8 +79,9 @@ return new class extends Migration
                     ['title' => 'Application', 'route' => 'admin.application'],
                     ['title' => 'Documents', 'route' => 'admin.documents'],
                     ['title' => 'Course Selection', 'route' => 'admin.course.selection'],
-                    ['title' => 'Evaluation', 'route' => ''],
+                    ['title' => 'Evaluation', 'route' => 'admin.evaluation'],
                     ['title' => 'Enrollment Confirmation', 'route' => 'enrollment.final.step'],
+                    ['title' => 'Enrolled Student', 'route' => '']
                 ],
             ],
             [
@@ -98,6 +99,7 @@ return new class extends Migration
                     ['title' => 'Setup', 'route' => 'admin.billing'],
                     ['title' => 'Fee Selection', 'route' => 'admin.assign-fee.index'],
                     ['title' => 'Payment', 'route' => 'admin.payment'],
+                    ['title' => 'Payment List', 'route' => 'admin.payment.list'],
                 ],
             ],
             [
@@ -115,7 +117,7 @@ return new class extends Migration
                     ['title' => 'Display', 'route' => 'index.display'],
                     ['title' => 'User Management', 'route' => 'admin.user.management'],
                     ['title' => 'Account', 'route' => 'profile.edit'],
-                    ['title' => 'Help', 'route' => '#'],
+                    ['title' => 'Help', 'route' => 'admin.help'],
                 ],
             ],
         ];

@@ -47,12 +47,17 @@ import {
     Trash,
 } from "lucide-react";
 import { useState } from "react";
-import { useForm } from "@inertiajs/react";
+import { router, useForm } from "@inertiajs/react";
 import InputError from "@/components/InputError";
 import Schedule from "./Section/Schedule";
 import ScheduleTable from "./Section/ScheduleTable";
+import { getFormattedDateTime } from "@/components/utils/formatDateTime";
+import NoData from "@/components/no-data";
+import SearchFilter from "@/components/SearchFilter";
+import FilterDropdown from "@/components/FilterDropdown";
+import useDebouncedSearch from "@/components/utils/useDebounceSearch";
 
-export default function Section({ program = [], section = [] }) {
+export default function Section({ program = [], section = [], filters }) {
     const [itemId, setItemId] = useState(null);
     const [sectionItem, setSectionItem] = useState(null);
     const [add, setAdd] = useState(false);
@@ -115,8 +120,12 @@ export default function Section({ program = [], section = [] }) {
         console.log(data);
         post(route("admin.section.store"), {
             onSuccess: () => {
-                toast("Section has been created", {
-                    description: "Sunday, December 03, 2023 at 9:00 AM",
+                toast.success("Section has been created.", {
+                    description: (
+                        <span className="text-gray-900">
+                            {getFormattedDateTime()}
+                        </span>
+                    ),
                 });
                 setAdd(false);
                 setData({
@@ -133,8 +142,12 @@ export default function Section({ program = [], section = [] }) {
     const handleUpdateSubmit = () => {
         post(route("admin.section.update", { id: itemId }), {
             onSuccess: () => {
-                toast("Section has been updated", {
-                    description: "Sunday, December 03, 2023 at 9:00 AM",
+                toast.success("Section has been updated.", {
+                    description: (
+                        <span className="text-gray-900">
+                            {getFormattedDateTime()}
+                        </span>
+                    ),
                 });
                 setAdd(false);
                 setData({
@@ -157,8 +170,12 @@ export default function Section({ program = [], section = [] }) {
         console.log("Delete id", itemId.id);
         onDelete(route("admin.section.destroy", { id: itemId }), {
             onSuccess: () => {
-                toast("Section has been deleted", {
-                    description: "Sunday, December 03, 2023 at 9:00 AM",
+                toast.success("Section has been deleted.", {
+                    description: (
+                        <span className="text-gray-900">
+                            {getFormattedDateTime()}
+                        </span>
+                    ),
                 });
                 setDel(false);
             },
@@ -192,36 +209,82 @@ export default function Section({ program = [], section = [] }) {
         }
     };
 
+    const filterData = {
+        Semester: ["1st Semester", "2nd Semester"],
+        Year: [
+            "Grade 11",
+            "Grade 12",
+            "1st Year",
+            "2nd Year",
+            "3rd Year",
+            "4th Year",
+        ],
+    };
+
+    const [search, setSearch] = useState(filters?.search || "");
+    const [dataFilter, setDataFilter] = useState("All");
+    const [perPage, setPerPage] = useState(filters?.per_page || 10);
+
+    const { triggerSearch } = useDebouncedSearch({
+        routeName: "admin.section",
+        filterKey: "filter",
+        filterValue: dataFilter,
+        perPage,
+    });
+
+    const handleSearchChange = (val) => {
+        setSearch(val);
+        router.get(
+            route("admin.section"),
+            { search: val, filter: dataFilter },
+            { preserveState: true }
+        );
+    };
+
+    const year = sessionStorage.getItem("selectedYear");
+
+    const handleFilterChange = (filterValue) => {
+        setDataFilter(filterValue);
+        router.get(
+            route("admin.section"),
+            { search: search, filter: filterValue },
+            { preserveState: true }
+        );
+    };
+
+    const clearAllFilters = () => {
+        setSearch("");
+        setDataFilter("All");
+
+        router.get(
+            route("admin.section"),
+            {},
+            {
+                preserveState: false,
+                replace: true,
+            }
+        );
+    };
+
     return (
         <Layout>
             <div className="flex items-end justify-between mb-7">
                 <h1 className="text-2xl font-bold">Section</h1>
             </div>
             <div className="flex justify-between mb-3">
-                <div className="flex gap-4">
-                    <Input
-                        type="text"
-                        placeholder="Search"
-                        className="w-[300px]"
+                <div className="flex items-center gap-2">
+                    <SearchFilter
+                        searchValue={search}
+                        onSearchChange={handleSearchChange}
+                        onSearchSubmit={triggerSearch}
+                        onClearFilters={clearAllFilters}
+                        showClearButton={search || dataFilter !== "All"}
                     />
-                    {/* <div className="text-white">
-                        <DropdownMenu>
-                            <DropdownMenuTrigger className="bg-primary flex px-2 py-1 rounded-md">
-                                Filter
-                                <Filter className="h-5 ml-2" />
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent className="bg-customBlue text-white">
-                                <DropdownMenuItem>
-                                    Computer Science
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                    Information System
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>Tourism</DropdownMenuItem>
-                                <DropdownMenuItem>Criminology</DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    </div> */}
+                    <FilterDropdown
+                        currentFilter={dataFilter}
+                        filterData={filterData}
+                        onFilterChange={handleFilterChange}
+                    />
                 </div>
                 <Button onClick={handleAdd}>Create</Button>
             </div>
@@ -249,99 +312,120 @@ export default function Section({ program = [], section = [] }) {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {section.map((section, index) => (
-                            <>
-                                <TableRow key={section.id}>
-                                    <TableCell className="font-medium">
-                                        <ChevronRight
-                                            onClick={() =>
-                                                handleShowSubject(index)
-                                            }
-                                            style={{
-                                                height: "20px",
-                                                transition: "transform 0.3s",
-                                                transform: rotatedRows[index]
-                                                    ? "rotate(90deg)"
-                                                    : "rotate(0deg)",
-                                            }}
-                                        />
-                                    </TableCell>
-                                    <TableCell className="font-medium text-center">
-                                        {section.name}
-                                    </TableCell>
-                                    <TableCell className="font-medium text-center">
-                                        {section.program_code}
-                                    </TableCell>
-                                    <TableCell className="font-medium text-center">
-                                        {section.semester}
-                                    </TableCell>
-                                    <TableCell className="font-medium text-center">
-                                        {section.year_level}
-                                    </TableCell>
-                                    <TableCell className="font-medium text-center">
-                                        {
-                                            program
-                                                .filter(
+                        {section.length > 0 ? (
+                            section.map((section, index) => (
+                                <>
+                                    <TableRow key={section.id}>
+                                        <TableCell className="font-medium">
+                                            <ChevronRight
+                                                onClick={() =>
+                                                    handleShowSubject(index)
+                                                }
+                                                style={{
+                                                    height: "20px",
+                                                    transition:
+                                                        "transform 0.3s",
+                                                    transform: rotatedRows[
+                                                        index
+                                                    ]
+                                                        ? "rotate(90deg)"
+                                                        : "rotate(0deg)",
+                                                    cursor: "pointer",
+                                                }}
+                                            />
+                                        </TableCell>
+                                        <TableCell className="font-medium text-center">
+                                            {section.name}
+                                        </TableCell>
+                                        <TableCell className="font-medium text-center">
+                                            {section.program_code}
+                                        </TableCell>
+                                        <TableCell className="font-medium text-center">
+                                            {section.semester}
+                                        </TableCell>
+                                        <TableCell className="font-medium text-center">
+                                            {section.year_level}
+                                        </TableCell>
+                                        <TableCell className="font-medium text-center">
+                                            {program
+                                                .find(
                                                     (prog) =>
                                                         prog.code ===
                                                         section.program_code
                                                 )
-                                                .flatMap(
-                                                    (prog) => prog.subjects
-                                                )
-                                                .filter(
+                                                ?.subjects.filter(
                                                     (subject) =>
                                                         subject.year_level ===
                                                             section.year_level &&
                                                         subject.period ===
                                                             section.semester
-                                                ).length
-                                        }
-                                    </TableCell>
-                                    <TableCell className="flex">
-                                        <Edit
-                                            className="h-5 text-blue-600"
-                                            onClick={() => handleEdit(section)}
-                                        />
-                                        <Trash
-                                            className="h-5 text-red-600"
-                                            onClick={() => handleDel(section)}
-                                        />
-                                    </TableCell>
-                                </TableRow>
-                                {selectedRow === index && show && (
-                                    <TableRow>
-                                        <TableCell colSpan={7}>
-                                            <div className="overflow-x-auto ">
-                                                <div className="text-white bg-primary px-4 flex justify-between font-bold py-1">
-                                                    <span>
-                                                        {section.program_code}
-                                                    </span>
-                                                    <span>{section.name}</span>
-                                                    <span>
-                                                        {section.year_level}
-                                                    </span>
-                                                </div>
-
-                                                <ScheduleTable
-                                                    program={program.filter(
-                                                        (prog) =>
-                                                            prog.code ===
-                                                            section.program_code
-                                                    )}
-                                                    section={section}
-                                                    setItemId={setItemId}
-                                                    setSectionItem={
-                                                        setSectionItem
-                                                    }
-                                                    setSched={setSched}
-                                                />
-                                            </div>
+                                                ).length || 0}
+                                        </TableCell>
+                                        <TableCell className="flex gap-2 justify-center">
+                                            <Edit
+                                                className="h-5 text-blue-600 cursor-pointer"
+                                                onClick={() =>
+                                                    handleEdit(section)
+                                                }
+                                            />
+                                            <Trash
+                                                className="h-5 text-red-600 cursor-pointer"
+                                                onClick={() =>
+                                                    handleDel(section)
+                                                }
+                                            />
                                         </TableCell>
                                     </TableRow>
-                                )}
-                            </>
-                        ))}
+
+                                    {selectedRow === index && show && (
+                                        <TableRow>
+                                            <TableCell
+                                                colSpan={7}
+                                                className="p-0"
+                                            >
+                                                <div className="overflow-x-auto">
+                                                    <div className="text-white bg-primary px-4 flex justify-between font-bold py-1">
+                                                        <span>
+                                                            {
+                                                                section.program_code
+                                                            }
+                                                        </span>
+                                                        <span>
+                                                            {section.name}
+                                                        </span>
+                                                        <span>
+                                                            {section.year_level}
+                                                        </span>
+                                                    </div>
+                                                    <ScheduleTable
+                                                        program={program.filter(
+                                                            (prog) =>
+                                                                prog.code ===
+                                                                section.program_code
+                                                        )}
+                                                        section={section}
+                                                        setItemId={setItemId}
+                                                        setSectionItem={
+                                                            setSectionItem
+                                                        }
+                                                        setSched={setSched}
+                                                    />
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                    )}
+                                </>
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell
+                                    colSpan={7}
+                                    className="text-center py-4 pt-20"
+                                >
+                                    <NoData />
+                                </TableCell>
+                            </TableRow>
+                        )}
                     </TableBody>
                 </Table>
                 {add && (
@@ -363,6 +447,7 @@ export default function Section({ program = [], section = [] }) {
                                                 name="name"
                                                 type="text"
                                                 value={data.name}
+                                                className="text-black"
                                                 onChange={(e) =>
                                                     setData(
                                                         "name",
@@ -382,7 +467,7 @@ export default function Section({ program = [], section = [] }) {
                                                     setData("department", value)
                                                 }
                                             >
-                                                <SelectTrigger>
+                                                <SelectTrigger className="text-black">
                                                     <SelectValue />
                                                 </SelectTrigger>
                                                 <SelectContent>
@@ -409,7 +494,7 @@ export default function Section({ program = [], section = [] }) {
                                                     )
                                                 }
                                             >
-                                                <SelectTrigger>
+                                                <SelectTrigger className="text-black">
                                                     <SelectValue />
                                                 </SelectTrigger>
                                                 <SelectContent>
@@ -442,7 +527,7 @@ export default function Section({ program = [], section = [] }) {
                                                     setData("semester", value)
                                                 }
                                             >
-                                                <SelectTrigger>
+                                                <SelectTrigger className="text-black">
                                                     <SelectValue />
                                                 </SelectTrigger>
                                                 <SelectContent>
@@ -466,7 +551,7 @@ export default function Section({ program = [], section = [] }) {
                                                     setData("year_level", value)
                                                 }
                                             >
-                                                <SelectTrigger>
+                                                <SelectTrigger className="text-black">
                                                     <SelectValue />
                                                 </SelectTrigger>
                                                 <SelectContent>

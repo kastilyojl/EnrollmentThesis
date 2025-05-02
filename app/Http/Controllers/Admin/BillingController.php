@@ -18,14 +18,61 @@ use Inertia\Inertia;
 
 class BillingController extends Controller
 {
-    public function index() {
-        $program = Programs::all();
-        $subject = Subjects::all();
-        $shs_fee = SHS_Billing::all();
-        $college_fee = College_Billing::all();
-        $other_fee = Other_Billing::all();
-        return Inertia::render("Admin/BillingSetup", ['program'=>$program, 'subject'=>$subject, 'shs_fee' => $shs_fee, 'college_fee' => $college_fee, 'other_fee' => $other_fee]);
-    }
+    public function index(Request $request)
+{
+   
+    $programs = Programs::query()
+        ->when($request->has('search') && !empty($request->input('search')), function($query) use ($request) {
+            $search = $request->input('search');
+            $query->where(function($q) use ($search) {
+                $q->where('code', 'like', "%$search%")
+                  ->orWhere('name', 'like', "%$search%");
+            });
+        })
+        ->get();
+
+    $subjects = Subjects::query()
+        ->when($request->has('search') && !empty($request->input('search')), function($query) use ($request) {
+            $search = $request->input('search');
+            $query->where(function($q) use ($search) {
+                $q->where('code', 'like', "%$search%")
+                  ->orWhere('name', 'like', "%$search%");
+            });
+        })
+        ->get();
+
+
+    $shsFee = SHS_Billing::query()
+        ->when($request->has('search') && !empty($request->input('search')), function($query) use ($request) {
+            $search = $request->input('search');
+            $query->where('payment_type', 'like', "%$search%");
+        })
+        ->get();
+
+    $collegeFee = College_Billing::query()
+        ->when($request->has('search') && !empty($request->input('search')), function($query) use ($request) {
+            $search = $request->input('search');
+            $query->where('payment_type', 'like', "%$search%");
+        })
+        ->get();
+
+    $otherFee = Other_Billing::query()
+        ->when($request->has('search') && !empty($request->input('search')), function($query) use ($request) {
+            $search = $request->input('search');
+            $query->where('name', 'like', "%$search%")
+                  ->orWhere('payment_type', 'like', "%$search%");
+        })
+        ->get();
+
+    return Inertia::render("Admin/BillingSetup", [
+        'program' => $programs,
+        'subject' => $subjects,
+        'shs_fee' => $shsFee,
+        'college_fee' => $collegeFee,
+        'other_fee' => $otherFee,
+        'filters' => $request->only(['search']) // Pass search filter to frontend
+    ]);
+}
 
     public function SHSBilling() {
         $shs_fee = SHS_Billing::all();

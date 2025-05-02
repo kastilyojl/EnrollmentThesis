@@ -41,45 +41,39 @@ class GeneralController extends Controller
     }
 
     public function grades()
-{
-    $user = auth()->user();
+    {
+        $user = auth()->user();
 
-    $studentInfo = $user->studentInfo;
+        $studentInfo = $user->studentInfo;
 
-    if (!$studentInfo) {
-        dd('No student info found for user', $user->id);
+        
+
+        $grades = $studentInfo->grades;
+
+        
+
+        $mappedGrades = $grades->map(function ($grade) {
+            return [
+                'id' => $grade->id,
+                'subject' => $grade->subject,
+                'semester' => $grade->semester,
+                'year_level' => $grade->year_level,
+                'grade' => $grade->grade,
+                'status' => $grade->status,
+            ];
+        });
+
+        $settings = DisplaySetting::first();
+
+        return Inertia::render('Dashboard/Student/Grades', [
+            'grades' => $mappedGrades,
+            'gradeSidebarEnabled' => $settings?->grade_sidebar ?? false,
+        ]);
     }
-
-    $grades = $studentInfo->grades;
-
-    if ($grades->isEmpty()) {
-        dd('No grades found for student_info_id', $studentInfo->student_id);
-    }
-
-    $mappedGrades = $grades->map(function ($grade) {
-        return [
-            'id' => $grade->id,
-            'subject' => $grade->subject,
-            'semester' => $grade->semester,
-            'year_level' => $grade->year_level,
-            'grade' => $grade->grade,
-            'status' => $grade->status,
-        ];
-    });
-
-    $settings = DisplaySetting::first();
-
-    return Inertia::render('Dashboard/Student/Grades', [
-        'grades' => $mappedGrades,
-        'gradeSidebarEnabled' => $settings?->grade_sidebar ?? false,
-    ]);
-}
-
 
     public function enrollment() {
         return Inertia::render('Dashboard/Student/Enrollment');
     }
-
 
     public function payment(Request $request)
     {
@@ -108,28 +102,29 @@ class GeneralController extends Controller
     {
         $user = Auth::user();
         $academic = null;
-    
+
         if ($request->filled('academic_year_id')) {
             $academic = Academic_Year::find($request->academic_year_id);
         }
-    
+
         $payment = $user->studentInfo()->with([
             'paymentDetails' => function ($query) use ($academic) {
                 if ($academic) {
                     $query->whereDate('created_at', '>=', $academic->start)
-                          ->whereDate('created_at', '<=', $academic->end);
-                    
+                        ->whereDate('created_at', '<=', $academic->end);
                 }
-            }
+            },
+            'studentFees'
         ])->first();
-    
+
         $otherBilling = Other_Billing::all();
         $collegeBilling = College_Billing::all();
         $shsBilling = SHS_Billing::all();
-    
+
         return Inertia::render('Dashboard/Student/PaymentPlan', [
             'student' => $payment,
-            'otherBilling'  => $otherBilling,
+            'studentFees' => $payment->studentFees ?? [],
+            'otherBilling' => $otherBilling,
             'collegeBilling' => $collegeBilling,
             'shsBilling' => $shsBilling
         ]);
@@ -167,10 +162,12 @@ class GeneralController extends Controller
     $studentInfo = $user->studentInfo()->with([
         'documents',
         'grades',
-        'paymentVerification'
+        'paymentVerification',
+        'studentFees'
     ])->firstOrFail();
 
     $grades = $studentInfo->grades;
+    $studentFees = $studentInfo->studentFees;
 
     $mappedGrades = $grades->map(function ($grade) {
         return [
@@ -187,12 +184,45 @@ class GeneralController extends Controller
         ? round($grades->pluck('grade')->avg(), 2)
         : null;
 
+
+    $paymentStatus = $this->calculatePaymentStatus($studentFees);
+
     return Inertia::render('Dashboard/Student/Evaluation', [
         'student' => $studentInfo,
         'grades' => $mappedGrades,
         'averageGrade' => $averageGrade,
-        'department' => $studentInfo->department, 
+        'department' => $studentInfo->department,
+        'paymentStatus' => $paymentStatus, 
     ]);
+}
+
+protected function calculatePaymentStatus($studentFees)
+{
+    if ($studentFees->isEmpty()) {
+        return 'no fees recorded';
+    }
+
+    $allPaid = true;
+    $anyPartial = false;
+
+    foreach ($studentFees as $fee) {
+        if ($fee->amount_paid < $fee->total_amount) {
+            $allPaid = false;
+        }
+        if ($fee->amount_paid > 0 && $fee->amount_paid < $fee->total_amount) {
+            $anyPartial = true;
+        }
+    }
+
+    if ($allPaid) {
+        return 'fully paid';
+    }
+
+    if ($anyPartial) {
+        return 'partially paid';
+    }
+
+    return 'unpaid';
 }
 
     

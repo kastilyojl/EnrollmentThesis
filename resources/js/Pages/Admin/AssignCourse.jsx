@@ -24,6 +24,7 @@ import FilterDropdown from "@/components/FilterDropdown";
 import useDebouncedSearch from "@/components/utils/useDebounceSearch";
 import RowPerPage from "@/components/RowPerPage";
 import Pagination from "@/components/Pagination";
+import NoData from "@/components/no-data";
 
 export default function AssignCourse({ student = [], subjects = [], filters }) {
     // Student data processing
@@ -92,7 +93,7 @@ export default function AssignCourse({ student = [], subjects = [], filters }) {
 
         post(route("admin.course-section.add"), payload, {
             onSuccess: () => {
-                toast("Courses assigned successfully", {
+                toast.success("Courses assigned successfully", {
                     description: (
                         <span className="text-gray-900">
                             {getFormattedDateTime()}
@@ -338,65 +339,78 @@ export default function AssignCourse({ student = [], subjects = [], filters }) {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {studentData.map((student) => (
-                            <TableRow key={student.id}>
-                                <TableCell className="text-center">
-                                    {student.first_name} {student.middle_name}{" "}
-                                    {student.last_name}
-                                </TableCell>
-                                <TableCell className="text-center">
-                                    {student.program}
-                                </TableCell>
-                                <TableCell className="text-center">
-                                    {student.year_level}
-                                </TableCell>
-                                <TableCell className="text-center">
-                                    {student.semester}
-                                </TableCell>
-                                <TableCell className="text-center">
-                                    {student.status === "approved" ? (
-                                        <BadgeSuccess>
-                                            {student.status}
-                                        </BadgeSuccess>
-                                    ) : (
-                                        <BadgeWarning>
-                                            {student.status}
-                                        </BadgeWarning>
-                                    )}
-                                </TableCell>
-                                <TableCell className="text-center">
-                                    {student.doc_status === "approved" ? (
-                                        <BadgeSuccess>
-                                            {student.doc_status}
-                                        </BadgeSuccess>
-                                    ) : (
-                                        <BadgeWarning>
-                                            {student.doc_status}
-                                        </BadgeWarning>
-                                    )}
-                                </TableCell>
-                                <TableCell className="text-center">
-                                    {student.payment_status === "approved" ? (
-                                        <BadgeSuccess>
-                                            {student.payment_status}
-                                        </BadgeSuccess>
-                                    ) : (
-                                        <BadgeWarning>
-                                            {student.payment_status}
-                                        </BadgeWarning>
-                                    )}
-                                </TableCell>
-                                <TableCell className="text-center">
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={() => handleEdit(student)}
-                                    >
-                                        <Edit className="h-4 w-4" />
-                                    </Button>
+                        {studentData.length > 0 ? (
+                            studentData.map((student) => (
+                                <TableRow key={student.id}>
+                                    <TableCell className="text-center">
+                                        {student.first_name}{" "}
+                                        {student.middle_name}{" "}
+                                        {student.last_name}
+                                    </TableCell>
+                                    <TableCell className="text-center">
+                                        {student.program}
+                                    </TableCell>
+                                    <TableCell className="text-center">
+                                        {student.year_level}
+                                    </TableCell>
+                                    <TableCell className="text-center">
+                                        {student.semester}
+                                    </TableCell>
+                                    <TableCell className="text-center">
+                                        {student.status === "approved" ? (
+                                            <BadgeSuccess>
+                                                {student.status}
+                                            </BadgeSuccess>
+                                        ) : (
+                                            <BadgeWarning>
+                                                {student.status}
+                                            </BadgeWarning>
+                                        )}
+                                    </TableCell>
+                                    <TableCell className="text-center">
+                                        {student.doc_status === "approved" ? (
+                                            <BadgeSuccess>
+                                                {student.doc_status}
+                                            </BadgeSuccess>
+                                        ) : (
+                                            <BadgeWarning>
+                                                {student.doc_status}
+                                            </BadgeWarning>
+                                        )}
+                                    </TableCell>
+                                    <TableCell className="text-center">
+                                        {student.payment_status ===
+                                        "approved" ? (
+                                            <BadgeSuccess>
+                                                {student.payment_status}
+                                            </BadgeSuccess>
+                                        ) : (
+                                            <BadgeWarning>
+                                                {student.payment_status}
+                                            </BadgeWarning>
+                                        )}
+                                    </TableCell>
+                                    <TableCell className="text-center">
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() => handleEdit(student)}
+                                        >
+                                            <Edit className="h-4 w-4" />
+                                        </Button>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell
+                                    colSpan={8}
+                                    className="text-center py-4 pt-20"
+                                >
+                                    <NoData />
                                 </TableCell>
                             </TableRow>
-                        ))}
+                        )}
                     </TableBody>
                 </Table>
             </div>
