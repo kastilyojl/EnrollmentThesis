@@ -254,4 +254,6 @@ public function submittedGradeProfessor()
 
         return redirect()->back()->with('success', 'Grade edit request processed successfully.');
     }
+
+   
 }

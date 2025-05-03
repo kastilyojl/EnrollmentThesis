@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Academic_Year;
 use App\Models\College_Billing;
 use App\Models\DisplaySetting;
+use App\Models\Evaluation;
 use App\Models\Other_Billing;
 use App\Models\Schedule;
 use App\Models\Section;
@@ -71,9 +72,33 @@ class GeneralController extends Controller
         ]);
     }
 
-    public function enrollment() {
-        return Inertia::render('Dashboard/Student/Enrollment');
+    public function enrollment()
+    {
+        $user = Auth::user();
+
+        $student = Student_Info::where('users_id', $user->id)
+            ->latest()
+            ->first();
+
+        $displaySetting = DisplaySetting::first();
+
+        $enrollmentOpen = false;
+
+        if ($displaySetting && $displaySetting->enrollment_sidebar == 1 && $student) {
+            $evaluationCleared = Evaluation::where('student_info_id', $student->student_id)
+                ->where('semester', $student->semester)
+                ->where('year_level', $student->year_level)
+                ->where('clearance', 'Cleared')
+                ->exists();
+
+            $enrollmentOpen = $evaluationCleared;
+        }
+
+        return Inertia::render('Dashboard/Student/Enrollment', [
+            'enrollmentOpen' => $enrollmentOpen,
+        ]);
     }
+
 
     public function payment(Request $request)
     {
@@ -184,15 +209,21 @@ class GeneralController extends Controller
         ? round($grades->pluck('grade')->avg(), 2)
         : null;
 
-
     $paymentStatus = $this->calculatePaymentStatus($studentFees);
+
+    
+    $gradeSidebar = DisplaySetting::first()->grade_sidebar ?? false;
 
     return Inertia::render('Dashboard/Student/Evaluation', [
         'student' => $studentInfo,
         'grades' => $mappedGrades,
         'averageGrade' => $averageGrade,
         'department' => $studentInfo->department,
-        'paymentStatus' => $paymentStatus, 
+        'paymentStatus' => $paymentStatus,
+        'grade_sidebar' => $gradeSidebar, 
+        'semester' => $studentInfo->semester,
+        'year_level' => $studentInfo->year_level,
+        'clearanceStatus' => $studentInfo->clearance_status ?? 'Not Cleared', 
     ]);
 }
 

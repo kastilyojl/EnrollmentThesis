@@ -225,23 +225,28 @@ export default function ApplicationForm({ program = [], academic_year = [] }) {
                                     className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-1 focus:-outline-offset-1 focus:outline-indigo-600 sm:text-sm/6"
                                 >
                                     <option hidden>Select</option>
-                                    {academic_year.map((acad_year, index) => {
-                                        const schoolYear = `${format(
-                                            new Date(acad_year.start),
-                                            "yyyy"
-                                        )}-${format(
-                                            new Date(acad_year.end),
-                                            "yyyy"
-                                        )}`;
-                                        return (
-                                            <option
-                                                key={index}
-                                                value={schoolYear}
-                                            >
-                                                {schoolYear}
-                                            </option>
-                                        );
-                                    })}
+                                    {academic_year
+                                        .filter(
+                                            (acad_year) =>
+                                                acad_year.status === "open"
+                                        )
+                                        .map((acad_year, index) => {
+                                            const schoolYear = `${format(
+                                                new Date(acad_year.start),
+                                                "yyyy"
+                                            )}-${format(
+                                                new Date(acad_year.end),
+                                                "yyyy"
+                                            )}`;
+                                            return (
+                                                <option
+                                                    key={index}
+                                                    value={schoolYear}
+                                                >
+                                                    {schoolYear}
+                                                </option>
+                                            );
+                                        })}
                                 </select>
 
                                 {errors.school_year && !data.school_year && (

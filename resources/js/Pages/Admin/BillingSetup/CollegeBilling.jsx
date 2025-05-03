@@ -30,8 +30,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 
-import { Textarea } from "@/components/ui/textarea";
-import { Download, Edit, MoreHorizontal, Trash } from "lucide-react";
+import { Edit, MoreHorizontal, Trash } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -40,7 +39,7 @@ import { toast } from "sonner";
 import NoData from "@/components/no-data";
 import { Separator } from "@/components/ui/separator";
 
-export default function CollegeBilling({ college_fee = [] }) {
+export default function CollegeBilling({ college_fee = [], program = [] }) {
     const [itemId, setItemId] = useState(null);
     const [editProgram, setProgramEdit] = useState(false);
     const [editUnit, setUnitEdit] = useState(false);
@@ -180,11 +179,6 @@ export default function CollegeBilling({ college_fee = [] }) {
                                                     </DropdownMenuTrigger>
                                                     <DropdownMenuContent>
                                                         <DropdownMenuItem
-                                                            // onClick={() =>
-                                                            //     handleProgramEdit(
-                                                            //         college_fee
-                                                            //     )
-                                                            // }
                                                             onClick={() => {
                                                                 document.activeElement?.blur();
                                                                 setTimeout(
@@ -199,16 +193,8 @@ export default function CollegeBilling({ college_fee = [] }) {
                                                             <Edit />
                                                             Edit
                                                         </DropdownMenuItem>
-                                                        {/* <DropdownMenuItem>
-                                                            <Download />
-                                                            Download
-                                                        </DropdownMenuItem> */}
+
                                                         <DropdownMenuItem
-                                                            // onClick={() =>
-                                                            //     handleDel(
-                                                            //         college_fee
-                                                            //     )
-                                                            // }
                                                             onClick={() => {
                                                                 document.activeElement?.blur();
                                                                 setTimeout(
@@ -350,11 +336,6 @@ export default function CollegeBilling({ college_fee = [] }) {
                                                     </DropdownMenuTrigger>
                                                     <DropdownMenuContent>
                                                         <DropdownMenuItem
-                                                            // onClick={() =>
-                                                            //     handleUnitEdit(
-                                                            //         college_fee
-                                                            //     )
-                                                            // }
                                                             onClick={() => {
                                                                 document.activeElement?.blur();
                                                                 setTimeout(
@@ -369,16 +350,8 @@ export default function CollegeBilling({ college_fee = [] }) {
                                                             <Edit />
                                                             Edit
                                                         </DropdownMenuItem>
-                                                        <DropdownMenuItem>
-                                                            <Download />
-                                                            Download
-                                                        </DropdownMenuItem>
+
                                                         <DropdownMenuItem
-                                                            // onClick={() =>
-                                                            //     handleDel(
-                                                            //         college_fee
-                                                            //     )
-                                                            // }
                                                             onClick={() => {
                                                                 document.activeElement?.blur();
                                                                 setTimeout(
@@ -507,19 +480,27 @@ export default function CollegeBilling({ college_fee = [] }) {
                                                 setData("program_code", value)
                                             }
                                         >
-                                            <SelectTrigger>
+                                            <SelectTrigger className="text-black">
                                                 <SelectValue placeholder="Select" />
                                             </SelectTrigger>
                                             <SelectContent>
                                                 <SelectItem value="general">
                                                     General
                                                 </SelectItem>
-                                                <SelectItem value="STEM">
-                                                    STEM
-                                                </SelectItem>
-                                                <SelectItem value="ABM">
-                                                    ABM
-                                                </SelectItem>
+                                                {program
+                                                    .filter(
+                                                        (program) =>
+                                                            program.department ===
+                                                            "College"
+                                                    )
+                                                    .map((program, index) => (
+                                                        <SelectItem
+                                                            key={index}
+                                                            value={program.code}
+                                                        >
+                                                            {program.name}
+                                                        </SelectItem>
+                                                    ))}
                                             </SelectContent>
                                         </Select>
                                     </div>
@@ -535,15 +516,21 @@ export default function CollegeBilling({ college_fee = [] }) {
                                                 setData("year_level", value)
                                             }
                                         >
-                                            <SelectTrigger>
+                                            <SelectTrigger className="text-black">
                                                 <SelectValue placeholder="Select" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="grade 11">
-                                                    Grade 11
+                                                <SelectItem value="1st Year">
+                                                    1st Year
                                                 </SelectItem>
-                                                <SelectItem value="grade 12">
-                                                    Grade 12
+                                                <SelectItem value="2nd Year">
+                                                    2nd Year
+                                                </SelectItem>
+                                                <SelectItem value="3rd Year">
+                                                    3rd Year
+                                                </SelectItem>
+                                                <SelectItem value="4th Year">
+                                                    4th Year
                                                 </SelectItem>
                                             </SelectContent>
                                         </Select>
@@ -560,7 +547,7 @@ export default function CollegeBilling({ college_fee = [] }) {
                                                 setData("payment_type", value)
                                             }
                                         >
-                                            <SelectTrigger>
+                                            <SelectTrigger className="text-black">
                                                 <SelectValue placeholder="Select" />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -692,16 +679,24 @@ export default function CollegeBilling({ college_fee = [] }) {
                                                 setData("program_code", value)
                                             }
                                         >
-                                            <SelectTrigger>
+                                            <SelectTrigger className="text-black">
                                                 <SelectValue placeholder="Select" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="stem">
-                                                    Computer Science
-                                                </SelectItem>
-                                                <SelectItem value="abm">
-                                                    Information System
-                                                </SelectItem>
+                                                {program
+                                                    .filter(
+                                                        (program) =>
+                                                            program.department ===
+                                                            "College"
+                                                    )
+                                                    .map((program, index) => (
+                                                        <SelectItem
+                                                            key={index}
+                                                            value={program.code}
+                                                        >
+                                                            {program.name}
+                                                        </SelectItem>
+                                                    ))}
                                             </SelectContent>
                                         </Select>
                                     </div>

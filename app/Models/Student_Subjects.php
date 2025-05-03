@@ -13,7 +13,8 @@ class Student_Subjects extends Model
     protected $fillable = [
         'student_info_id',
         'subject_code',
-        'status'
+        'status',
+        'remarks'
     ];
 
     public function studentInfo()

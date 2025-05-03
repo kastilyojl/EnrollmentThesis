@@ -81,7 +81,7 @@ return new class extends Migration
                     ['title' => 'Course Selection', 'route' => 'admin.course.selection'],
                     ['title' => 'Evaluation', 'route' => 'admin.evaluation'],
                     ['title' => 'Enrollment Confirmation', 'route' => 'enrollment.final.step'],
-                    ['title' => 'Enrolled Student', 'route' => '']
+                    ['title' => 'Enrolled Student', 'route' => 'enrolled.student']
                 ],
             ],
             [

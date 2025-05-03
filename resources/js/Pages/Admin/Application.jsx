@@ -1338,7 +1338,7 @@ export default function Application({
                                                 setData("status", value)
                                             }
                                         >
-                                            <SelectTrigger>
+                                            <SelectTrigger className="text-black">
                                                 <SelectValue placeholder="Select..." />
                                             </SelectTrigger>
                                             <SelectContent className="bg-customBlue">

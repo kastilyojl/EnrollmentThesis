@@ -358,10 +358,13 @@ export default function BillingSetup({
                         <OtherBilling other_fee={other_fee} />
                     </TabsContent>
                     <TabsContent value="shs">
-                        <SHSBilling shs_fee={shs_fee} />
+                        <SHSBilling shs_fee={shs_fee} program={program} />
                     </TabsContent>
                     <TabsContent value="college">
-                        <CollegeBilling college_fee={college_fee} />
+                        <CollegeBilling
+                            college_fee={college_fee}
+                            program={program}
+                        />
                     </TabsContent>
                     <TabsContent value="others">
                         <OtherBilling other_fee={other_fee} />

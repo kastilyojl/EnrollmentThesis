@@ -87,7 +87,6 @@ export default function EnrollmentConfirmation({
         religion: students.personal_info.religion,
     }));
 
-    // Filtered data with only the required columns
     const tableData = studentData.map((student) => ({
         id: student.id,
         name:
@@ -261,7 +260,7 @@ export default function EnrollmentConfirmation({
                                                 setData("section_id", value)
                                             }
                                         >
-                                            <SelectTrigger>
+                                            <SelectTrigger className="text-black">
                                                 <SelectValue placeholder="Select..." />
                                             </SelectTrigger>
                                             <SelectContent className="bg-customBlue">

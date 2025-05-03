@@ -2,6 +2,7 @@ import Checkbox from "@/components/Checkbox";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { getFormattedDateTime } from "@/components/utils/formatDateTime";
 import { useForm } from "@inertiajs/react";
 import React, { useState } from "react";
 import { toast } from "sonner";
@@ -56,14 +57,26 @@ export default function Schedule({ subject, setSched, section, initialData }) {
         if (initialData) {
             post(route("admin.schedule.update", initialData.id), {
                 onSuccess: () => {
-                    toast("Schedule has been updated");
+                    toast("Schedule has been updated", {
+                        description: (
+                            <span className="text-gray-900">
+                                {getFormattedDateTime()}
+                            </span>
+                        ),
+                    });
                     setSched(false);
                 },
             });
         } else {
             post(route("admin.schedule.store"), {
                 onSuccess: () => {
-                    toast("Schedule has been created");
+                    toast("Schedule has been created", {
+                        description: (
+                            <span className="text-gray-900">
+                                {getFormattedDateTime()}
+                            </span>
+                        ),
+                    });
                     setSched(false);
                 },
             });

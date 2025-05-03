@@ -37,7 +37,7 @@ import { toast } from "sonner";
 import NoData from "@/components/no-data";
 import { Separator } from "@/components/ui/separator";
 
-export default function SHSBilling({ shs_fee = [] }) {
+export default function SHSBilling({ shs_fee = [], program = [] }) {
     const [itemId, setItemId] = useState(null);
     const [edit, setEdit] = useState(false);
     const [del, setDel] = useState(false);
@@ -130,9 +130,6 @@ export default function SHSBilling({ shs_fee = [] }) {
                                         </DropdownMenuTrigger>
                                         <DropdownMenuContent>
                                             <DropdownMenuItem
-                                                // onClick={() =>
-                                                //     handleEdit(shs_fee)
-                                                // }
                                                 onClick={() => {
                                                     document.activeElement?.blur();
                                                     setTimeout(
@@ -145,14 +142,8 @@ export default function SHSBilling({ shs_fee = [] }) {
                                                 <Edit />
                                                 Edit
                                             </DropdownMenuItem>
-                                            <DropdownMenuItem>
-                                                <Download />
-                                                Download
-                                            </DropdownMenuItem>
+
                                             <DropdownMenuItem
-                                                // onClick={() =>
-                                                //     handleDel(shs_fee)
-                                                // }
                                                 onClick={() => {
                                                     document.activeElement?.blur();
                                                     setTimeout(
@@ -279,19 +270,27 @@ export default function SHSBilling({ shs_fee = [] }) {
                                                 setData("program_code", value)
                                             }
                                         >
-                                            <SelectTrigger>
+                                            <SelectTrigger className="text-black">
                                                 <SelectValue placeholder="Select" />
                                             </SelectTrigger>
                                             <SelectContent>
                                                 <SelectItem value="general">
                                                     General
                                                 </SelectItem>
-                                                <SelectItem value="STEM">
-                                                    STEM
-                                                </SelectItem>
-                                                <SelectItem value="ABM">
-                                                    ABM
-                                                </SelectItem>
+                                                {program
+                                                    .filter(
+                                                        (program) =>
+                                                            program.department ===
+                                                            "SHS"
+                                                    )
+                                                    .map((program, index) => (
+                                                        <SelectItem
+                                                            key={index}
+                                                            value={program.code}
+                                                        >
+                                                            {program.name}
+                                                        </SelectItem>
+                                                    ))}
                                             </SelectContent>
                                         </Select>
                                     </div>
@@ -307,7 +306,7 @@ export default function SHSBilling({ shs_fee = [] }) {
                                                 setData("year_level", value)
                                             }
                                         >
-                                            <SelectTrigger>
+                                            <SelectTrigger className="text-black">
                                                 <SelectValue placeholder="Select" />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -332,7 +331,7 @@ export default function SHSBilling({ shs_fee = [] }) {
                                                 setData("payment_type", value)
                                             }
                                         >
-                                            <SelectTrigger>
+                                            <SelectTrigger className="text-black">
                                                 <SelectValue placeholder="Select" />
                                             </SelectTrigger>
                                             <SelectContent>

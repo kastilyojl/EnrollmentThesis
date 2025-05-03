@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('semester');
             $table->string('year_level', 50);
             $table->string('subject');
-            $table->integer('grade');
+            $table->double('grade');
             $table->string('status');
             $table->foreign('student_info_id')->references('student_id')->on('student_info')->onDelete('cascade')->onUpdate('cascade');
             $table->softDeletes();

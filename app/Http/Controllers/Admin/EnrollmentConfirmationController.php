@@ -76,7 +76,7 @@ class EnrollmentConfirmationController extends Controller
             Section_Student::create([
                 'section_id' => $request->section_id,
                 'student_info_id' => $request->student_info_id,
-                'status' => $request->status,
+                'status' => "enrolled",
             ]);
 
             $format = Users_IDFormat::where('id_format', $request->student_info_id)->first();

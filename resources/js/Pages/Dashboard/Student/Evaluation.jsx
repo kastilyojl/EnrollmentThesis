@@ -12,11 +12,24 @@ export default function Evaluation() {
         paymentStatus = "unpaid",
         semester,
         year_level,
-        clearanceStatus = "Not Cleared",
+        grade_sidebar,
     } = usePage().props;
 
+    const gradesStatus =
+        grade_sidebar && grades?.length ? "available" : "unavailable";
+
     const documentsStatus = student.documents?.status || "pending";
-    const gradesStatus = grades?.length ? "available" : "unavailable";
+
+    const gradeRemark = getGradeRemark();
+
+    const clearanceStatus =
+        (documentsStatus.toLowerCase() === "approved" &&
+            paymentStatus.toLowerCase() === "fully paid") ||
+        (paymentStatus.toLowerCase() === "paid" &&
+            (gradeRemark === "Passed (College)" ||
+                gradeRemark === "Passed (SHS)"))
+            ? "Cleared"
+            : "Not Cleared";
 
     const saveEvaluation = () => {
         router.post("/evaluation", {
@@ -24,7 +37,7 @@ export default function Evaluation() {
             semester: semester,
             year_level: year_level,
             clearance: clearanceStatus,
-            grades_eval: gradesStatus,
+            grades_eval: gradeRemark,
             documents: documentsStatus,
             payment: paymentStatus,
         });
@@ -32,9 +45,9 @@ export default function Evaluation() {
 
     useEffect(() => {
         saveEvaluation();
-    }, [documentsStatus, gradesStatus, paymentStatus, clearanceStatus]);
+    }, [documentsStatus, gradesStatus, paymentStatus, gradeRemark]);
 
-    const getGradeRemark = () => {
+    function getGradeRemark() {
         if (averageGrade === null) return "N/A";
 
         if (department === "College") {
@@ -46,7 +59,7 @@ export default function Evaluation() {
         }
 
         return "Unknown Department";
-    };
+    }
 
     const getPaymentBadge = (status) => {
         if (!status) return <Badge className="bg-gray-500">Loading...</Badge>;
@@ -62,6 +75,19 @@ export default function Evaluation() {
                 return <Badge className="bg-red-500">Unpaid</Badge>;
             case "no fees recorded":
                 return <Badge className="bg-gray-500">No Fees Recorded</Badge>;
+            default:
+                return <Badge className="bg-gray-500">{status}</Badge>;
+        }
+    };
+
+    const getClearanceBadge = (status) => {
+        const statusLower = String(status).toLowerCase();
+
+        switch (statusLower) {
+            case "cleared":
+                return <Badge className="bg-green-500">Cleared</Badge>;
+            case "not cleared":
+                return <Badge className="bg-red-500">Not Cleared</Badge>;
             default:
                 return <Badge className="bg-gray-500">{status}</Badge>;
         }
@@ -116,17 +142,19 @@ export default function Evaluation() {
                         </li>
                         <li className="flex items-center gap-2">
                             <strong>Clearance:</strong>
-                            {clearanceStatus}
+                            {getClearanceBadge(clearanceStatus)}
                         </li>
-                        <li className="flex items-center gap-2">
-                            <strong>Average Grade:</strong>
-                            {averageGrade ?? "N/A"}
-                            {averageGrade !== null && (
-                                <span className="ml-2 text-sm text-gray-500">
-                                    ({getGradeRemark()})
-                                </span>
-                            )}
-                        </li>
+                        {gradesStatus === "available" && (
+                            <li className="flex items-center gap-2">
+                                <strong>Average Grade:</strong>
+                                {averageGrade ?? "N/A"}
+                                {averageGrade !== null && (
+                                    <span className="ml-2 text-sm text-gray-500">
+                                        ({gradeRemark})
+                                    </span>
+                                )}
+                            </li>
+                        )}
                         <li className="hidden">
                             <strong>Department:</strong> {department}
                         </li>
@@ -140,7 +168,7 @@ export default function Evaluation() {
                         </p>
                         <ul className="list-disc pl-5 mt-1 space-y-1">
                             <li>Approved documents status</li>
-                            <li>Available grades</li>
+                            <li>Passed grades</li>
                             <li>Fully paid payment status</li>
                         </ul>
                     </div>

@@ -135,6 +135,7 @@ Route::get('help', function() {
 })->name('admin.help');
 Route::get('admin/evaluation', [EvaluationController::class, 'indexAdmin'])->name('admin.evaluation');
 Route::post('/evaluation', [EvaluationController::class, 'store']);
+Route::get('/enrolled-student', [EnrollmentController::class, 'studentEnrolled'])->name('enrolled.student');
 
 Route::prefix('/setting')->group(function () {
     Route::get('/', [GeneralSettingController::class, 'index'])->name('admin.setting.general');

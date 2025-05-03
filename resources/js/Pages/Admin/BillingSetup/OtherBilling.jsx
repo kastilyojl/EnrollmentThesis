@@ -132,9 +132,6 @@ export default function OtherBilling({ other_fee = [] }) {
                                         </DropdownMenuTrigger>
                                         <DropdownMenuContent>
                                             <DropdownMenuItem
-                                                // onClick={() =>
-                                                //     handleEdit(other_fee)
-                                                // }
                                                 onClick={() => {
                                                     document.activeElement?.blur();
                                                     setTimeout(
@@ -149,10 +146,7 @@ export default function OtherBilling({ other_fee = [] }) {
                                                 <Edit />
                                                 Edit
                                             </DropdownMenuItem>
-                                            {/* <DropdownMenuItem>
-                                                <Download />
-                                                Download
-                                            </DropdownMenuItem> */}
+
                                             <DropdownMenuItem
                                                 onClick={() => {
                                                     document.activeElement?.blur();
@@ -164,9 +158,6 @@ export default function OtherBilling({ other_fee = [] }) {
                                                         0
                                                     );
                                                 }}
-                                                // onClick={() =>
-                                                //     handleDel(other_fee)
-                                                // }
                                             >
                                                 <Trash />
                                                 Delete
@@ -250,7 +241,7 @@ export default function OtherBilling({ other_fee = [] }) {
                                             setData("payment_type", value)
                                         }
                                     >
-                                        <SelectTrigger>
+                                        <SelectTrigger className="text-black">
                                             <SelectValue placeholder="Select" />
                                         </SelectTrigger>
                                         <SelectContent>
