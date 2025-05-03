@@ -127,6 +127,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard/student/evaluation', [GeneralController::class, 'evaluation'])->name('student.evaluation');
     Route::get('/dashboard/student/payment', [GeneralController::class, 'paymentForm'])->name('student.payment.form');
 
+    Route::post('/student/enroll-next-term', [EnrollmentController::class, 'enrollNextTerm'])->name('enroll.next.term');
+
     // Professor
 
     //Admin
@@ -248,7 +250,7 @@ Route::prefix('grades')->group(function () {
     Route::get('/change-admin-grade', [GradesController::class, 'changeGradeAdmin'])->name('index.change.grade.admin');
     Route::get('/change-prof-grade', [GradesController::class, 'changeGradeProf'])->name('index.change.grade.professor');
     Route::post('/display-settings/grade-sidebar', [DisplayController::class, 'toggleGradeSidebar'])->name('toggle.grade.sidebar');
-
+    Route::delete('/grades/{id}', [GradesController::class, 'deleteGrades'])->name('grades.delete');
 
     // Route::get('/csv', [CSVController::class, 'index'])->name('index.csv');
     // Route::post('/upload-csv', [CSVController::class, 'upload'])->name('upload.csv');

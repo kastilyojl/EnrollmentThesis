@@ -72,32 +72,61 @@ class GeneralController extends Controller
         ]);
     }
 
+    // public function enrollment()
+    // {
+    //     $user = Auth::user();
+
+    //     $student = Student_Info::where('users_id', $user->id)
+    //         ->latest()
+    //         ->first();
+
+    //     $displaySetting = DisplaySetting::first();
+
+    //     $enrollmentOpen = false;
+
+    //     if ($displaySetting && $displaySetting->enrollment_sidebar == 1 && $student) {
+    //         $evaluationCleared = Evaluation::where('student_info_id', $student->student_id)
+    //             ->where('semester', $student->semester)
+    //             ->where('year_level', $student->year_level)
+    //             ->where('clearance', 'Cleared')
+    //             ->exists();
+
+    //         $enrollmentOpen = $evaluationCleared;
+    //     }
+
+    //     return Inertia::render('Dashboard/Student/Enrollment', [
+    //         'enrollmentOpen' => $enrollmentOpen,
+    //     ]);
+    // }
+
     public function enrollment()
     {
         $user = Auth::user();
 
-        $student = Student_Info::where('users_id', $user->id)
+        $student = Student_Info::with('evaluation')
+            ->where('users_id', $user->id)
             ->latest()
             ->first();
 
         $displaySetting = DisplaySetting::first();
-
         $enrollmentOpen = false;
 
         if ($displaySetting && $displaySetting->enrollment_sidebar == 1 && $student) {
-            $evaluationCleared = Evaluation::where('student_info_id', $student->student_id)
+            $hasClearedEvaluation = $student->evaluation
                 ->where('semester', $student->semester)
                 ->where('year_level', $student->year_level)
                 ->where('clearance', 'Cleared')
-                ->exists();
+                ->isNotEmpty();
 
-            $enrollmentOpen = $evaluationCleared;
+            $enrollmentOpen = $hasClearedEvaluation;
         }
 
         return Inertia::render('Dashboard/Student/Enrollment', [
             'enrollmentOpen' => $enrollmentOpen,
+            'status' => $student->status,
         ]);
     }
+
 
 
     public function payment(Request $request)

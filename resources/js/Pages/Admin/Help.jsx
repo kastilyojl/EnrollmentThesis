@@ -4,10 +4,11 @@ import React from "react";
 export default function Help() {
     return (
         <Layout>
+            {" "}
             <div className="flex items-end justify-between mb-7">
-                <h1 className="text-2xl font-bold">Help</h1>
+                {" "}
+                <h1 className="text-2xl font-bold">Help</h1>{" "}
             </div>
-
             <div className="flow-root p-4 mt-4 shadow rounded-md">
                 <dl className="-my-3 divide-y divide-gray-200 text-sm">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 py-3">
@@ -73,6 +74,10 @@ export default function Help() {
                                             Finalize student enrollment (section
                                             & ID).
                                         </li>
+                                        <li>
+                                            <strong>Enrolled Student:</strong>{" "}
+                                            Student enrolled record.
+                                        </li>
                                     </ul>
                                 </div>
 
@@ -115,8 +120,13 @@ export default function Help() {
                                             Select applicable fees per student.
                                         </li>
                                         <li>
-                                            <strong>Payment:</strong> Record and
-                                            review student payments.
+                                            <strong>Payment:</strong>
+                                            Review student payments.
+                                        </li>
+                                        <li>
+                                            <strong>Payment List:</strong>
+                                            Record and review student payments
+                                            status.
                                         </li>
                                     </ul>
                                 </div>
@@ -290,7 +300,7 @@ export default function Help() {
                                     to:
                                     <ul className="list-disc list-inside ml-5 mt-1 space-y-1">
                                         <li>
-                                            Finalize the student’s enrollment
+                                            Finalize the student's enrollment
                                             record.
                                         </li>
                                         <li>
@@ -308,6 +318,110 @@ export default function Help() {
                                     </ul>
                                 </li>
                             </ol>
+                        </div>
+                    </div>
+
+                    {/* Evaluation and Enrollment Process */}
+                    <div className="py-3">
+                        <dt className="font-medium text-gray-900 mb-2">
+                            Evaluation and Enrollment Process for Students
+                        </dt>
+                        <div className="text-gray-700">
+                            <p className="mb-4">
+                                For students to enroll for the next term, they
+                                must complete the following process:
+                            </p>
+                            <ol className="list-decimal list-inside space-y-4">
+                                <li>
+                                    <strong>Clearance Status:</strong>
+                                    <ul className="list-disc list-inside ml-5 mt-1 space-y-1">
+                                        <li>
+                                            Students must have a "Cleared"
+                                            status before enrollment can be
+                                            opened to them
+                                        </li>
+                                        <li>
+                                            This status is verified through the
+                                            Evaluation system
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <strong>Enrollment Sidebar Access:</strong>
+                                    <ul className="list-disc list-inside ml-5 mt-1 space-y-1">
+                                        <li>
+                                            Once cleared, the enrollment option
+                                            will appear in the student's sidebar
+                                        </li>
+                                        <li>
+                                            If the sidebar is open (accessible),
+                                            students can click the enrollment
+                                            button
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <strong>Admission Process:</strong>
+                                    <ul className="list-disc list-inside ml-5 mt-1 space-y-1">
+                                        <li>
+                                            Clicking the enrollment button will
+                                            automatically process their
+                                            admission for the next term
+                                        </li>
+                                        <li>
+                                            The system will guide them through
+                                            the required steps
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <strong>Payment:</strong>
+                                    <ul className="list-disc list-inside ml-5 mt-1 space-y-1">
+                                        <li>
+                                            Students must pay the required
+                                            amount for the next term
+                                        </li>
+                                        <li>
+                                            Payment confirmation is required to
+                                            proceed
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <strong>Course Assignment:</strong>
+                                    <ul className="list-disc list-inside ml-5 mt-1 space-y-1">
+                                        <li>
+                                            The system will assign the
+                                            appropriate courses based on the
+                                            student's program and progress
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <strong>Fee Assignment:</strong>
+                                    <ul className="list-disc list-inside ml-5 mt-1 space-y-1">
+                                        <li>
+                                            Applicable fees will be assigned
+                                            based on the selected courses
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <strong>Subject Assignment:</strong>
+                                    <ul className="list-disc list-inside ml-5 mt-1 space-y-1">
+                                        <li>
+                                            Finally, specific subjects will be
+                                            assigned to complete the enrollment
+                                            process
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ol>
+                            <p className="mt-4">
+                                Note: All steps must be completed in sequence.
+                                Students cannot proceed to the next step until
+                                the current one is completed.
+                            </p>
                         </div>
                     </div>
                 </dl>

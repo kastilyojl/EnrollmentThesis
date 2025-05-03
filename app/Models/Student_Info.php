@@ -79,7 +79,7 @@ class Student_Info extends Model
 
     public function evaluation()
     {
-        return $this->hasMany(Student_Info::class, 'student_info_id', 'student_id');
+        return $this->hasMany(Evaluation::class, 'student_info_id', 'student_id');
     }
     
 }

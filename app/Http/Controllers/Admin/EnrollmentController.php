@@ -11,6 +11,7 @@ use App\Models\Section_Student;
 use App\Models\Student_Info;
 use App\Models\Subjects;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class EnrollmentController extends Controller
@@ -67,4 +68,36 @@ class EnrollmentController extends Controller
             'filters' => $request->only(['search', 'filter', 'per_page'])
         ]);
     }
+    
+    public function enrollNextTerm(Request $request)
+    {
+        $user = Auth::user();
+
+        $student = Student_Info::where('users_id', $user->id)->latest()->first();
+
+        if (!$student) return back()->withErrors(['message' => 'Student not found']);
+
+        // Get next academic year
+        $nextAcademicYear = Academic_Year::where('status', 'upcoming')->first();
+
+        // Update year level and semester
+        if ($student->semester === '1st Semester') {
+            $student->semester = '2nd Semester';
+        } else {
+            $student->semester = '1st Semester';
+            $yearLevels = ['Grade 11', 'Grade 12', '1st Year', '2nd Year', '3rd Year', '4th Year'];
+            $currentIndex = array_search($student->year_level, $yearLevels);
+            $student->year_level = $yearLevels[$currentIndex + 1] ?? $student->year_level;
+        }
+
+        if ($nextAcademicYear) {
+            $student->school_year = $nextAcademicYear->start . '-' . $nextAcademicYear->end;
+        }
+
+        $student->status = 'Approved';
+        $student->save();
+
+        return back()->with('success', 'Enrollment application submitted!');
+    }
+    
 }

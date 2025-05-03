@@ -255,5 +255,18 @@ public function submittedGradeProfessor()
         return redirect()->back()->with('success', 'Grade edit request processed successfully.');
     }
 
+    public function deleteGrades($id)
+    {
+        $grade = Grades::find($id);
+
+        if (!$grade) {
+            return response()->json(['message' => 'Grade not found'], 404);
+        }
+
+        $grade->delete();
+
+        return response()->json(['message' => 'Grade deleted successfully'], 200);
+    }
+
    
 }

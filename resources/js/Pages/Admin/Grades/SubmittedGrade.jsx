@@ -1,5 +1,5 @@
 import Layout from "@/components/layout";
-import React from "react";
+import React, { useState } from "react";
 import {
     Table,
     TableBody,
@@ -12,8 +12,36 @@ import SearchFilter from "@/components/SearchFilter";
 import FilterDropdown from "@/components/FilterDropdown";
 import { Button } from "@/components/ui/button";
 import Toggle from "@/components/Toggle";
+import { Trash } from "lucide-react";
+import { router } from "@inertiajs/react";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog";
 
 export default function SubmittedGrade({ grades = [], gradeSidebarEnabled }) {
+    const [del, setDel] = useState(false);
+    const [selectedId, setSelectedId] = useState(null);
+
+    const confirmDelete = (id) => {
+        setSelectedId(id);
+        setDel(true);
+    };
+
+    const handleSubmitDel = () => {
+        if (selectedId) {
+            router.delete(`/grades/${selectedId}`, {
+                onSuccess: () => {
+                    setDel(false);
+                    setSelectedId(null);
+                },
+            });
+        }
+    };
+
     return (
         <Layout>
             <div className="flex items-end justify-between mb-7">
@@ -35,26 +63,29 @@ export default function SubmittedGrade({ grades = [], gradeSidebarEnabled }) {
                 <Table className="w-full table-fixed">
                     <TableHeader>
                         <TableRow>
-                            <TableHead className="w-[14.28%] text-center">
+                            <TableHead className="w-[12.5%] text-center">
                                 Student ID
                             </TableHead>
-                            <TableHead className="w-[14.28%] text-center">
+                            <TableHead className="w-[12.5%] text-center">
                                 Student Name
                             </TableHead>
-                            <TableHead className="w-[14.28%] text-center">
+                            <TableHead className="w-[12.5%] text-center">
                                 Year Level
                             </TableHead>
-                            <TableHead className="w-[14.28%] text-center">
+                            <TableHead className="w-[12.5%] text-center">
                                 Program
                             </TableHead>
-                            <TableHead className="w-[14.28%] text-center">
+                            <TableHead className="w-[12.5%] text-center">
                                 Semester
                             </TableHead>
-                            <TableHead className="w-[14.28%] text-center">
+                            <TableHead className="w-[12.5%] text-center">
                                 Grade
                             </TableHead>
-                            <TableHead className="w-[14.28%] text-center">
+                            <TableHead className="w-[12.5%] text-center">
                                 Status
+                            </TableHead>
+                            <TableHead className="w-[12.5%] text-center">
+                                Action
                             </TableHead>
                         </TableRow>
                     </TableHeader>
@@ -90,11 +121,19 @@ export default function SubmittedGrade({ grades = [], gradeSidebarEnabled }) {
                                     >
                                         {grade.status}
                                     </TableCell>
+                                    <TableCell className="flex justify-center">
+                                        <Trash
+                                            className="text-red-600 cursor-pointer"
+                                            onClick={() =>
+                                                confirmDelete(grade.id)
+                                            }
+                                        />
+                                    </TableCell>
                                 </TableRow>
                             ))
                         ) : (
                             <TableRow>
-                                <TableCell colSpan={7} className="text-center">
+                                <TableCell colSpan={8} className="text-center">
                                     No submitted grades found.
                                 </TableCell>
                             </TableRow>
@@ -102,6 +141,35 @@ export default function SubmittedGrade({ grades = [], gradeSidebarEnabled }) {
                     </TableBody>
                 </Table>
             </div>
+
+            {del && (
+                <Dialog open={del} onOpenChange={setDel}>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Delete Grade</DialogTitle>
+                            <DialogDescription>
+                                <div className="my-3">
+                                    Are you sure you want to delete this grade?
+                                </div>
+                                <div className="flex justify-end gap-2">
+                                    <Button
+                                        variant="outline"
+                                        onClick={handleSubmitDel}
+                                    >
+                                        Yes
+                                    </Button>
+                                    <Button
+                                        className="bg-red-600"
+                                        onClick={() => setDel(false)}
+                                    >
+                                        No
+                                    </Button>
+                                </div>
+                            </DialogDescription>
+                        </DialogHeader>
+                    </DialogContent>
+                </Dialog>
+            )}
         </Layout>
     );
 }
