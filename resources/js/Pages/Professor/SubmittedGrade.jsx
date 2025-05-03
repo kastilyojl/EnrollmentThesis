@@ -85,6 +85,9 @@ export default function SubmittedGrade({ grades = [] }) {
                             <TableHead className="text-center">
                                 Student ID
                             </TableHead>
+                            <TableHead className="text-center">
+                                Subject
+                            </TableHead>
                             <TableHead className="text-center">Name</TableHead>
                             <TableHead className="text-center">
                                 Year Level
@@ -92,6 +95,7 @@ export default function SubmittedGrade({ grades = [] }) {
                             <TableHead className="text-center">
                                 Program
                             </TableHead>
+
                             <TableHead className="text-center">
                                 Semester
                             </TableHead>
@@ -112,6 +116,9 @@ export default function SubmittedGrade({ grades = [] }) {
                             <TableRow key={grade.id}>
                                 <TableCell className="text-center">
                                     {grade.student_id}
+                                </TableCell>
+                                <TableCell className="text-center">
+                                    {grade.subject}
                                 </TableCell>
                                 <TableCell className="text-center">
                                     {grade.student_name}
@@ -196,6 +203,7 @@ export default function SubmittedGrade({ grades = [] }) {
                                         disabled
                                         value={data.current_grade}
                                         readOnly
+                                        className="text-black"
                                     />
                                 </div>
                                 <div>

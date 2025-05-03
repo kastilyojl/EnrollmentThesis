@@ -215,7 +215,7 @@ export default function EnrollmentConfirmation({
     return (
         <Layout>
             <div className="flex items-end justify-between mb-7">
-                <h1 className="text-2xl font-bold">Enrollment</h1>
+                <h1 className="text-2xl font-bold">Enrollment Confirmation</h1>
             </div>
             <div className="flex justify-between items-center gap-2 mb-3">
                 <div className="flex items-center gap-2">

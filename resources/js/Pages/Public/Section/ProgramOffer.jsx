@@ -7,12 +7,12 @@ import "aos/dist/aos.css";
 
 export default function ProgramOffer() {
     useEffect(() => {
-        // Initialize AOS
+        
         AOS.init({
-            duration: 2000, // Animation duration in milliseconds
-            easing: "ease-out-back", // Easing function for animation
-            once: false, // Animation will trigger only once when in view
-            offset: 120, // Trigger animation when the element is 120px into the viewport
+            duration: 2000, 
+            easing: "ease-out-back",
+            once: false,
+            offset: 120, 
         });
     }, []);
     return (
@@ -23,7 +23,7 @@ export default function ProgramOffer() {
                 className="mx-auto max-w-2xl px-6 lg:max-w-7xl lg:px-8"
             >
                 <h2 className="text-center text-lg font-semibold text-indigo-600">
-                    Program Offer
+                    Explore Our Academic Divisions
                 </h2>
                 <p className="mx-auto mt-2 max-w-lg text-center text-2xl lg:text-4xl font-semibold tracking-tight text-balance text-gray-950 sm:text-5xl">
                     Choose your career and be the one you dream of

@@ -30,6 +30,7 @@ export default function Evaluation({ evaluation, filters }) {
             case "fully paid":
             case "cleared":
             case "available":
+            case "passed (college)":
                 return <BadgeSuccess>{status}</BadgeSuccess>;
 
             case "pending":

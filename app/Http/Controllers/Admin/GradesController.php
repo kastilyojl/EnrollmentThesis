@@ -63,44 +63,47 @@ class GradesController extends Controller
     }
     
   
-public function submittedGradeProfessor()
-{
-    $userId = auth()->id();
+    public function submittedGradeProfessor()
+    {
+        $userId = auth()->id();
 
-    $grades = Grades::where('sender_id', $userId)
-                   ->with(['studentInfo', 'studentInfo.personalInfo','gradeEditRequests' => function ($query) use ($userId) {
-                $query->where('requested_by', $userId)->latest();
-            }])
-                   ->get();
+        $grades = Grades::where('sender_id', $userId)
+                    ->with(['studentInfo', 'studentInfo.personalInfo','gradeEditRequests' => function ($query) use ($userId) {
+                    $query->where('requested_by', $userId)->latest();
+                }])
+                    ->get();
 
-    $requestedGradeIds = GradeEditRequest::where('requested_by', $userId)
-                                         ->pluck('grade_id')
-                                         ->toArray();
+        $requestedGradeIds = GradeEditRequest::where('requested_by', $userId)
+                                            ->pluck('grade_id')
+                                            ->toArray();
 
-    $mappedGrades = $grades->map(function ($grade) use ($requestedGradeIds) {
-        $studentInfo = $grade->studentInfo;
-        $personalInfo = $studentInfo ? $studentInfo->personalInfo : null;
+        $mappedGrades = $grades->map(function ($grade) use ($requestedGradeIds) {
+            $studentInfo = $grade->studentInfo;
+            $personalInfo = $studentInfo ? $studentInfo->personalInfo : null;
 
-         $latestEditRequest = $grade->gradeEditRequests->first();
+            $latestEditRequest = $grade->gradeEditRequests && $grade->gradeEditRequests->count()
+            ? $grade->gradeEditRequests->first()
+            : null;
 
-        return [
-            'id' => $grade->id,
-            'student_id' => $grade->student_info_id,
-            'student_name' => $personalInfo ? $personalInfo->first_name . ' ' . $personalInfo->last_name : 'Unknown',
-            'year_level' => $studentInfo ? $studentInfo->year_level : 'N/A',
-            'program' => $studentInfo ? $studentInfo->program : 'N/A',
-            'semester' => $grade->semester,
-            'grade' => $grade->grade,
-            'status' => $grade->status,
-            'has_requested' => in_array($grade->id, $requestedGradeIds),
-            'edit_status' => $latestEditRequest ? $latestEditRequest->status : null, 
-        ];
-    });
+            return [
+                'id' => $grade->id,
+                'student_id' => $grade->student_info_id,
+                'student_name' => $personalInfo ? $personalInfo->first_name . ' ' . $personalInfo->last_name : 'Unknown',
+                'year_level' => $studentInfo ? $studentInfo->year_level : 'N/A',
+                'program' => $studentInfo ? $studentInfo->program : 'N/A',
+                'semester' => $grade->semester,
+                'subject' => $grade->subject,
+                'grade' => $grade->grade,
+                'status' => $grade->status,
+                'has_requested' => in_array($grade->id, $requestedGradeIds),
+                'edit_status' => $latestEditRequest ? $latestEditRequest->status : null, 
+            ];
+        });
 
-    return Inertia::render('Professor/SubmittedGrade', [
-        'grades' => $mappedGrades,
-    ]);
-}
+        return Inertia::render('Professor/SubmittedGrade', [
+            'grades' => $mappedGrades,
+        ]);
+    }
     
     public function submittedGradeAdmin()
     {

@@ -59,6 +59,7 @@ export default function TableData({
                                             className="font-medium w-1/12 text-center"
                                         >
                                             {col === "approved" ||
+                                            col === "Approved" ||
                                             col === "Active" ? (
                                                 <BadgeSuccess>
                                                     {col}
