@@ -398,16 +398,7 @@ export default function Help() {
                                     </ul>
                                 </li>
                                 <li>
-                                    <strong>Fee Assignment:</strong>
-                                    <ul className="list-disc list-inside ml-5 mt-1 space-y-1">
-                                        <li>
-                                            Applicable fees will be assigned
-                                            based on the selected courses
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <strong>Subject Assignment:</strong>
+                                    <strong>Course/Subject Assignment:</strong>
                                     <ul className="list-disc list-inside ml-5 mt-1 space-y-1">
                                         <li>
                                             Finally, specific subjects will be
@@ -416,12 +407,18 @@ export default function Help() {
                                         </li>
                                     </ul>
                                 </li>
+                                <li>
+                                    <strong>Fee Assignment:</strong>
+                                    <ul className="list-disc list-inside ml-5 mt-1 space-y-1">
+                                        <li>
+                                            Applicable fees will be assigned
+                                            based on the selected courses
+                                        </li>
+                                    </ul>
+                                </li>
+                               
                             </ol>
-                            <p className="mt-4">
-                                Note: All steps must be completed in sequence.
-                                Students cannot proceed to the next step until
-                                the current one is completed.
-                            </p>
+                           
                         </div>
                     </div>
                 </dl>

@@ -9,7 +9,9 @@ use App\Models\Grades;
 use App\Models\Student_Info;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class GradesController extends Controller
@@ -259,14 +261,42 @@ public function submittedGradeProfessor()
     {
         $grade = Grades::find($id);
 
-        if (!$grade) {
-            return response()->json(['message' => 'Grade not found'], 404);
-        }
-
         $grade->delete();
-
-        return response()->json(['message' => 'Grade deleted successfully'], 200);
     }
 
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'student_info_id' => 'required|exists:student_info,student_id',
+            'semester' => 'required|string|in:1st Semester,2nd Semester',
+            'year_level' => 'required|string',
+            'subject' => 'required|string',
+            'grade' => 'required|numeric|min:0|max:100',
+            'status' => 'required|string|in:Passed,Failed',
+        ]);
+
+        $validated['sender_id'] = Auth::id();
+
+        $grade = Grades::create($validated);
+
+        return back()->with('success', 'Grade created successfully.');
+    }
+
+    public function update(Request $request, Grades $grade)
+    {
+        $validated = $request->validate([
+            'sender_id' => 'required|exists:users,id',
+            'student_info_id' => 'required|exists:student_info,student_id',
+            'semester' => 'required|string',
+            'year_level' => 'required|string',
+            'subject' => 'required|string',
+            'grade' => 'required|numeric|min:0|max:100',
+            'status' => 'nullable|string|in:Passed,Failed',
+        ]);
+
+        $grade->update($validated);
+
+        return back()->with('success', 'Grade updated successfully.');
+    }
    
 }

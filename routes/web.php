@@ -250,7 +250,9 @@ Route::prefix('grades')->group(function () {
     Route::get('/change-admin-grade', [GradesController::class, 'changeGradeAdmin'])->name('index.change.grade.admin');
     Route::get('/change-prof-grade', [GradesController::class, 'changeGradeProf'])->name('index.change.grade.professor');
     Route::post('/display-settings/grade-sidebar', [DisplayController::class, 'toggleGradeSidebar'])->name('toggle.grade.sidebar');
-    Route::delete('/grades/{id}', [GradesController::class, 'deleteGrades'])->name('grades.delete');
+    Route::post('/create', [GradesController::class, 'store'])->name('grades.admin.store');
+    Route::delete('/{id}', [GradesController::class, 'deleteGrades'])->name('grades.delete');
+    Route::put('/{grade}', [GradesController::class, 'update'])->name('grades.update');
 
     // Route::get('/csv', [CSVController::class, 'index'])->name('index.csv');
     // Route::post('/upload-csv', [CSVController::class, 'upload'])->name('upload.csv');
